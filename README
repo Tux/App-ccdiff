@@ -1,10 +1,19 @@
-diff
-diff --color
+diff		C
+diff --color	C
 colordiff
 
-vimdiff
+vimdiff		C
+git diff	C
 
-mgdiff
-tkdiff
-xxdiff
-kdiff
+xdiff		Python, PHP, .......
+
+mgdiff		C X11
+diffuse		Python
+bcompare	C X11	Free?
+kompare		C X11	KDE
+xxdiff		C X11
+meld		Python
+kdiff3		C X11	Qt
+tkdiff		Tcl/Tk
+
+ccdiff		Perl
