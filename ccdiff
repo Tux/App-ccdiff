@@ -1,0 +1,131 @@
+#!/pro/bin/perl
+
+use 5.18.2;
+use warnings;
+
+our $VERSION = "0.04 - 20180706";
+our $CMD     = $0 =~ s{.*/}{}r;
+
+sub usage {
+    my $err = shift and select STDERR;
+    say "usage: $CMD: file1 [file2]";
+    say "	file1 or file2 can be - (but not both)";
+    exit $err;
+    } # usage
+
+use Algorithm::Diff;
+use Term::ANSIColor qw(:constants color);
+use Getopt::Long qw(:config bundling);
+GetOptions (
+    "help|?"		=> sub { usage (0); },
+    "V|version"		=> sub { say "$CMD [$VERSION]"; exit 0; },
+
+    "c|color!"			=> \(my $opt_c = 1),
+    "p|pink!"			=> \ my $opt_p,
+    "r|reverse!"		=> \ my $opt_r,
+    "f|fancy!"			=> \ my $opt_f,
+    "w|ignore-whitespace!"	=> \ my $opt_w,
+
+      "old=s"			=> \(my $old_color = "red"),
+      "new=s"			=> \(my $new_color = "green"),
+      "bg=s"			=> \(my $rev_color = "white"),
+
+    "v|verbose:1"		=> \(my $opt_v = 0),
+    ) or usage (1);
+
+# Color initialization
+$opt_p and $old_color = "magenta";
+my %clr = map { $_ => color ($_) } map { $_, "on_$_" }
+    qw( red green blue black white cyan magenta yellow );
+my $clr_red = $clr{$old_color};
+my $clr_grn = $clr{$new_color};
+my $clr_rev = $clr{$rev_color};
+
+my $clr_old = $opt_r ? $clr_rev . $clr{"on_$old_color"}
+                     : $clr_red . $clr{"on_$rev_color"};
+my $clr_new = $opt_r ? $clr_rev . $clr{"on_$new_color"}
+                     : $clr_grn . $clr{"on_$rev_color"};
+# Indicators
+my $chr_old = $opt_f ? $clr_old . "\x{25bc}" . RESET : "^";
+my $chr_new = $opt_f ? $clr_new . "\x{25b2}" . RESET : "^";
+my $chr_eql = " ";
+
+binmode STDOUT, ":encoding(utf-8)";
+
+my $f1 = shift or usage (1);
+my $f2 = shift // "-";
+
+$f1 eq "-" && $f2 eq "-" and usage (1);
+
+my @d1 = $f1 eq "-" ? <> : do {
+    open my $fh, "<", $f1 or die "$f1: $!\n";
+    <$fh>;
+    };
+my @d2 = $f2 eq "-" ? <> : do {
+    open my $fh, "<", $f2 or die "$f2: $!\n";
+    <$fh>;
+    };
+
+my $diff = Algorithm::Diff->new (\@d1, \@d2);
+$diff->Base (1);
+
+while ($diff->Next) {
+    $diff->Same and next;
+    my $sep = "";
+    my @d = map {[ $diff->Items ($_) ]} 1, 2;
+    if (!@{$d[1]}) {
+	printf "%d,%dd%d\n", $diff->Get (qw( Min1 Max1 Max2 ));
+	if ($opt_c) {
+	    $_ = $clr_old . $_ . RESET for @{$d[0]}
+	    }
+	}
+    elsif (!@{$d[0]}) {
+	printf "%da%d,%d\n", $diff->Get (qw( Max1 Min2 Max2 ));
+	if ($opt_c) {
+	    $_ = $clr_new . $_ . RESET for @{$d[1]}
+	    }
+	}
+    else {
+	$sep = "---\n";
+	printf "%d,%dc%d,%d\n", $diff->Get (qw( Min1 Max1 Min2 Max2 ));
+	@d = subdiff (@d);
+	}
+    print "< $_" for @{$d[0]};
+    print $sep;
+    print "> $_" for @{$d[1]};
+    }
+
+sub subdiff {
+    my $d = Algorithm::Diff->new (map { [ map { split m// } @$_ ] } @_);
+    my ($d1, $d2, $x1, $x2) = ("", "", "", "");
+    while ($d->Next) {
+	my @c = map {[ $d->Items ($_) ]} 1, 2;
+	if ($d->Same) {
+	    $d1 .= $_ for @{$c[0]};
+	    $d2 .= $_ for @{$c[1]};
+	    $x1 .= $_ for map { s/\S/$chr_eql/gr } @{$c[0]};
+	    $x2 .= $_ for map { s/\S/$chr_eql/gr } @{$c[0]};
+	    next;
+	    }
+	if (@{$c[0]}) {
+	    $d1 .= $clr_old if $opt_c;
+	    $d1 .= $_ for @{$c[0]};
+	    $d1 .= RESET		if $opt_c;
+	    $x1 .= $_ for map { s/\S/$chr_old/gr } @{$c[0]};
+	    }
+	if (@{$c[1]}) {
+	    $d2 .= $clr_new if $opt_c;
+	    $d2 .= $_ for @{$c[1]};
+	    $d2 .= RESET		if $opt_c;
+	    $x2 .= $_ for map { s/\S/$chr_new/gr } @{$c[1]};
+	    }
+	}
+    my @d = map { [ split m/(?<=\n)/ => $_ ] } $d1, $d2;
+    $opt_c and return @d;
+
+    my @x = map { [ split m/(?<=\n)/ => $_ ] } $x1, $x2;
+    foreach my $n (0, 1) {
+	$d[$n] = [ map { $d[$n][$_], $x[$n][$_] // "" } 0 .. (scalar @{$d[$n]} - 1) ];
+	}
+    @d;
+    } # subdiff
