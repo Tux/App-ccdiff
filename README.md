@@ -3,7 +3,7 @@
 A colored diff that also colors inside changed lines
 
 # Synopsis
-
+```
 usage: ccdiff: [options] file1 [file2]
         file1 or file2 can be - (but not both)
    -V    --version    Show version and exit
@@ -19,7 +19,7 @@ usage: ccdiff: [options] file1 [file2]
    -p    --pink       Shortcut for --old=magenta
    -f    --fancy      Use Unicode indicators instead of ^
    -r    --reverse    Reverse the colors of the indicators
-
+```
 # Description
 
 All command-line tools that show the difference between two files fall
@@ -39,8 +39,8 @@ get Unicode characters.
 
 # Installation
 
-Change the first line of 'ccdiff' to start your favorite perl interpreter
-and then move the file to a folder in your '$PATH'.
+Change the first line of `ccdiff` to start your favorite perl interpreter
+and then move the file to a folder in your `$PATH`.
 
 # Alternatives
 
@@ -55,12 +55,13 @@ and then move the file to a folder in your '$PATH'.
  * git
 
    This however requires a long command:
-   $ git -c color.diff.new='bold reverse green' \
+```
+$ git -c color.diff.new='bold reverse green' \
          -c color.diff.old='bold reverse red'   \
          diff --no-index -U0 --no-color \
               --word-diff=color --word-diff-regex=. \
              <file1> <file2>
-
+```
 ## ASCII
 
  * vimdiff
