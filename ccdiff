@@ -3,7 +3,7 @@
 use 5.18.2;
 use warnings;
 
-our $VERSION = "0.04 - 20180706";
+our $VERSION = "0.05 - 20180709";
 our $CMD     = $0 =~ s{.*/}{}r;
 
 sub usage {
@@ -19,6 +19,8 @@ use Getopt::Long qw(:config bundling);
 GetOptions (
     "help|?"		=> sub { usage (0); },
     "V|version"		=> sub { say "$CMD [$VERSION]"; exit 0; },
+
+    "u|unified:3"		=> \ my $opt_u,
 
     "c|color!"			=> \(my $opt_c = 1),
     "p|pink!"			=> \ my $opt_p,
@@ -49,6 +51,8 @@ my $clr_new = $opt_r ? $clr_rev . $clr{"on_$new_color"}
 my $chr_old = $opt_f ? $clr_old . "\x{25bc}" . RESET : "^";
 my $chr_new = $opt_f ? $clr_new . "\x{25b2}" . RESET : "^";
 my $chr_eql = " ";
+my $chr_lft = defined $opt_u ? "-" : "<";
+my $chr_rgt = defined $opt_u ? "+" : "<";
 
 binmode STDOUT, ":encoding(utf-8)";
 
@@ -69,8 +73,17 @@ my @d2 = $f2 eq "-" ? <> : do {
 my $diff = Algorithm::Diff->new (\@d1, \@d2);
 $diff->Base (1);
 
+my ($N, @s) = (0, 0);
 while ($diff->Next) {
-    $diff->Same and next;
+    $N++;
+    if ($diff->Same) {
+	if (defined $opt_u) {
+	    @s = $diff->Items (1);
+	    $N > 1 and print "  $_" for grep { defined } @s[0..($opt_u - 1)];
+	    unshift @s, undef while @s < $opt_u;
+	    }
+	next;
+	}
     my $sep = "";
     my @d = map {[ $diff->Items ($_) ]} 1, 2;
     if (!@{$d[1]}) {
@@ -86,13 +99,16 @@ while ($diff->Next) {
 	    }
 	}
     else {
-	$sep = "---\n";
+	$sep = "---\n" unless defined $opt_u;
 	printf "%d,%dc%d,%d\n", $diff->Get (qw( Min1 Max1 Min2 Max2 ));
 	@d = subdiff (@d);
 	}
-    print "< $_" for @{$d[0]};
+    if ($opt_u) {
+	print "  $_" for grep { defined } map { $s[$#s - $opt_u + $_] } 1..$opt_u;
+	}
+    print "$chr_lft $_" for @{$d[0]};
     print $sep;
-    print "> $_" for @{$d[1]};
+    print "$chr_rgt $_" for @{$d[1]};
     }
 
 sub subdiff {
