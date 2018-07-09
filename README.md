@@ -31,7 +31,7 @@ the changed lines.
 
 The tool has options to choose your own favorite color combinations, as
 long as they are supported by
-[https://metacpan.org/pod/Term::ANSIColor|Term::ANSIColor].
+[Term::ANSIColor](https://metacpan.org/pod/Term::ANSIColor).
 
 If you want no colors but indicators below the removed/added characters
 in the output, which is very useful if you want to email the output, the
@@ -95,10 +95,10 @@ changes in lines visually outstanding:
 # Dependencies
 
 This tool will run on recent perl distributions that have
-[https://metacpan.org/pod/Algorithm::Diff|Algorithm::Diff]
+[Algorithm::Diff](https://metacpan.org/pod/Algorithm::Diff)
 installed. The modules
-[https://metacpan.org/pod/Term::ANSIColor|Term::ANSIColor]
-and [https://metacpan.org/pod/Getopt::Long|Getopt::Long]
+[Term::ANSIColor](https://metacpan.org/pod/Term::ANSIColor)
+and [Getopt::Long](https://metacpan.org/pod/Getopt::Long)
 that are also used are part of the perl CORE distribution
 since at least version 5.6.0.
 ```
