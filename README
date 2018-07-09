@@ -5,6 +5,12 @@ colordiff
 vimdiff		C
 git diff	C
 
+    git -c color.diff.new='bold reverse green' \
+        -c color.diff.old='bold reverse red'   \
+        diff --no-index -U0 --no-color \
+	     --word-diff=color --word-diff-regex=. \
+	    <file1> <file2>
+
 xdiff		Python, PHP, .......
 
 mgdiff		C X11
