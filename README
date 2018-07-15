@@ -1,3 +1,6 @@
+- show termcap
+- show termcap-blue
+
 diff		C
 diff --color	C
 colordiff
@@ -23,3 +26,34 @@ kdiff3		C X11	Qt
 tkdiff		Tcl/Tk
 
 ccdiff		Perl
+
+ccdiff termcap termcap-blue
+
+# Colors (on two xterms: one normal and one with bg black)
+ccdiff -r                    term*
+ccdiff    --pink             term*
+ccdiff -r --pink             term*
+ccdiff    --no-color         term*
+ccdiff    --no-color --fancy term*
+ccdiff -r --no-color --fancy term*
+ccdiff -r --old=blue         term*
+ccdiff -r --new=blue         term*
+ccdiff    --bg=black         term*
+
+ccdiff -u                    term*
+ccdiff -u0                   term*
+
+- show member.csv
+- show export.csv
+
+ccdiff    member.csv export.csv
+ccdiff -r member.csv export.csv
+
+man Algorithm::Diff
+
+show ccdiff
+
+show m0
+show e0
+
+explain horizontal to vertical again
