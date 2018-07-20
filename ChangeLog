@@ -1,0 +1,19 @@
+0.06	- 2018-07-20
+    * Reset colors before newlines
+
+0.05	- 2018-07-09
+    * Add unified diff (-u, -u0)
+    * Complete the usage message
+
+0.04	- 2018-07-06
+    * Put it all in git and on github
+
+0.03	- 2018-07-06
+    * Add color options (--pink, --reverse, --old=C, --new=C, --bg=C)
+    * Add Unicode indicators (--fancy)
+
+0.02	- 2018-05-15
+    * Add --no-color
+
+0.01	- 2018-05-14
+    * Initial version

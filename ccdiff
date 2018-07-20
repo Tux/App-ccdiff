@@ -3,7 +3,7 @@
 use 5.18.2;
 use warnings;
 
-our $VERSION = "0.05 - 20180709";
+our $VERSION = "0.06 - 20180720";
 our $CMD     = $0 =~ s{.*/}{}r;
 
 sub usage {
@@ -55,14 +55,15 @@ my %clr = map { $_ => color ($_) } map { $_, "on_$_" }
 my $clr_red = $clr{$old_color};
 my $clr_grn = $clr{$new_color};
 my $clr_rev = $clr{$rev_color};
+my $reset   = RESET;
 
 my $clr_old = $opt_r ? $clr_rev . $clr{"on_$old_color"}
                      : $clr_red . $clr{"on_$rev_color"};
 my $clr_new = $opt_r ? $clr_rev . $clr{"on_$new_color"}
                      : $clr_grn . $clr{"on_$rev_color"};
 # Indicators
-my $chr_old = $opt_f ? $clr_old . "\x{25bc}" . RESET : "^";
-my $chr_new = $opt_f ? $clr_new . "\x{25b2}" . RESET : "^";
+my $chr_old = $opt_f ? $clr_old . "\x{25bc}$reset" : "^";
+my $chr_new = $opt_f ? $clr_new . "\x{25b2}$reset" : "^";
 my $chr_eql = " ";
 my $chr_lft = defined $opt_u ? "-" : "<";
 my $chr_rgt = defined $opt_u ? "+" : "<";
@@ -102,13 +103,13 @@ while ($diff->Next) {
     if (!@{$d[1]}) {
 	printf "%d,%dd%d\n", $diff->Get (qw( Min1 Max1 Max2 ));
 	if ($opt_c) {
-	    $_ = $clr_old . $_ . RESET for @{$d[0]}
+	    $_ = $clr_old . (s/$/$reset/r) for @{$d[0]}
 	    }
 	}
     elsif (!@{$d[0]}) {
 	printf "%da%d,%d\n", $diff->Get (qw( Max1 Min2 Max2 ));
 	if ($opt_c) {
-	    $_ = $clr_new . $_ . RESET for @{$d[1]}
+	    $_ = $clr_new . (s/$/$reset/r) for @{$d[1]}
 	    }
 	}
     else {
@@ -139,13 +140,13 @@ sub subdiff {
 	if (@{$c[0]}) {
 	    $d1 .= $clr_old if $opt_c;
 	    $d1 .= $_ for @{$c[0]};
-	    $d1 .= RESET		if $opt_c;
+	    $d1 .= $reset		if $opt_c;
 	    $x1 .= $_ for map { s/\S/$chr_old/gr } @{$c[0]};
 	    }
 	if (@{$c[1]}) {
 	    $d2 .= $clr_new if $opt_c;
 	    $d2 .= $_ for @{$c[1]};
-	    $d2 .= RESET		if $opt_c;
+	    $d2 .= $reset		if $opt_c;
 	    $x2 .= $_ for map { s/\S/$chr_new/gr } @{$c[1]};
 	    }
 	}
