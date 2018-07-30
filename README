@@ -29,6 +29,8 @@ ccdiff		Perl
 
 ccdiff termcap termcap-blue
 
+xterm -bg gray10 -fg gray90 &
+
 # Colors (on two xterms: one normal and one with bg black)
 ccdiff -r                    term*
 ccdiff    --pink             term*
@@ -60,6 +62,10 @@ cat ~/bin/git-ccdiff
 git ccdiff 5c5a
 
 
+290 modules on CPAN with Diff
+Some depend on Text::Diff
+Many depend (indirectly) on Algorithm::Diff
+
 man Algorithm::Diff
 
 show ccdiff
@@ -71,6 +77,7 @@ explain horizontal to vertical again
 
 Future?
 
+Text::Diff integration. Neil?
 Ignore whitespace options:
   -Z, --ignore-trailing-space     ignore white space at line end
   -b, --ignore-space-change       ignore changes in the amount of white space
