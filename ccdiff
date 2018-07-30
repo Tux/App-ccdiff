@@ -13,9 +13,9 @@ sub usage {
     say "   -V    --version    Show version and exit";
     say "  Diff options:";
     say "   -U    --utf-8      Input is in UTF-8";
-    say "   -u[3] --unified=3  Show a unified diff (WIP)";
+    say "   -u[3] --unified=3  Show a unified diff";
     say "   -w    --ignore-whitespace";
-    say "                      Ignore whitespace changes";
+    say "                      Ignore whitespace changes (NYI)";
     say "  Color options:";
     say "         --no-color   Do not use colors";
     say "         --old=red    Color to indicate removed content";

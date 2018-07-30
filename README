@@ -68,3 +68,11 @@ show m0
 show e0
 
 explain horizontal to vertical again
+
+Future?
+
+Ignore whitespace options:
+  -Z, --ignore-trailing-space     ignore white space at line end
+  -b, --ignore-space-change       ignore changes in the amount of white space
+  -w, --ignore-all-space          ignore all white space
+  -B, --ignore-blank-lines        ignore changes where lines are all blank

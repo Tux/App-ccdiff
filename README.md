@@ -9,9 +9,9 @@ usage: ccdiff: [options] file1 [file2]
    -V    --version    Show version and exit
   Diff options:
    -U    --utf-8      Input is in UTF-8
-   -u[3] --unified=3  Show a unified diff (WIP)
+   -u[3] --unified=3  Show a unified diff
    -w    --ignore-whitespace
-                      Ignore whitespace changes
+                      Ignore whitespace changes (NYI)
   Color options:
          --no-color   Do not use colors
          --old=red    Color to indicate removed content
