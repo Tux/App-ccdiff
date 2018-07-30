@@ -109,6 +109,25 @@ since at least version 5.6.0.
 
  other#  cpan Algorithm::Diff
 ```
+# Git integration
+
+You can use ccdiff to show diffs in git. It may work like this:
+```
+$ git config --global diff.tool ccdiff
+$ git config --global difftool.prompt false
+$ git config --global difftool.ccdiff.cmd 'ccdiff --utf-8 -u -r $LOCAL $REMOTE'
+$ git difftool SHA~..SHA
+$ cat >~/bin/git-ccdiff <<EOF
+#!/bin/sh
+
+commit=$1
+shift
+git difftool $commit~1..$commit $@
+EOF
+$ chmod 755 ~/bin/git-ccdiff
+$ git ccdiff SHA
+```
+
 ## LICENSE
 
 The Artistic License 2.0

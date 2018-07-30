@@ -1,6 +1,7 @@
 0.06	- 2018-07-30
     * Reset colors before newlines
     * Add --utf-8
+    * Add git integration example
 
 0.05	- 2018-07-09
     * Add unified diff (-u, -u0)

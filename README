@@ -49,6 +49,17 @@ ccdiff -u0                   term*
 ccdiff    member.csv export.csv
 ccdiff -r member.csv export.csv
 
+cd3 hexchat-git
+git show 5c5a
+
+git config --global diff.tool ccdiff
+git config --global difftool.prompt false
+git config --global difftool.ccdiff.cmd 'ccdiff --utf-8 -u -r $LOCAL $REMOTE'
+git difftool 5c5a~..5c5a
+cat ~/bin/git-ccdiff
+git ccdiff 5c5a
+
+
 man Algorithm::Diff
 
 show ccdiff
