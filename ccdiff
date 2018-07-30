@@ -3,7 +3,7 @@
 use 5.18.2;
 use warnings;
 
-our $VERSION = "0.06 - 20180720";
+our $VERSION = "0.07 - 20180730";
 our $CMD     = $0 =~ s{.*/}{}r;
 
 sub usage {
@@ -12,6 +12,7 @@ sub usage {
     say "	file1 or file2 can be - (but not both)";
     say "   -V    --version    Show version and exit";
     say "  Diff options:";
+    say "   -U    --utf-8      Input is in UTF-8";
     say "   -u[3] --unified=3  Show a unified diff (WIP)";
     say "   -w    --ignore-whitespace";
     say "                      Ignore whitespace changes";
@@ -32,6 +33,8 @@ use Getopt::Long qw(:config bundling);
 GetOptions (
     "help|?"		=> sub { usage (0); },
     "V|version"		=> sub { say "$CMD [$VERSION]"; exit 0; },
+
+    "U|utf-8!"			=> \ my $opt_U,
 
     "u|unified:3"		=> \ my $opt_u,
 
@@ -75,12 +78,17 @@ my $f2 = shift // "-";
 
 $f1 eq "-" && $f2 eq "-" and usage (1);
 
+$opt_U and binmode STDIN,  ":encoding(utf-8)";
+$opt_U and binmode STDOUT, ":encoding(utf-8)";
+
 my @d1 = $f1 eq "-" ? <> : do {
     open my $fh, "<", $f1 or die "$f1: $!\n";
+    $opt_U and binmode $fh, ":encoding(utf-8)";
     <$fh>;
     };
 my @d2 = $f2 eq "-" ? <> : do {
     open my $fh, "<", $f2 or die "$f2: $!\n";
+    $opt_U and binmode $fh, ":encoding(utf-8)";
     <$fh>;
     };
 

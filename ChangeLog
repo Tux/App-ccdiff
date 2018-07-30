@@ -1,5 +1,6 @@
-0.06	- 2018-07-20
+0.06	- 2018-07-30
     * Reset colors before newlines
+    * Add --utf-8
 
 0.05	- 2018-07-09
     * Add unified diff (-u, -u0)

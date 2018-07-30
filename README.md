@@ -8,6 +8,7 @@ usage: ccdiff: [options] file1 [file2]
         file1 or file2 can be - (but not both)
    -V    --version    Show version and exit
   Diff options:
+   -U    --utf-8      Input is in UTF-8
    -u[3] --unified=3  Show a unified diff (WIP)
    -w    --ignore-whitespace
                       Ignore whitespace changes
