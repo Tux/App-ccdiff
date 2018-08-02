@@ -3,27 +3,29 @@
 use 5.18.2;
 use warnings;
 
-our $VERSION = "0.07 - 20180730";
+our $VERSION = "0.08 - 20180802";
 our $CMD     = $0 =~ s{.*/}{}r;
 
 sub usage {
     my $err = shift and select STDERR;
     say "usage: $CMD [options] file1 [file2]";
     say "	file1 or file2 can be - (but not both)";
-    say "   -V    --version    Show version and exit";
+    say "   -V    --version      Show version and exit";
     say "  Diff options:";
-    say "   -U    --utf-8      Input is in UTF-8";
-    say "   -u[3] --unified=3  Show a unified diff";
-    say "   -w    --ignore-whitespace";
-    say "                      Ignore whitespace changes (NYI)";
+    say "   -U    --utf-8                 Input is in UTF-8";
+    say "   -u[3] --unified=3             Show a unified diff";
+    say "   -w    --ignore-all-space      Ignore all whitespace";
+    say "   -b    --ignore-space-change   Ignore horizontal whitespace changes";
+    say "   -Z    --ignore-trailing-space Ignore whitespace at line ending";
+    say "   -i    --ignore-case           Ignore case changes";
     say "  Color options:";
-    say "         --no-color   Do not use colors";
-    say "         --old=red    Color to indicate removed content";
-    say "         --new=green  Color to indicate added   content";
-    say "         --bg=white   Background color for colored indicators";
-    say "   -p    --pink       Shortcut for --old=magenta";
-    say "   -f    --fancy      Use Unicode indicators instead of ^";
-    say "   -r    --reverse    Reverse the colors of the indicators";
+    say "         --no-color     Do not use colors";
+    say "         --old=red      Color to indicate removed content";
+    say "         --new=green    Color to indicate added   content";
+    say "         --bg=white     Background color for colored indicators";
+    say "   -p    --pink         Shortcut for --old=magenta";
+    say "   -f    --fancy        Use Unicode indicators instead of ^";
+    say "   -r    --reverse      Reverse the colors of the indicators";
     exit $err;
     } # usage
 
@@ -34,22 +36,29 @@ GetOptions (
     "help|?"		=> sub { usage (0); },
     "V|version"		=> sub { say "$CMD [$VERSION]"; exit 0; },
 
-    "U|utf-8!"			=> \ my $opt_U,
+    "U|utf-8!"		=> \ my $opt_U,
 
-    "u|unified:3"		=> \ my $opt_u,
+    "u|unified:3"	=> \ my $opt_u,
 
-    "c|color!"			=> \(my $opt_c = 1),
-    "p|pink!"			=> \ my $opt_p,
-    "r|reverse!"		=> \ my $opt_r,
-    "f|fancy!"			=> \ my $opt_f,
-    "w|ignore-whitespace!"	=> \ my $opt_w,
+    "c|color!"		=> \(my $opt_c = 1),
+    "p|pink!"		=> \ my $opt_p,
+    "r|reverse!"	=> \ my $opt_r,
+    "f|fancy!"		=> \ my $opt_f,
 
-      "old=s"			=> \(my $old_color = "red"),
-      "new=s"			=> \(my $new_color = "green"),
-      "bg=s"			=> \(my $rev_color = "white"),
+    "i|ignore-case!"			=> \ my $opt_i,
+    "w|ignore-all-space!"		=> \ my $opt_w,
+    "b|ignore-ws|ignore-space-change!"	=> \ my $opt_b,
+    "Z|ignore-trailing-space!"		=> \ my $opt_Z,
+    "E|ignore-tab-expansion!"		=> \ my $opt_E, # NYI
+    "B|ignore-blank-lines!"		=> \ my $opt_B, # NYI
 
-    "v|verbose:1"		=> \(my $opt_v = 0),
+      "old=s"		=> \(my $old_color = "red"),
+      "new=s"		=> \(my $new_color = "green"),
+      "bg=s"		=> \(my $rev_color = "white"),
+
+    "v|verbose:1"	=> \(my $opt_v = 0),
     ) or usage (1);
+$opt_w and $opt_b = $opt_Z = $opt_E = $opt_B = 1;
 
 # Color initialization
 $opt_p and $old_color = "magenta";
@@ -92,7 +101,15 @@ my @d2 = $f2 eq "-" ? <> : do {
     <$fh>;
     };
 
-my $diff = Algorithm::Diff->new (\@d1, \@d2);
+my $cmp_sub = $opt_i || $opt_b || $opt_Z ? { keyGen => sub {
+    my $line = shift;
+    $opt_i and $line = lc $line;
+    $opt_Z and $line =~ s/[ \t]+$//g;
+    $opt_b and $line =~ s/[ \t]+/ /g;
+    return $line;
+    }} : undef;
+
+my $diff = Algorithm::Diff->new (\@d1, \@d2, $cmp_sub);
 $diff->Base (1);
 
 my ($N, @s) = (0, 0);

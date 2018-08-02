@@ -6,20 +6,22 @@ A colored diff that also colors inside changed lines
 ```
 usage: ccdiff: [options] file1 [file2]
         file1 or file2 can be - (but not both)
-   -V    --version    Show version and exit
+   -V    --version     Show version and exit
   Diff options:
-   -U    --utf-8      Input is in UTF-8
-   -u[3] --unified=3  Show a unified diff
-   -w    --ignore-whitespace
-                      Ignore whitespace changes (NYI)
+   -U    --utf-8       Input is in UTF-8
+   -u[3] --unified=3   Show a unified diff
+
+   -w    --ignore-ws   Ignore whitespace changes
+   -i    --ignore-case Ignore case differences
+
   Color options:
-         --no-color   Do not use colors
-         --old=red    Color to indicate removed content
-         --new=green  Color to indicate added   content
-         --bg=white   Background color for colored indicators
-   -p    --pink       Shortcut for --old=magenta
-   -f    --fancy      Use Unicode indicators instead of ^
-   -r    --reverse    Reverse the colors of the indicators
+         --no-color    Do not use colors
+         --old=red     Color to indicate removed content
+         --new=green   Color to indicate added   content
+         --bg=white    Background color for colored indicators
+   -p    --pink        Shortcut for --old=magenta
+   -f    --fancy       Use Unicode indicators instead of ^
+   -r    --reverse     Reverse the colors of the indicators
 ```
 # Description
 

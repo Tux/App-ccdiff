@@ -1,4 +1,13 @@
-0.06	- 2018-07-30
+0.08	- 2018-08-02
+    * Implement -b
+    * Implement -Z
+    * Implement -i
+
+0.07	- 2018-07-30
+    * Add --utf8
+    * Add git integration example
+
+0.06	- 2018-07-20
     * Reset colors before newlines
     * Add --utf-8
     * Add git integration example

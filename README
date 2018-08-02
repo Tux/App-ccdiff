@@ -50,6 +50,9 @@ ccdiff -u0                   term*
 
 ccdiff    member.csv export.csv
 ccdiff -r member.csv export.csv
+ccdiff -r member.csv export.csv -w
+ccdiff -r member.csv export.csv    -i
+ccdiff -r member.csv export.csv -w -i
 
 cd3 hexchat-git
 git show 5c5a
@@ -79,7 +82,8 @@ Future?
 
 Text::Diff integration. Neil?
 Ignore whitespace options:
-  -Z, --ignore-trailing-space     ignore white space at line end
-  -b, --ignore-space-change       ignore changes in the amount of white space
-  -w, --ignore-all-space          ignore all white space
-  -B, --ignore-blank-lines        ignore changes where lines are all blank
+  -Z, --ignore-trailing-space	ignore white space at line end
+  -b, --ignore-space-change	ignore changes in the amount of white space
+  -w, --ignore-all-space	ignore all white space
+  -B, --ignore-blank-lines	ignore changes where lines are all blank
+  -E, --ignore-tab-expansion	ignore changes due to tab expansion
