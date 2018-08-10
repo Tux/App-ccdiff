@@ -63,7 +63,7 @@ git config --global difftool.ccdiff.cmd 'ccdiff --utf-8 -u -r $LOCAL $REMOTE'
 git difftool 5c5a~..5c5a
 cat ~/bin/git-ccdiff
 git ccdiff 5c5a
-
+cat 5c5a.uchar
 
 290 modules on CPAN with Diff
 Some depend on Text::Diff
