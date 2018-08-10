@@ -3,7 +3,7 @@
 use 5.18.2;
 use warnings;
 
-our $VERSION = "0.08 - 20180802";
+our $VERSION = "0.09 - 20180810";
 our $CMD     = $0 =~ s{.*/}{}r;
 
 sub usage {
@@ -38,6 +38,7 @@ GetOptions (
 
     "U|utf-8!"		=> \ my $opt_U,
 
+#   "C|context:3"	=> \ my $opt_C,	# implement context-diff?
     "u|unified:3"	=> \ my $opt_u,
 
     "c|color!"		=> \(my $opt_c = 1),
@@ -100,6 +101,16 @@ my @d2 = $f2 eq "-" ? <> : do {
     $opt_U and binmode $fh, ":encoding(utf-8)";
     <$fh>;
     };
+if ($opt_u) {
+    for ([ "---", $f1 ], [ "+++", $f2 ]) {
+	if (-f $_->[1]) {
+	    say $_->[0], " $_->[1]\t", scalar localtime ((stat $_->[1])[9]);
+	    }
+	else {
+	    say $_->[0], " *STDIN\t",  scalar localtime;
+	    }
+	}
+    }
 
 my $cmp_sub = $opt_i || $opt_b || $opt_Z ? { keyGen => sub {
     my $line = shift;
