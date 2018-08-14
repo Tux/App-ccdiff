@@ -1,0 +1,79 @@
+#!/pro/bin/perl
+
+use 5.18.2;
+use warnings;
+
+use Algorithm::Diff;
+use Term::ANSIColor qw(:constants color);
+
+# Color initialization
+my %clr = map { $_ => color ($_) } map { $_, "on_$_" }
+    qw( red green blue black white cyan magenta yellow );
+my $reset   = RESET;
+my $clr_old = $clr{red}   . $clr{"on_white"};
+my $clr_new = $clr{green} . $clr{"on_white"};
+
+binmode STDOUT, ":encoding(utf-8)";
+
+my $f1 = shift or die;
+my $f2 = shift // "-";
+
+my @d1 = $f1 eq "-" ? <> : do {
+    open my $fh, "<", $f1 or die "$f1: $!\n";
+    <$fh>;
+    };
+my @d2 = $f2 eq "-" ? <> : do {
+    open my $fh, "<", $f2 or die "$f2: $!\n";
+    <$fh>;
+    };
+
+my $diff = Algorithm::Diff->new (\@d1, \@d2);
+$diff->Base (1);
+
+my ($N, @s) = (0, 0);
+while ($diff->Next) {
+    $N++;
+    $diff->Same and next;
+    my $sep = "";
+    my @d = map {[ $diff->Items ($_) ]} 1, 2;
+    if (!@{$d[1]}) {
+	printf "%d,%dd%d\n", $diff->Get (qw( Min1 Max1 Max2 ));
+	$_ = $clr_old . (s/$/$reset/r) for @{$d[0]}
+	}
+    elsif (!@{$d[0]}) {
+	printf "%da%d,%d\n", $diff->Get (qw( Max1 Min2 Max2 ));
+	$_ = $clr_new . (s/$/$reset/r) for @{$d[1]}
+	}
+    else {
+	$sep = "---\n";
+	printf "%d,%dc%d,%d\n", $diff->Get (qw( Min1 Max1 Min2 Max2 ));
+	@d = subdiff (@d);
+	}
+    print "< $_" for @{$d[0]};
+    print $sep;
+    print "> $_" for @{$d[1]};
+    }
+
+sub subdiff {
+    my $d = Algorithm::Diff->new (map { [ map { split m// } @$_ ] } @_);
+    my ($d1, $d2) = ("", "");
+    while ($d->Next) {
+	my @c = map {[ $d->Items ($_) ]} 1, 2;
+	if ($d->Same) {
+	    $d1 .= $_ for @{$c[0]};
+	    $d2 .= $_ for @{$c[1]};
+	    next;
+	    }
+	if (@{$c[0]}) {
+	    $d1 .= $clr_old;
+	    $d1 .= $_ for @{$c[0]};
+	    $d1 .= $reset;
+	    }
+	if (@{$c[1]}) {
+	    $d2 .= $clr_new;
+	    $d2 .= $_ for @{$c[1]};
+	    $d2 .= $reset;
+	    }
+	}
+    return map { [ split m/(?<=\n)/ => $_ ] } $d1, $d2;
+    } # subdiff
