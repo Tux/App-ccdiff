@@ -76,7 +76,6 @@ my $clr_grn = $clr{$new_color};
 my $clr_rev = $clr{$rev_color};
 my $reset   = RESET;
 
-say $rev_color;
 my $clr_old = $opt_r ? $clr_rev . $clr{"on_$old_color" =~ s/bold //ir}
                      : $clr_red . $clr{"on_$rev_color" =~ s/bold //ir};
 my $clr_new = $opt_r ? $clr_rev . $clr{"on_$new_color" =~ s/bold //ir}
