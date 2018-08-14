@@ -54,6 +54,9 @@ ccdiff -r member.csv export.csv -w
 ccdiff -r member.csv export.csv    -i
 ccdiff -r member.csv export.csv -w -i
 
+ccdiff -r                    term*
+ccdiff -r -B                 term*
+
 cd3 hexchat-git
 git show 5c5a
 

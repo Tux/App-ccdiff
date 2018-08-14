@@ -17,6 +17,7 @@ sub usage {
     say "   -w    --ignore-all-space      Ignore all whitespace";
     say "   -b    --ignore-space-change   Ignore horizontal whitespace changes";
     say "   -Z    --ignore-trailing-space Ignore whitespace at line ending";
+    say "   -B    --ignore-blank-lines    Ignore changes where lines are all blank";
     say "   -i    --ignore-case           Ignore case changes";
     say "  Color options:";
     say "         --no-color     Do not use colors";
@@ -85,7 +86,7 @@ my $chr_old = $opt_f ? $clr_old . "\x{25bc}$reset" : "^";
 my $chr_new = $opt_f ? $clr_new . "\x{25b2}$reset" : "^";
 my $chr_eql = " ";
 my $chr_lft = defined $opt_u ? "-" : "<";
-my $chr_rgt = defined $opt_u ? "+" : "<";
+my $chr_rgt = defined $opt_u ? "+" : ">";
 
 binmode STDOUT, ":encoding(utf-8)";
 
@@ -143,18 +144,30 @@ while ($diff->Next) {
     my $sep = "";
     my @d = map {[ $diff->Items ($_) ]} 1, 2;
     if (!@{$d[1]}) {
+	if ($opt_B and "@{$d[1]}" !~ m/\S/) {
+	    # Modify @s for -u?
+	    next;
+	    }
 	printf "%d,%dd%d\n", $diff->Get (qw( Min1 Max1 Max2 ));
 	if ($opt_c) {
 	    $_ = $clr_old . (s/$/$reset/r) for @{$d[0]}
 	    }
 	}
     elsif (!@{$d[0]}) {
+	if ($opt_B and "@{$d[0]}" !~ m/\S/) {
+	    # Modify @s for -u?
+	    next;
+	    }
 	printf "%da%d,%d\n", $diff->Get (qw( Max1 Min2 Max2 ));
 	if ($opt_c) {
 	    $_ = $clr_new . (s/$/$reset/r) for @{$d[1]}
 	    }
 	}
     else {
+	if ($opt_B and "@{$d[0]}" !~ m/\S/ || "@{$d[1]}" !~ m/\S/) {
+	    # Modify @s for -u?
+	    next;
+	    }
 	$sep = "---\n" unless defined $opt_u;
 	printf "%d,%dc%d,%d\n", $diff->Get (qw( Min1 Max1 Min2 Max2 ));
 	@d = subdiff (@d);
