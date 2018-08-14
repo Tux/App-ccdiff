@@ -63,19 +63,24 @@ $opt_w and $opt_b = $opt_Z = $opt_E = $opt_B = 1;
 
 # Color initialization
 $opt_p and $old_color = "magenta";
+for ($old_color, $new_color, $rev_color) {
+    s/^(.*)[ _]bold$/bold $1/i;
+    s/^bold_/bold /i;
+    }
 my %clr = map { $_ => color (s{^(.*)[ _]bold$}{bold $1}ir =~
                              s{^bold[ _]}{bold }ir) }
-	  map { $_, "on_$_", "bold $_", "bold_$_", "$_ bold", "${_}_bold" }
+	  map { $_, "on_$_", "bold $_" }
     qw( red green blue black white cyan magenta yellow );
 my $clr_red = $clr{$old_color};
 my $clr_grn = $clr{$new_color};
 my $clr_rev = $clr{$rev_color};
 my $reset   = RESET;
 
-my $clr_old = $opt_r ? $clr_rev . $clr{"on_$old_color"}
-                     : $clr_red . $clr{"on_$rev_color"};
-my $clr_new = $opt_r ? $clr_rev . $clr{"on_$new_color"}
-                     : $clr_grn . $clr{"on_$rev_color"};
+say $rev_color;
+my $clr_old = $opt_r ? $clr_rev . $clr{"on_$old_color" =~ s/bold //ir}
+                     : $clr_red . $clr{"on_$rev_color" =~ s/bold //ir};
+my $clr_new = $opt_r ? $clr_rev . $clr{"on_$new_color" =~ s/bold //ir}
+                     : $clr_grn . $clr{"on_$rev_color" =~ s/bold //ir};
 # Indicators
 my $chr_old = $opt_f ? $clr_old . "\x{25bc}$reset" : "^";
 my $chr_new = $opt_f ? $clr_new . "\x{25b2}$reset" : "^";
