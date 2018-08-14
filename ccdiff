@@ -63,9 +63,10 @@ $opt_w and $opt_b = $opt_Z = $opt_E = $opt_B = 1;
 
 # Color initialization
 $opt_p and $old_color = "magenta";
-my %clr = map { $_ => color ($_) } map { $_, "on_$_", "bold $_" }
+my %clr = map { $_ => color (s{^(.*)[ _]bold$}{bold $1}ir =~
+                             s{^bold[ _]}{bold }ir) }
+	  map { $_, "on_$_", "bold $_", "bold_$_", "$_ bold", "${_}_bold" }
     qw( red green blue black white cyan magenta yellow );
-use DP;DDumper \%clr;
 my $clr_red = $clr{$old_color};
 my $clr_grn = $clr{$new_color};
 my $clr_rev = $clr{$rev_color};
