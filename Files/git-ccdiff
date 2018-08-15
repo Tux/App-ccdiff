@@ -1,0 +1,14 @@
+#!/usr/bin/sh
+
+# With this file as git-ccdiff in your $PATH
+#
+# git config --global diff.tool ccdiff
+# git config --global difftool.prompt false
+# git config --global difftool.ccdiff.cmd 'ccdiff --utf-8 -u -r $LOCAL $REMOTE'
+# git difftool 5c5a~..5c5a
+# ->
+# git ccdiff   5c5a
+
+commit=$1
+shift
+git difftool $commit~1..$commit $@
