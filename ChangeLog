@@ -1,3 +1,10 @@
+0.10	- 2018-08-15
+    * Allow bold variants for colors
+    * Start of -B implementation
+
+0.09	- 2018-08-10
+    * Header for unified diff
+
 0.08	- 2018-08-02
     * Implement -b
     * Implement -Z
