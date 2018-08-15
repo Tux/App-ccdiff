@@ -131,6 +131,15 @@ $ chmod 755 ~/bin/git-ccdiff
 $ git ccdiff SHA
 ```
 
+## LIMITATIONS
+
+There is no provision yet for showing zero-width unicode "characters", like
+U+200b (ZERO WIDTH SPACE), U+200c (ZERO WITDH NON_JOINER), U+200D (ZERO WIDTH
+JOINER), and U+feff (ZERO WIDTH NO-BREAK SPACE) will not show (yet) in normal
+output and might cause displacement of other indicators.
+
+There is no provision (yet) for coping with double-width characters.
+
 ## LICENSE
 
 The Artistic License 2.0
