@@ -1,6 +1,8 @@
 0.20	- 2018-08-16
     * Start inline documentation
     * Support configuration
+    * Add -I/--index
+    * Add --verbose meaning
 
 0.10	- 2018-08-15
     * Allow bold variants for colors

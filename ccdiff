@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
 
-use 5.18.2;
+use 5.12.1;
 use warnings;
 
 our $VERSION = "0.20 - 20180815";
@@ -12,9 +12,12 @@ sub usage {
     say "       $CMD --man | --info";
     say "	file1 or file2 can be - (but not both)";
     say "   -V    --version      Show version and exit";
+    say "   -v[1] --verbose[=1]  Set verbosity";
     say "  Diff options:";
     say "   -U    --utf-8                 Input is in UTF-8";
     say "   -u[3] --unified=3             Show a unified diff";
+    say "   -I    --index        Add indices to the change chunks";
+    say "   -I n  --index=4      Only show chunk n";
     say "   -w    --ignore-all-space      Ignore all whitespace";
     say "   -b    --ignore-space-change   Ignore horizontal whitespace changes";
     say "   -Z    --ignore-trailing-space Ignore whitespace at line ending";
@@ -33,6 +36,7 @@ sub usage {
 
 my %rc = read_rc ();
 
+use charnames ();
 use Algorithm::Diff;
 use Term::ANSIColor qw(:constants color);
 use Getopt::Long qw(:config bundling);
@@ -47,6 +51,7 @@ GetOptions (
 
 #   "C|context:3"	=> \ my $opt_C,	# implement context-diff?
     "u|unified:3"	=> \ my $opt_u,
+    "I|idx|index:-1"	=> \(my $opt_I = $rc{index} // 0),
 
     "c|color!"		=> \(my $opt_c = $rc{color} // 1),
     "p|pink!"		=> \ my $opt_p,
@@ -81,6 +86,7 @@ my %clr = map { $_ => color (s{^(.*)[ _]bold$}{bold $1}ir =~
 my $clr_red = $clr{$old_color};
 my $clr_grn = $clr{$new_color};
 my $clr_rev = $clr{$rev_color};
+my $clr_dgb = $clr{$rc{verbose} || "cyan"};
 my $reset   = RESET;
 
 my $clr_old = $opt_r ? $clr_rev . $clr{"on_$old_color" =~ s/bold //ir}
@@ -136,7 +142,7 @@ my $cmp_sub = $opt_i || $opt_b || $opt_Z ? { keyGen => sub {
 my $diff = Algorithm::Diff->new (\@d1, \@d2, $cmp_sub);
 $diff->Base (1);
 
-my ($N, @s) = (0, 0);
+my ($N, $idx, @s) = (0, 0);
 while ($diff->Next) {
     $N++;
     if ($diff->Same) {
@@ -149,36 +155,35 @@ while ($diff->Next) {
 	}
     my $sep = "";
     my @d = map {[ $diff->Items ($_) ]} 1, 2;
+
+    if ($opt_B and "@{$d[0]}" !~ m/\S/ && "@{$d[1]}" !~ m/\S/) {
+	# Modify @s for -u?
+	next;
+	}
+    if ($opt_I) {
+	$idx++;
+	$opt_I > 0 && $idx != $opt_I and next;
+	printf "%s[%03d]%s ", ${clr_dgb}, $idx, $reset;
+	}
+
     if (!@{$d[1]}) {
-	if ($opt_B and "@{$d[1]}" !~ m/\S/) {
-	    # Modify @s for -u?
-	    next;
-	    }
 	printf "%d,%dd%d\n", $diff->Get (qw( Min1 Max1 Max2 ));
 	if ($opt_c) {
 	    $_ = $clr_old . (s/$/$reset/r) for @{$d[0]}
 	    }
 	}
     elsif (!@{$d[0]}) {
-	if ($opt_B and "@{$d[0]}" !~ m/\S/) {
-	    # Modify @s for -u?
-	    next;
-	    }
 	printf "%da%d,%d\n", $diff->Get (qw( Max1 Min2 Max2 ));
 	if ($opt_c) {
 	    $_ = $clr_new . (s/$/$reset/r) for @{$d[1]}
 	    }
 	}
     else {
-	if ($opt_B and "@{$d[0]}" !~ m/\S/ || "@{$d[1]}" !~ m/\S/) {
-	    # Modify @s for -u?
-	    next;
-	    }
 	$sep = "---\n" unless defined $opt_u;
 	printf "%d,%dc%d,%d\n", $diff->Get (qw( Min1 Max1 Min2 Max2 ));
 	@d = subdiff (@d);
 	}
-    if ($opt_u) {
+    if ($opt_u and @s) {
 	print "  $_" for grep { defined } map { $s[$#s - $opt_u + $_] } 1..$opt_u;
 	}
     print "$chr_lft $_" for @{$d[0]};
@@ -188,7 +193,7 @@ while ($diff->Next) {
 
 sub subdiff {
     my $d = Algorithm::Diff->new (map { [ map { split m// } @$_ ] } @_);
-    my ($d1, $d2, $x1, $x2) = ("", "", "", "");
+    my ($d1, $d2, $x1, $x2, @h1, @h2) = ("", "", "", "");
     while ($d->Next) {
 	my @c = map {[ $d->Items ($_) ]} 1, 2;
 	if ($d->Same) {
@@ -203,20 +208,26 @@ sub subdiff {
 	    $d1 .= $_ for @{$c[0]};
 	    $d1 .= $reset		if $opt_c;
 	    $x1 .= $_ for map { s/\S/$chr_old/gr } @{$c[0]};
+	    $opt_v and push @h1, map { $opt_U ? charnames::viacode (ord) : unpack "H*"; } @{$c[0]};
 	    }
 	if (@{$c[1]}) {
 	    $d2 .= $clr_new if $opt_c;
 	    $d2 .= $_ for @{$c[1]};
 	    $d2 .= $reset		if $opt_c;
 	    $x2 .= $_ for map { s/\S/$chr_new/gr } @{$c[1]};
+	    $opt_v and push @h2, map { $opt_U ? charnames::viacode (ord) : unpack "H*"; } @{$c[1]};
 	    }
 	}
     my @d = map { [ split m/(?<=\n)/ => $_ ] } $d1, $d2;
-    $opt_c and return @d;
-
-    my @x = map { [ split m/(?<=\n)/ => $_ ] } $x1, $x2;
-    foreach my $n (0, 1) {
-	$d[$n] = [ map { $d[$n][$_], $x[$n][$_] // "" } 0 .. (scalar @{$d[$n]} - 1) ];
+    unless ($opt_c) {
+	my @x = map { [ split m/(?<=\n)/ => $_ ] } $x1, $x2;
+	foreach my $n (0, 1) {
+	    $d[$n] = [ map { $d[$n][$_], $x[$n][$_] // "" } 0 .. (scalar @{$d[$n]} - 1) ];
+	    }
+	}
+    if ($opt_v) {
+	@h1 and push @{$d[0]}, sprintf " -- ${clr_dgb}verbose$reset : %s\n", join ", " => map { $clr_old.$_.$reset } @h1;
+	@h2 and push @{$d[1]}, sprintf " -- ${clr_dgb}verbose$reset : %s\n", join ", " => map { $clr_new.$_.$reset } @h2;
 	}
     @d;
     } # subdiff
@@ -239,10 +250,9 @@ sub read_rc {
 	        =~ s{^(?:unicode|utf-?8?)$}{utf8}ir
 	      } = $v
 		=~ s{^(?:no|false)$}{0}ir
-		=~ s{^(?:yes|true)$}{1}ir;
+		=~ s{^(?:yes|true)$}{-1}ir; # -1 is still true
 	    }
 	}
-    #use DP;DDumper \%rc;
     %rc;
     } # read_rc
 
@@ -266,6 +276,107 @@ ccdiff - Colored character diff
 
 =head2 Command line options
 
+=over 2
+
+=item --help -?
+
+Show a summary op the available command-line options and exit.
+
+=item --version -V
+
+Show the version and exit.
+
+=item --man
+
+Show this manual using pod2man and nroff.
+
+=item --info
+
+Show this manual using pod2text.
+
+=item --utf-8 -U
+
+All I/O (streams to compare and standard out) are in UTF-8.
+
+=item --unified[=3] -u [3]
+
+Generate a unified diff. The number of context lines is optional. When omitted
+it defaults to 3. Currently there is no provision of dealing with overlapping
+diff chunks. If the common part between two diff chunks is shorter than twice
+the number of context lines, some lines may show twice.
+
+The default is to use traditional diff:
+
+ 5,5c5,5
+ < Sat Dec 18 07:00:33 1993,I.O.D.U.,,756194433,1442539
+ ---
+ > Sat Dec 18 07:08:33 1998,I.O.D.U.,,756194433,1442539
+
+a unified diff (-u1) would be
+
+ 5,5c5,5
+   Tue Sep  6 05:43:59 2005,B.O.Q.S.,,1125978239,1943341
+ - Sat Dec 18 07:00:33 1993,I.O.D.U.,,756194433,1442539
+ + Sat Dec 18 07:08:33 1998,I.O.D.U.,,756194433,1442539
+   Mon Feb 23 10:37:02 2004,R.X.K.S.,van,1077529022,1654127
+
+=item --verbose -v
+
+Show an additional line for each old or new section in a change chunk (not for
+added or deleted lines) that shows the hexdump of each character. If C<--utf-8>
+is in effect, it will show the Unicode character name(s).
+
+This is a debugging option, so invisible characters can still be "seen".
+
+C<--verbose> accepts an optional verbosity-level, but no specific behavior for
+these have not yet been defined.
+
+=item --color -c
+
+Use colors to show differences. As this is the default, use C<--no-color> or
+C<--fancy> to use markers instead of color indicators.
+
+C<--no-color> is especially useful if the terminal does not support colors,
+or if you want to copy/paste the output to (ASCII) mail.
+
+=item --pink -p
+
+Change the default C<red> for deleted text to the color closest to pink that
+is supported by L<Term::ANSIColor>: C<magenta>.
+
+=item --fancy -f
+
+Use (colored) Unicode indicators under changed text instead of the default C<^>.
+
+I did consider using U+034e (COMBINING UPWARDS ARROW BELOW), but as most
+terminals are probably unable to show it, I did not pursue the idea.
+
+=item --reverse -r
+
+=item --old=color
+
+=item --new=color
+
+=item --bg=color
+
+=item --index --idx -I
+
+=item --ignore-case -i
+
+=item --ignore-all-space -w 
+
+=item --ignore-ws|ignore-space-change -b 
+
+=item --ignore-trailing-space -Z 
+
+=item --ignore-tab-expansion -E 
+
+=item --ignore-blank-lines -B 
+
+=item --verbose[=1] -v [1]
+
+=back
+
 =head2 Configuration files
 
 In order to be able to overrule the defaults set in C<ccdiff>, one can set
@@ -277,7 +388,7 @@ in this order:
  - $HOME/.config/ccdiff
 
 and evaluated in that order. Any options specified in a file later in that
-chain will overwrite previously detected options.
+chain will overwrite previously set options.
 
 Option files are only read and evaluated if it is not empty and not writeable
 by others than the owner.
@@ -287,7 +398,10 @@ whitespace is ignored. If that line then starts with one of the options
 listed below, followed by optional whitespace followed by either an C<=> or
 a C<:>, followed by optional whitespace and the values, the value is assigned
 to the option. The values C<no> and C<false> (case insensitive) are aliases
-for C<0>. The values C<yes> and C<true> are aliases to C<1>.
+for C<0>. The values C<yes> and C<true> are aliases to C<-1> (C<-1> being a
+true value).
+
+Between parens is the corresponding command-line option.
 
 =over 2
 
@@ -364,6 +478,23 @@ This option may also be specified as
  background-colour
  background_colour
 
+=item verbose
+
+ verbose : cyan
+
+defines the color to be used as color for the verbose tag. The default is
+C<cyan>. This color will only be used under C<--verbose>.
+
+any color accepted by L<Term::ANSIColor> is allowed. Any other color will
+result in a warning.
+
+This option may also be specified as
+
+ verbose-color
+ verbose_color
+ verbose-colour
+ verbose_colour
+
 =item utf8 (-U)
 
  utf8    : yes
@@ -375,6 +506,28 @@ This option may also be specified as
  unicode
  utf
  utf-8
+
+=item index (-I)
+
+ index   : no
+
+defines if the position indication for a change chunk is prefixed with an
+index number. The default is C<no>. The index is 1-based.
+
+Without this option, the position indication would be like
+
+ 5,5c5,5
+ 19,19d18
+ 42a42,42
+
+with this option, it would be
+
+ [001] 5,5c5,5
+ [002] 19,19d18
+ [005] 42a42,42
+
+When this option contains a positive integer, C<ccdiff> will only show diff
+the diff chunk with that index.
 
 =back
 
