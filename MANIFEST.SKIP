@@ -1,0 +1,8 @@
+^\.aspell.local.pws
+^\.git.*
+^2lib
+^blib
+^sandbox
+^Talk
+[gbx]z$
+MANIFEST.SKIP

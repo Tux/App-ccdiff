@@ -1,0 +1,6 @@
+#: src/common/textevents.h:13
+msgid "%C22*%O$tCannot join %C22$1 %O(%C20You are banned%O)."
+msgstr "%C22*%O$tΑδυναμία εισαγωγής %C22$1 %O(%C20Είστε μπλοκαρισμένος%Ο)."
+
+#: src/common/textevents.h:19
+msgid "%C29*%O$tCapabilities acknowledged: %C29$2%O"

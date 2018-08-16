@@ -1,0 +1,25 @@
+0. Configuration
+
+  cat ~/.config/ccdiff
+
+1. Manual
+
+  ccdiff --help
+  ccdiff --man
+  ccdiff --info
+
+2. Verbosity
+
+  ccdiff hc?
+  ccdiff hc? -v
+
+3. Indices
+
+  ccdiff m* -I
+  ccdiff m* -I1
+  ccdiff m* -I1 -v
+
+4. List colors
+
+  ccdiff --list-colors
+  dis_colors
