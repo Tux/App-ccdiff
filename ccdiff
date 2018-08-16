@@ -3,7 +3,7 @@
 use 5.18.2;
 use warnings;
 
-our $VERSION = "0.10 - 20180814";
+our $VERSION = "0.20 - 20180815";
 our $CMD     = $0 =~ s{.*/}{}r;
 
 sub usage {
@@ -30,21 +30,24 @@ sub usage {
     exit $err;
     } # usage
 
+my %rc = read_rc ();
+
 use Algorithm::Diff;
 use Term::ANSIColor qw(:constants color);
 use Getopt::Long qw(:config bundling);
+my $opt_r = $rc{reverse} // 0;
 GetOptions (
     "help|?"		=> sub { usage (0); },
     "V|version"		=> sub { say "$CMD [$VERSION]"; exit 0; },
 
-    "U|utf-8!"		=> \ my $opt_U,
+    "U|utf-8!"		=> \(my $opt_U = $rc{utf8} // 0),
 
 #   "C|context:3"	=> \ my $opt_C,	# implement context-diff?
     "u|unified:3"	=> \ my $opt_u,
 
-    "c|color!"		=> \(my $opt_c = 1),
+    "c|color!"		=> \(my $opt_c = $rc{color} // 1),
     "p|pink!"		=> \ my $opt_p,
-    "r|reverse!"	=> \ my $opt_r,
+    "r|reverse"		=> sub { $opt_r ^= 1 },
     "f|fancy!"		=> \ my $opt_f,
 
     "i|ignore-case!"			=> \ my $opt_i,
@@ -54,9 +57,9 @@ GetOptions (
     "E|ignore-tab-expansion!"		=> \ my $opt_E, # NYI
     "B|ignore-blank-lines!"		=> \ my $opt_B, # NYI
 
-      "old=s"		=> \(my $old_color = "red"),
-      "new=s"		=> \(my $new_color = "green"),
-      "bg=s"		=> \(my $rev_color = "white"),
+      "old=s"		=> \(my $old_color = $rc{old} // "red"  ),
+      "new=s"		=> \(my $new_color = $rc{new} // "green"),
+      "bg=s"		=> \(my $rev_color = $rc{bg}  // "white"),
 
     "v|verbose:1"	=> \(my $opt_v = 0),
     ) or usage (1);
@@ -214,3 +217,28 @@ sub subdiff {
 	}
     @d;
     } # subdiff
+
+sub read_rc {
+    my %rc;
+    foreach my $rcf (
+	    "$ENV{HOME}/ccdiff.rc",
+	    "$ENV{HOME}/.ccdiffrc",
+	    "$ENV{HOME}/.config/ccdiff",
+	    ) {
+	-s $rcf or next;
+	(stat $rcf)[2] & 022 and next;
+	open my $fh, "<", $rcf or next;
+	while (<$fh>) {
+	    my ($k, $v) = (m/^\s*([-\w]+)\s*[:=]\s*(.*\S)/) or next;
+	    $rc{ lc $k
+	        =~ s{[-_]colou?r$}{}ir
+	        =~ s{background}{bg}ir
+	        =~ s{^(?:unicode|utf-?8?)$}{utf8}ir
+	      } = $v
+		=~ s{^(?:no|false)$}{0}ir
+		=~ s{^(?:yes|true)$}{1}ir;
+	    }
+	}
+    #use DP;DDumper \%rc;
+    %rc;
+    } # read_rc

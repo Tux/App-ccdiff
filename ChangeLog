@@ -1,3 +1,6 @@
+0.20	- 2018-08-16
+    * Support configuration
+
 0.10	- 2018-08-15
     * Allow bold variants for colors
     * Start of -B implementation
