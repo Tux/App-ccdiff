@@ -3,6 +3,7 @@
     * Support configuration
     * Add -I/--index
     * Add --verbose meaning
+    * Add --list-colors
 
 0.10	- 2018-08-15
     * Allow bold variants for colors

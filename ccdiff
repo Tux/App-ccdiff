@@ -25,6 +25,7 @@ sub usage {
     say "   -i    --ignore-case           Ignore case changes";
     say "  Color options:";
     say "         --no-color     Do not use colors";
+    say "         --list-colors  List available colors and exit";
     say "         --old=red      Color to indicate removed content";
     say "         --new=green    Color to indicate added   content";
     say "         --bg=white     Background color for colored indicators";
@@ -68,6 +69,7 @@ GetOptions (
       "old=s"		=> \(my $old_color = $rc{old} // "red"  ),
       "new=s"		=> \(my $new_color = $rc{new} // "green"),
       "bg=s"		=> \(my $rev_color = $rc{bg}  // "white"),
+      "list-colors!"	=> \ my $list_colors,
 
     "v|verbose:1"	=> \(my $opt_v = 0),
     ) or usage (1);
@@ -88,6 +90,10 @@ my $clr_grn = $clr{$new_color};
 my $clr_rev = $clr{$rev_color};
 my $clr_dgb = $clr{$rc{verbose} || "cyan"};
 my $reset   = RESET;
+if ($list_colors) {
+    say $clr{$_}, $_, $reset for keys %clr;
+    exit;
+    }
 
 my $clr_old = $opt_r ? $clr_rev . $clr{"on_$old_color" =~ s/bold //ir}
                      : $clr_red . $clr{"on_$rev_color" =~ s/bold //ir};
@@ -352,6 +358,11 @@ I did consider using U+034e (COMBINING UPWARDS ARROW BELOW), but as most
 terminals are probably unable to show it, I did not pursue the idea.
 
 =item --reverse -r
+
+
+=item --list-colors
+
+List available colors and exit.
 
 =item --old=color
 
