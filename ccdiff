@@ -326,11 +326,11 @@ a unified diff (-u1) would be
  + Sat Dec 18 07:08:33 1998,I.O.D.U.,,756194433,1442539
    Mon Feb 23 10:37:02 2004,R.X.K.S.,van,1077529022,1654127
 
-=item --verbose -v
+=item --verbose[=1] -v[1]
 
 Show an additional line for each old or new section in a change chunk (not for
-added or deleted lines) that shows the hexdump of each character. If C<--utf-8>
-is in effect, it will show the Unicode character name(s).
+added or deleted lines) that shows the hexadecimal value of each character. If
+C<--utf-8> is in effect, it will show the Unicode character name(s).
 
 This is a debugging option, so invisible characters can still be "seen".
 
@@ -359,6 +359,10 @@ terminals are probably unable to show it, I did not pursue the idea.
 
 =item --reverse -r
 
+Reverse the foreground and background for the colored indicators.
+
+If the foreground color has C<bold>, it will be stripped from the new background
+color.
 
 =item --list-colors
 
@@ -366,25 +370,49 @@ List available colors and exit.
 
 =item --old=color
 
+Define the foreground color for deleted text.
+
 =item --new=color
+
+Define the foreground color for added text.
 
 =item --bg=color
 
+Define the background color for changed text.
+
 =item --index --idx -I
+
+Prefix position indicators with an index.
+
+If a positive number is passed (C<--index=4> or C<-I 4>), display just the
+chunk with that index. This is useful in combination with C<--verbose>.
 
 =item --ignore-case -i
 
+Ignore case on comparison.
+
 =item --ignore-all-space -w 
 
-=item --ignore-ws|ignore-space-change -b 
+Ignore all white-space changes. This will set all options C<-b>, C<-Z>, C<-E>,
+and C<-B>.
 
 =item --ignore-trailing-space -Z 
 
+Ignore changes in trailing white-space (TAB's and spaces).
+
+=item --ignore-ws|ignore-space-change -b 
+
+Ignore changes in horizontal white-space (TAB's and spaces). This does not
+include white-space changes that splits non-white-space or removes white-space
+between two non-white-space elements.
+
 =item --ignore-tab-expansion -E 
+
+NYI
 
 =item --ignore-blank-lines -B 
 
-=item --verbose[=1] -v [1]
+B<Just Partly Implemented> (WIP)
 
 =back
 
@@ -405,9 +433,9 @@ Option files are only read and evaluated if it is not empty and not writeable
 by others than the owner.
 
 The syntax of the file is one option per line. where leading and trailing
-whitespace is ignored. If that line then starts with one of the options
-listed below, followed by optional whitespace followed by either an C<=> or
-a C<:>, followed by optional whitespace and the values, the value is assigned
+white-space is ignored. If that line then starts with one of the options
+listed below, followed by optional white-space followed by either an C<=> or
+a C<:>, followed by optional white-space and the values, the value is assigned
 to the option. The values C<no> and C<false> (case insensitive) are aliases
 for C<0>. The values C<yes> and C<true> are aliases to C<-1> (C<-1> being a
 true value).
