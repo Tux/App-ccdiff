@@ -9,6 +9,7 @@ our $CMD     = $0 =~ s{.*/}{}r;
 sub usage {
     my $err = shift and select STDERR;
     say "usage: $CMD [options] file1 [file2]";
+    say "       $CMD --man | --info";
     say "	file1 or file2 can be - (but not both)";
     say "   -V    --version      Show version and exit";
     say "  Diff options:";
@@ -39,6 +40,8 @@ my $opt_r = $rc{reverse} // 0;
 GetOptions (
     "help|?"		=> sub { usage (0); },
     "V|version"		=> sub { say "$CMD [$VERSION]"; exit 0; },
+      "man"		=> sub { exec "pod2man $0 | nroff -man"; },
+      "info"		=> sub { exec "pod2text $0"; },
 
     "U|utf-8!"		=> \(my $opt_U = $rc{utf8} // 0),
 
@@ -242,3 +245,137 @@ sub read_rc {
     #use DP;DDumper \%rc;
     %rc;
     } # read_rc
+
+__END__
+
+=head1 NAME
+
+ccdiff - Colored character diff
+
+=head1 SYNOPSIS
+
+ ccdiff [options] file1|- file2|-
+
+ ccdiff --help
+ ccdiff --man
+ ccdiff --info
+
+=head1 DESCRIPTION
+
+=head1 OPTIONS
+
+=head2 Command line options
+
+=head2 Configuration files
+
+In order to be able to overrule the defaults set in C<ccdiff>, one can set
+options specific for this login. The following option files are looked for
+in this order:
+
+ - $HOME/ccdiff.rc
+ - $HOME/.ccdiffrc
+ - $HOME/.config/ccdiff
+
+and evaluated in that order. Any options specified in a file later in that
+chain will overwrite previously detected options.
+
+Option files are only read and evaluated if it is not empty and not writeable
+by others than the owner.
+
+The syntax of the file is one option per line. where leading and trailing
+whitespace is ignored. If that line then starts with one of the options
+listed below, followed by optional whitespace followed by either an C<=> or
+a C<:>, followed by optional whitespace and the values, the value is assigned
+to the option. The values C<no> and C<false> (case insensitive) are aliases
+for C<0>. The values C<yes> and C<true> are aliases to C<1>.
+
+=over 2
+
+=item color (-c)
+
+ color   : true
+
+defines if colors should be used. The default is to use colors. The C<-c>
+command line option will toggle the option when set from a configuration
+file.
+
+=item reverse (-r)
+
+ reverse : false
+
+defines if changes are displayed as foreground-color over background-color
+or background-color over foreground-color. The default is C<false>, so it will
+color the changes withe the appropriate color (C<new> or C<old>) over the
+default background color.
+
+=item new (--new)
+
+ new     : green
+
+defines the color to be used for added text. The default is C<green>.
+
+any color accepted by L<Term::ANSIColor> is allowed. Any other color will
+result in a warning. This option can include C<bold> either as prefix or
+as suffix.
+
+This option may also be specified as
+
+ new-color
+ new_color
+ new-colour
+ new_colour
+
+=item old (--old)
+
+ old     : red
+
+defines the color to be used for delete text. The default is C<red>.
+
+any color accepted by L<Term::ANSIColor> is allowed. Any other color will
+result in a warning. This option can include C<bold> either as prefix or
+as suffix.
+
+This option may also be specified as
+
+ old-color
+ old_color
+ old-colour
+ old_colour
+
+=item bg (--bg)
+
+ bg      : white
+
+defines the color to be used as background for changed text. The default is
+C<white>.
+
+any color accepted by L<Term::ANSIColor> is allowed. Any other color will
+result in a warning. The C<bold> attribute is not allowed.
+
+This option may also be specified as
+
+ bg-color
+ bg_color
+ bg-colour
+ bg_colour
+ background
+ background-color
+ background_color
+ background-colour
+ background_colour
+
+=item utf8 (-U)
+
+ utf8    : yes
+
+defines whether all I/O is to be interpreted as UTF-8. The default is C<no>.
+
+This option may also be specified as
+
+ unicode
+ utf
+ utf-8
+
+=back
+
+=cut
