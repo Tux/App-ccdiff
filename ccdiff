@@ -3,7 +3,7 @@
 use 5.12.1;
 use warnings;
 
-our $VERSION = "0.20 - 20180815";
+our $VERSION = "0.21 - 20180817";
 our $CMD     = $0 =~ s{.*/}{}r;
 
 sub usage {
@@ -88,7 +88,7 @@ my %clr = map { $_ => color (s{^(.*)[ _]bold$}{bold $1}ir =~
 my $clr_red = $clr{$old_color};
 my $clr_grn = $clr{$new_color};
 my $clr_rev = $clr{$rev_color};
-my $clr_dgb = $clr{$rc{verbose} || "cyan"};
+my $clr_dbg = $clr{$rc{verbose} || "cyan"};
 my $reset   = RESET;
 if ($list_colors) {
     say $clr{$_}, $_, $reset for keys %clr;
@@ -169,7 +169,7 @@ while ($diff->Next) {
     if ($opt_I) {
 	$idx++;
 	$opt_I > 0 && $idx != $opt_I and next;
-	printf "%s[%03d]%s ", ${clr_dgb}, $idx, $reset;
+	printf "%s[%03d]%s ", ${clr_dbg}, $idx, $reset;
 	}
 
     if (!@{$d[1]}) {
@@ -200,6 +200,7 @@ while ($diff->Next) {
 sub subdiff {
     my $d = Algorithm::Diff->new (map { [ map { split m// } @$_ ] } @_);
     my ($d1, $d2, $x1, $x2, @h1, @h2) = ("", "", "", "");
+    my ($cml, $cmr) = $opt_v < 2 ? ("", "") : map { $clr_dbg.$_.$reset } "\x{21b1}", "\x{21b0}";
     while ($d->Next) {
 	my @c = map {[ $d->Items ($_) ]} 1, 2;
 	if ($d->Same) {
@@ -210,16 +211,16 @@ sub subdiff {
 	    next;
 	    }
 	if (@{$c[0]}) {
-	    $d1 .= $clr_old if $opt_c;
+	    $d1 .= $cml.$clr_old if $opt_c;
 	    $d1 .= $_ for @{$c[0]};
-	    $d1 .= $reset		if $opt_c;
+	    $d1 .= $reset.$cmr   if $opt_c;
 	    $x1 .= $_ for map { s/\S/$chr_old/gr } @{$c[0]};
 	    $opt_v and push @h1, map { $opt_U ? charnames::viacode (ord) : unpack "H*"; } @{$c[0]};
 	    }
 	if (@{$c[1]}) {
-	    $d2 .= $clr_new if $opt_c;
+	    $d2 .= $cml.$clr_new if $opt_c;
 	    $d2 .= $_ for @{$c[1]};
-	    $d2 .= $reset		if $opt_c;
+	    $d2 .= $reset.$cmr   if $opt_c;
 	    $x2 .= $_ for map { s/\S/$chr_new/gr } @{$c[1]};
 	    $opt_v and push @h2, map { $opt_U ? charnames::viacode (ord) : unpack "H*"; } @{$c[1]};
 	    }
@@ -232,8 +233,8 @@ sub subdiff {
 	    }
 	}
     if ($opt_v) {
-	@h1 and push @{$d[0]}, sprintf " -- ${clr_dgb}verbose$reset : %s\n", join ", " => map { $clr_old.$_.$reset } @h1;
-	@h2 and push @{$d[1]}, sprintf " -- ${clr_dgb}verbose$reset : %s\n", join ", " => map { $clr_new.$_.$reset } @h2;
+	@h1 and push @{$d[0]}, sprintf " -- ${clr_dbg}verbose$reset : %s\n", join ", " => map { $clr_old.$_.$reset } @h1;
+	@h2 and push @{$d[1]}, sprintf " -- ${clr_dbg}verbose$reset : %s\n", join ", " => map { $clr_new.$_.$reset } @h2;
 	}
     @d;
     } # subdiff
@@ -334,8 +335,9 @@ C<--utf-8> is in effect, it will show the Unicode character name(s).
 
 This is a debugging option, so invisible characters can still be "seen".
 
-C<--verbose> accepts an optional verbosity-level, but no specific behavior for
-these have not yet been defined.
+C<--verbose> accepts an optional verbosity-level. On level 2 and up, all
+hoizontal changes get left-and-right markers inserted to enable seeing the
+location of the ZERO WIDTH or invisible characters.
 
 =item --color -c
 

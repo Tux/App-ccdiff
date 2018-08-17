@@ -1,3 +1,6 @@
+0.21	- 2018-08-17
+    * Add characterchange-marker on verbose level 2 and up
+
 0.20	- 2018-08-16
     * Start inline documentation
     * Support configuration
