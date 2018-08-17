@@ -23,3 +23,7 @@
 
   ccdiff --list-colors
   dis_colors
+
+5. Availability
+
+  cpan App::ccdiff

@@ -572,4 +572,22 @@ the diff chunk with that index.
 
 =back
 
+=head1 SEE ALSO
+
+L<Algorithm::Diff>, L<Text::Diff>
+
+=head1 AUTHOR
+
+H.Merijn Brand
+
+=head1 COPYRIGHT AND LICENSE
+
+ Copyright (C) 2018-2018 H.Merijn Brand.  All rights reserved.
+
+This library is free software;  you can redistribute and/or modify it under
+the same terms as Perl itself.
+
+=for elvis
+:ex:se gw=75|color guide #ff0000:
+
 =cut

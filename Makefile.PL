@@ -38,7 +38,7 @@ sub postamble {
         'spellcheck:',
         '	pod-spell-check --aspell --ispell ccdiff',
         '',
-        'tgzdist: spellcheck $(DISTVNAME).tar.gz distcheck',
+        'tgzdist: spellcheck distmeta $(DISTVNAME).tar.gz distcheck',
         '	-@mv -f $(DISTVNAME).tar.gz $(DISTVNAME).tgz',
         '	-@cpants_lint.pl $(DISTVNAME).tgz',
         '	-@rm -f Debian_CPANTS.txt',
