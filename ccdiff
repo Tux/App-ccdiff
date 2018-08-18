@@ -3,7 +3,7 @@
 use 5.12.1;
 use warnings;
 
-our $VERSION = "0.21 - 20180817";
+our $VERSION = "0.21 - 20180818";
 our $CMD     = $0 =~ s{.*/}{}r;
 
 sub usage {
@@ -23,14 +23,14 @@ sub usage {
     say "   -Z    --ignore-trailing-space Ignore whitespace at line ending";
     say "   -B    --ignore-blank-lines    Ignore changes where lines are all blank";
     say "   -i    --ignore-case           Ignore case changes";
-    say "  Color options:";
-    say "         --no-color     Do not use colors";
+    say "  Other options:";
+    say "   -m    --markers      Use markers to indicate change positions";
+    say "   -a    --ascii        Use ASCII instead of Unicode indicators";
     say "         --list-colors  List available colors and exit";
     say "         --old=red      Color to indicate removed content";
     say "         --new=green    Color to indicate added   content";
     say "         --bg=white     Background color for colored indicators";
     say "   -p    --pink         Shortcut for --old=magenta";
-    say "   -f    --fancy        Use Unicode indicators instead of ^";
     say "   -r    --reverse      Reverse the colors of the indicators";
     exit $err;
     } # usage
@@ -41,7 +41,9 @@ use charnames ();
 use Algorithm::Diff;
 use Term::ANSIColor qw(:constants color);
 use Getopt::Long qw(:config bundling);
+my $opt_a = $rc{ascii}   // 0;
 my $opt_r = $rc{reverse} // 0;
+my $opt_m = $rc{markers} // 0;
 GetOptions (
     "help|?"		=> sub { usage (0); },
     "V|version"		=> sub { say "$CMD [$VERSION]"; exit 0; },
@@ -50,14 +52,13 @@ GetOptions (
 
     "U|utf-8!"		=> \(my $opt_U = $rc{utf8} // 0),
 
-#   "C|context:3"	=> \ my $opt_C,	# implement context-diff?
+#   "c|context:3"	=> \ my $opt_c,	# implement context-diff?
     "u|unified:3"	=> \ my $opt_u,
     "I|idx|index:-1"	=> \(my $opt_I = $rc{index} // 0),
 
-    "c|color!"		=> \(my $opt_c = $rc{color} // 1),
-    "p|pink!"		=> \ my $opt_p,
+    "a|ascii"		=> sub { $opt_a ^= 1 },
+    "m|markers"		=> sub { $opt_m ^= 1 },
     "r|reverse"		=> sub { $opt_r ^= 1 },
-    "f|fancy!"		=> \ my $opt_f,
 
     "i|ignore-case!"			=> \ my $opt_i,
     "w|ignore-all-space!"		=> \ my $opt_w,
@@ -66,6 +67,7 @@ GetOptions (
     "E|ignore-tab-expansion!"		=> \ my $opt_E, # NYI
     "B|ignore-blank-lines!"		=> \ my $opt_B, # NYI
 
+    "p|pink!"		=> \ my $opt_p,
       "old=s"		=> \(my $old_color = $rc{old} // "red"  ),
       "new=s"		=> \(my $new_color = $rc{new} // "green"),
       "bg=s"		=> \(my $rev_color = $rc{bg}  // "white"),
@@ -100,8 +102,10 @@ my $clr_old = $opt_r ? $clr_rev . $clr{"on_$old_color" =~ s/bold //ir}
 my $clr_new = $opt_r ? $clr_rev . $clr{"on_$new_color" =~ s/bold //ir}
                      : $clr_grn . $clr{"on_$rev_color" =~ s/bold //ir};
 # Indicators
-my $chr_old = $opt_f ? $clr_old . "\x{25bc}$reset" : "^";
-my $chr_new = $opt_f ? $clr_new . "\x{25b2}$reset" : "^";
+my $chr_old = $clr_old . ($opt_a ? "^" : "\x{25bc}") . $reset;
+my $chr_new = $clr_new . ($opt_a ? "^" : "\x{25b2}") . $reset;
+my $chr_cml = $clr_dbg . ($opt_a ? ">" : "\x{21b1}") . $reset;
+my $chr_cmr = $clr_dbg . ($opt_a ? "<" : "\x{21b0}") . $reset;
 my $chr_eql = " ";
 my $chr_lft = defined $opt_u ? "-" : "<";
 my $chr_rgt = defined $opt_u ? "+" : ">";
@@ -174,15 +178,11 @@ while ($diff->Next) {
 
     if (!@{$d[1]}) {
 	printf "%d,%dd%d\n", $diff->Get (qw( Min1 Max1 Max2 ));
-	if ($opt_c) {
-	    $_ = $clr_old . (s/$/$reset/r) for @{$d[0]}
-	    }
+	$_ = $clr_old . (s/$/$reset/r) for @{$d[0]}
 	}
     elsif (!@{$d[0]}) {
 	printf "%da%d,%d\n", $diff->Get (qw( Max1 Min2 Max2 ));
-	if ($opt_c) {
-	    $_ = $clr_new . (s/$/$reset/r) for @{$d[1]}
-	    }
+	$_ = $clr_new . (s/$/$reset/r) for @{$d[1]}
 	}
     else {
 	$sep = "---\n" unless defined $opt_u;
@@ -200,7 +200,9 @@ while ($diff->Next) {
 sub subdiff {
     my $d = Algorithm::Diff->new (map { [ map { split m// } @$_ ] } @_);
     my ($d1, $d2, $x1, $x2, @h1, @h2) = ("", "", "", "");
-    my ($cml, $cmr) = $opt_v < 2 ? ("", "") : map { $clr_dbg.$_.$reset } "\x{21b1}", "\x{21b0}";
+    my ($cml, $cmr) = $opt_v < 2 ? ("", "") : ($chr_cml, $chr_cmr);
+    my ($cmd, $cma) = ($chr_old, $chr_new);
+    $opt_v > 1 and $_ = " $_ " for $cmd, $cma;
     while ($d->Next) {
 	my @c = map {[ $d->Items ($_) ]} 1, 2;
 	if ($d->Same) {
@@ -211,25 +213,25 @@ sub subdiff {
 	    next;
 	    }
 	if (@{$c[0]}) {
-	    $d1 .= $cml.$clr_old if $opt_c;
+	    $d1 .= $cml.$clr_old;
 	    $d1 .= $_ for @{$c[0]};
-	    $d1 .= $reset.$cmr   if $opt_c;
-	    $x1 .= $_ for map { s/\S/$chr_old/gr } @{$c[0]};
+	    $d1 .= $reset.$cmr;
+	    $x1 .= $_ for map { s/[^\t\r\n]/$cmd/gr } @{$c[0]};
 	    $opt_v and push @h1, map { $opt_U ? charnames::viacode (ord) : unpack "H*"; } @{$c[0]};
 	    }
 	if (@{$c[1]}) {
-	    $d2 .= $cml.$clr_new if $opt_c;
+	    $d2 .= $cml.$clr_new;
 	    $d2 .= $_ for @{$c[1]};
-	    $d2 .= $reset.$cmr   if $opt_c;
-	    $x2 .= $_ for map { s/\S/$chr_new/gr } @{$c[1]};
+	    $d2 .= $reset.$cmr;
+	    $x2 .= $_ for map { s/[^\t\r\n]/$cma/gr } @{$c[1]};
 	    $opt_v and push @h2, map { $opt_U ? charnames::viacode (ord) : unpack "H*"; } @{$c[1]};
 	    }
 	}
     my @d = map { [ split m/(?<=\n)/ => $_ ] } $d1, $d2;
-    unless ($opt_c) {
-	my @x = map { [ split m/(?<=\n)/ => $_ ] } $x1, $x2;
+    if ($opt_m) {
+	my @x = map { /\S/ ? [ split m/(?<=\n)/ => $_ ] : [] } $x1, $x2;
 	foreach my $n (0, 1) {
-	    $d[$n] = [ map { $d[$n][$_], $x[$n][$_] // "" } 0 .. (scalar @{$d[$n]} - 1) ];
+	    @{$x[$n]} and $d[$n] = [ map { $d[$n][$_], $x[$n][$_] // "" } 0 .. (scalar @{$d[$n]} - 1) ];
 	    }
 	}
     if ($opt_v) {
@@ -339,25 +341,26 @@ C<--verbose> accepts an optional verbosity-level. On level 2 and up, all
 hoizontal changes get left-and-right markers inserted to enable seeing the
 location of the ZERO WIDTH or invisible characters.
 
-=item --color -c
+=item --markers -m
 
-Use colors to show differences. As this is the default, use C<--no-color> or
-C<--fancy> to use markers instead of color indicators.
+Use markers uder each changed character in change-chunks.
 
-C<--no-color> is especially useful if the terminal does not support colors,
-or if you want to copy/paste the output to (ASCII) mail.
+C<--markers> is especially useful if the terminal does not support colors, or
+if you want to copy/paste the output to (ASCII) mail. See also C<--ascii>
+
+=item --ascii -a
+
+Use (colored) ASCII indicators instead of Unicode. The default indicators are
+Unicode characters that stand out better.
+
+For the positional indicators, I did consider using U+034e (COMBINING UPWARDS
+ARROW BELOW), but as most terminals are probably unable to show it due to line
+height changes, I did not pursue the idea.
 
 =item --pink -p
 
 Change the default C<red> for deleted text to the color closest to pink that
 is supported by L<Term::ANSIColor>: C<magenta>.
-
-=item --fancy -f
-
-Use (colored) Unicode indicators under changed text instead of the default C<^>.
-
-I did consider using U+034e (COMBINING UPWARDS ARROW BELOW), but as most
-terminals are probably unable to show it, I did not pursue the idea.
 
 =item --reverse -r
 
@@ -446,13 +449,20 @@ Between parens is the corresponding command-line option.
 
 =over 2
 
-=item color (-c)
+=item markers (-m)
 
- color   : true
+ markers : false
 
-defines if colors should be used. The default is to use colors. The C<-c>
-command line option will toggle the option when set from a configuration
-file.
+defines if markers should be used under changed characters. The default is to
+use colors only. The C<-m> command line option will toggle the option when set
+from a configuration file.
+
+=item ascii (-a)
+
+ ascii   : false
+
+defines to use ASCII markers instead of Unicode markers. The default is to use
+Unicode markers.
 
 =item reverse (-r)
 

@@ -1,5 +1,8 @@
-0.21	- 2018-08-17
+0.21	- 2018-08-18
     * Add characterchange-marker on verbose level 2 and up
+    * Fancy is default, ascii is optional
+    * Colors are not optional, markers are
+    * Fix markers for spaces
 
 0.20	- 2018-08-16
     * Start inline documentation
