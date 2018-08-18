@@ -202,7 +202,6 @@ sub subdiff {
     my ($d1, $d2, $x1, $x2, @h1, @h2) = ("", "", "", "");
     my ($cml, $cmr) = $opt_v < 2 ? ("", "") : ($chr_cml, $chr_cmr);
     my ($cmd, $cma) = ($chr_old, $chr_new);
-    $opt_v > 1 and $_ = " $_ " for $cmd, $cma;
     while ($d->Next) {
 	my @c = map {[ $d->Items ($_) ]} 1, 2;
 	if ($d->Same) {
@@ -229,6 +228,7 @@ sub subdiff {
 	}
     my @d = map { [ split m/(?<=\n)/ => $_ ] } $d1, $d2;
     if ($opt_m) {
+	$opt_v > 1 and s/(\S+)/ $1 /g for $x1, $x2;
 	my @x = map { /\S/ ? [ split m/(?<=\n)/ => $_ ] : [] } $x1, $x2;
 	foreach my $n (0, 1) {
 	    @{$x[$n]} and $d[$n] = [ map { $d[$n][$_], $x[$n][$_] // "" } 0 .. (scalar @{$d[$n]} - 1) ];
