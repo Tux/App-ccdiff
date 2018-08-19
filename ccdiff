@@ -470,7 +470,7 @@ Unicode markers.
 
 defines if changes are displayed as foreground-color over background-color
 or background-color over foreground-color. The default is C<false>, so it will
-color the changes withe the appropriate color (C<new> or C<old>) over the
+color the changes with the appropriate color (C<new> or C<old>) over the
 default background color.
 
 =item new (--new)
