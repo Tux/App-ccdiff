@@ -338,12 +338,12 @@ C<--utf-8> is in effect, it will show the Unicode character name(s).
 This is a debugging option, so invisible characters can still be "seen".
 
 C<--verbose> accepts an optional verbosity-level. On level 2 and up, all
-hoizontal changes get left-and-right markers inserted to enable seeing the
+horizontal changes get left-and-right markers inserted to enable seeing the
 location of the ZERO WIDTH or invisible characters.
 
 =item --markers -m
 
-Use markers uder each changed character in change-chunks.
+Use markers under each changed character in change-chunks.
 
 C<--markers> is especially useful if the terminal does not support colors, or
 if you want to copy/paste the output to (ASCII) mail. See also C<--ascii>
@@ -434,7 +434,7 @@ in this order:
 and evaluated in that order. Any options specified in a file later in that
 chain will overwrite previously set options.
 
-Option files are only read and evaluated if it is not empty and not writeable
+Option files are only read and evaluated if it is not empty and not writable
 by others than the owner.
 
 The syntax of the file is one option per line. where leading and trailing
