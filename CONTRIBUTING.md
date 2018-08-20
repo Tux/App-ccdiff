@@ -1,7 +1,7 @@
 # General
 
 I am always open to improvements and suggestions.
-Use [issues](https://github.com/Tux/App-tkiv/issues)
+Use [issues](https://github.com/Tux/App-ccdiff/issues)
 
 # Style
 
