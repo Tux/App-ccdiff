@@ -595,6 +595,11 @@ if file~ exists.
 
 =back
 
+=head1 CAVEATS
+
+Due to the implementation, where both sides of the comparison are completely
+kept in memory, this tool might not be able to deal with (very) large datasets.
+
 =head1 SEE ALSO
 
 L<Algorithm::Diff>, L<Text::Diff>
