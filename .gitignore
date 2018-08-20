@@ -22,3 +22,5 @@ pod2htm*
 nytprof*
 tmp/*
 sandbox/cover_db*
+Talk/*.mp4
+Talk/*.jpg
