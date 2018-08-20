@@ -55,6 +55,7 @@ GetOptions (
 #   "c|context:3"	=> \ my $opt_c,	# implement context-diff?
     "u|unified:3"	=> \ my $opt_u,
     "I|idx|index:-1"	=> \(my $opt_I = $rc{index} // 0),
+      "emacs!"		=> \(my $emacs = $rc{emacs} // 0),
 
     "a|ascii"		=> sub { $opt_a ^= 1 },
     "m|markers"		=> sub { $opt_m ^= 1 },
@@ -113,7 +114,8 @@ my $chr_rgt = defined $opt_u ? "+" : ">";
 binmode STDOUT, ":encoding(utf-8)";
 
 my $f1 = shift or usage (1);
-my $f2 = shift // "-";
+my $f2 = $ARGV[0] // "-";
+$emacs and @ARGV == 0 && -f $f1 && -f "$f1~" and ($f1, $f2) = ("$f1~", $f1);
 
 $f1 eq "-" && $f2 eq "-" and usage (1);
 
@@ -579,6 +581,17 @@ with this option, it would be
 
 When this option contains a positive integer, C<ccdiff> will only show diff
 the diff chunk with that index.
+
+=item emacs
+
+ emacs   : no
+
+If this option is yes/true, calling C<ccdiff> with just one single argument,
+and that argument being an existing file, the arguments will act as
+
+ $ ccdiff file~ file
+
+if file~ exists.
 
 =back
 
