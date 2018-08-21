@@ -1,11 +1,17 @@
-0.22	- 2018-08-20
+0.22	- 2018-08-21
     * Fix issue tracker (issue#6, jwilk)
+    * Require perl-5.14.0 because of syntax used
+    * More docs about markers
+    * Add doc warning about large datasets
+    * Support emacs users with new config setting
+    * Fix license issues (gregoa, issue#2)
 
 0.21	- 2018-08-19
     * Add characterchange-marker on verbose level 2 and up
     * Fancy is default, ascii is optional
     * Colors are not optional, markers are
     * Fix markers for spaces
+    * Fix doc typo (issue#4)
 
 0.20	- 2018-08-16
     * Start inline documentation
