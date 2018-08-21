@@ -1,9 +1,9 @@
 #!/usr/bin/env perl
 
-use 5.12.1;
+use 5.14.0;
 use warnings;
 
-our $VERSION = "0.22 - 20180820";
+our $VERSION = "0.22 - 20180821";
 our $CMD     = $0 =~ s{.*/}{}r;
 
 sub usage {
