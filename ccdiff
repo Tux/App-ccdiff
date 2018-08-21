@@ -269,9 +269,11 @@ sub read_rc {
 
 __END__
 
+=encoding utf-8
+
 =head1 NAME
 
-ccdiff - Colored character diff
+ccdiff - Colored Character diff
 
 =head1 SYNOPSIS
 
@@ -343,17 +345,70 @@ C<--verbose> accepts an optional verbosity-level. On level 2 and up, all
 horizontal changes get left-and-right markers inserted to enable seeing the
 location of the ZERO WIDTH or invisible characters.
 
+An example of this:
+
+With -Uu0v0:
+
+ 1,1c1,1
+ -  A  BCDE Fg
+ +  A BcdE​Fg
+
+With -Uu0v1:
+
+ 1,1c1,1
+ -  A  BCDE Fg
+ -  -- verbose : SPACE, LATIN CAPITAL LETTER C, LATIN CAPITAL LETTER D, SPACE
+ +  A BcdE​Fg
+ +  -- verbose : LATIN SMALL LETTER C, LATIN SMALL LETTER D, ZERO WIDTH SPACE
+
+With -Uu0v2:
+
+ 1,1c1,1
+ -  A ↱ ↰B↱CD↰E↱ ↰Fg
+ -  -- verbose : SPACE, LATIN CAPITAL LETTER C, LATIN CAPITAL LETTER D, SPACE
+ +  A B↱cd↰E↱​↰Fg
+ +  -- verbose : LATIN SMALL LETTER C, LATIN SMALL LETTER D, ZERO WIDTH SPACE
+
+With -Uu0v2 --ascii:
+
+ 1,1c1,1
+ -  A > <B>CD<E> <Fg
+ -  -- verbose : SPACE, LATIN CAPITAL LETTER C, LATIN CAPITAL LETTER D, SPACE
+ +  A B>cd<E>​<Fg
+ +  -- verbose : LATIN SMALL LETTER C, LATIN SMALL LETTER D, ZERO WIDTH SPACE
+
+the word "verbose" and the character markers will be displayed using the
+C<verbose> color.
+
 =item --markers -m
 
 Use markers under each changed character in change-chunks.
 
 C<--markers> is especially useful if the terminal does not support colors, or
-if you want to copy/paste the output to (ASCII) mail. See also C<--ascii>
+if you want to copy/paste the output to (ASCII) mail. See also C<--ascii>. The
+markers will have the same color as added or deleted text.
+
+This will look like (with unified diff):
+
+ 5,5c5,5
+ - Sat Dec 18 07:08:33 1998,I.O.D.U.,,756194433,1442539
+ -                ▼       ▼
+ + Sat Dec 18 07:00:33 1993,I.O.D.U.,,756194433,1442539
+ +                ▲       ▲
 
 =item --ascii -a
 
 Use (colored) ASCII indicators instead of Unicode. The default indicators are
-Unicode characters that stand out better.
+Unicode characters that stand out better. The markers will have the same color
+as added or deleted text.
+
+For the vertical markers (C<-m>) that would look like:
+
+ 5,5c5,5
+ - Sat Dec 18 07:08:33 1998,I.O.D.U.,,756194433,1442539
+ -                ^       ^
+ + Sat Dec 18 07:00:33 1993,I.O.D.U.,,756194433,1442539
+ +                ^       ^
 
 For the positional indicators, I did consider using U+034e (COMBINING UPWARDS
 ARROW BELOW), but as most terminals are probably unable to show it due to line
@@ -391,8 +446,14 @@ Define the background color for changed text.
 
 Prefix position indicators with an index.
 
+ [001] 5,5c5,5
+ - Sat Dec 18 07:08:33 1998,I.O.D.U.,,756194433,1442539
+ + Sat Dec 18 07:00:33 1993,I.O.D.U.,,756194433,1442539
+
 If a positive number is passed (C<--index=4> or C<-I 4>), display just the
-chunk with that index. This is useful in combination with C<--verbose>.
+chunk with that index, using the C<verbose> color:
+
+This is useful in combination with C<--verbose>.
 
 =item --ignore-case -i
 
