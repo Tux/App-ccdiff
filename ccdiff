@@ -3,7 +3,7 @@
 use 5.14.0;
 use warnings;
 
-our $VERSION = "0.22 - 20180821";
+our $VERSION = "0.23 - 20180821";
 our $CMD     = $0 =~ s{.*/}{}r;
 
 sub usage {
@@ -88,6 +88,7 @@ my %clr = map { $_ => color (s{^(.*)[ _]bold$}{bold $1}ir =~
                              s{^bold[ _]}{bold }ir) }
 	  map { $_, "on_$_", "bold $_" }
     qw( red green blue black white cyan magenta yellow );
+$clr{none} = $clr{on_none} = "";
 my $clr_red = $clr{$old_color};
 my $clr_grn = $clr{$new_color};
 my $clr_rev = $clr{$rev_color};
@@ -516,7 +517,7 @@ Between parens is the corresponding command-line option.
 
  markers : false
 
-defines if markers should be used under changed characters. The default is to
+Defines if markers should be used under changed characters. The default is to
 use colors only. The C<-m> command line option will toggle the option when set
 from a configuration file.
 
@@ -524,14 +525,14 @@ from a configuration file.
 
  ascii   : false
 
-defines to use ASCII markers instead of Unicode markers. The default is to use
+Defines to use ASCII markers instead of Unicode markers. The default is to use
 Unicode markers.
 
 =item reverse (-r)
 
  reverse : false
 
-defines if changes are displayed as foreground-color over background-color
+Defines if changes are displayed as foreground-color over background-color
 or background-color over foreground-color. The default is C<false>, so it will
 color the changes with the appropriate color (C<new> or C<old>) over the
 default background color.
@@ -540,9 +541,11 @@ default background color.
 
  new     : green
 
-defines the color to be used for added text. The default is C<green>.
+Defines the color to be used for added text. The default is C<green>.
 
-any color accepted by L<Term::ANSIColor> is allowed. Any other color will
+The color C<none> is also accepted and disables this color.
+
+Any color accepted by L<Term::ANSIColor> is allowed. Any other color will
 result in a warning. This option can include C<bold> either as prefix or
 as suffix.
 
@@ -557,9 +560,11 @@ This option may also be specified as
 
  old     : red
 
-defines the color to be used for delete text. The default is C<red>.
+Defines the color to be used for delete text. The default is C<red>.
 
-any color accepted by L<Term::ANSIColor> is allowed. Any other color will
+The color C<none> is also accepted and disables this color.
+
+Any color accepted by L<Term::ANSIColor> is allowed. Any other color will
 result in a warning. This option can include C<bold> either as prefix or
 as suffix.
 
@@ -574,10 +579,12 @@ This option may also be specified as
 
  bg      : white
 
-defines the color to be used as background for changed text. The default is
+Defines the color to be used as background for changed text. The default is
 C<white>.
 
-any color accepted by L<Term::ANSIColor> is allowed. Any other color will
+The color C<none> is also accepted and disables this color.
+
+Any color accepted by L<Term::ANSIColor> is allowed. Any other color will
 result in a warning. The C<bold> attribute is not allowed.
 
 This option may also be specified as
@@ -596,10 +603,12 @@ This option may also be specified as
 
  verbose : cyan
 
-defines the color to be used as color for the verbose tag. The default is
+Defines the color to be used as color for the verbose tag. The default is
 C<cyan>. This color will only be used under C<--verbose>.
 
-any color accepted by L<Term::ANSIColor> is allowed. Any other color will
+The color C<none> is also accepted and disables this color.
+
+Any color accepted by L<Term::ANSIColor> is allowed. Any other color will
 result in a warning.
 
 This option may also be specified as
@@ -613,7 +622,7 @@ This option may also be specified as
 
  utf8    : yes
 
-defines whether all I/O is to be interpreted as UTF-8. The default is C<no>.
+Defines whether all I/O is to be interpreted as UTF-8. The default is C<no>.
 
 This option may also be specified as
 
@@ -625,7 +634,7 @@ This option may also be specified as
 
  index   : no
 
-defines if the position indication for a change chunk is prefixed with an
+Defines if the position indication for a change chunk is prefixed with an
 index number. The default is C<no>. The index is 1-based.
 
 Without this option, the position indication would be like
