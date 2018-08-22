@@ -69,9 +69,9 @@ GetOptions (
     "B|ignore-blank-lines!"		=> \ my $opt_B, # NYI
 
     "p|pink!"		=> \ my $opt_p,
-      "old=s"		=> \(my $old_color = $rc{old} // "red"  ),
-      "new=s"		=> \(my $new_color = $rc{new} // "green"),
-      "bg=s"		=> \(my $rev_color = $rc{bg}  // "white"),
+      "old=s"		=> \(my $old_color = $rc{old}),
+      "new=s"		=> \(my $new_color = $rc{new}),
+      "bg=s"		=> \(my $rev_color = $rc{bg}),
       "list-colors!"	=> \ my $list_colors,
 
     "v|verbose:1"	=> \(my $opt_v = 0),
@@ -89,6 +89,12 @@ my %clr = map { $_ => color (s{^(.*)[ _]bold$}{bold $1}ir =~
 	  map { $_, "on_$_", "bold $_" }
     qw( red green blue black white cyan magenta yellow );
 $clr{none} = $clr{on_none} = "";
+for ([ \$old_color, $rc{old} ], [ \$new_color, $rc{new} ], [ \$rev_color, $rc{bg} ]) {
+    my ($c, $def) = @$_;
+    $$c && exists $clr{$$c} and next;
+    warn "color ", $$c // "(undefined)", " is unknown, using $def instead\n";
+    $$c = $def;
+    }
 my $clr_red = $clr{$old_color};
 my $clr_grn = $clr{$new_color};
 my $clr_rev = $clr{$rev_color};
@@ -265,6 +271,9 @@ sub read_rc {
 		=~ s{^(?:yes|true)$}{-1}ir; # -1 is still true
 	    }
 	}
+    $rc{old} //= "red";
+    $rc{new} //= "green";
+    $rc{bg}  //= "white";
     %rc;
     } # read_rc
 
