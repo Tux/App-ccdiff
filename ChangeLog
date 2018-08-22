@@ -1,6 +1,7 @@
 0.23	- 2018-08-22
     * Add color "none" to disable a color
     * Try to prevent unsupported colors
+    * Also color line-change-indicators (-, +, <, and >) (issue#8)
 
 0.22	- 2018-08-21
     * Fix issue tracker (issue#6, jwilk)

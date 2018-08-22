@@ -115,8 +115,8 @@ my $chr_new = $clr_new . ($opt_a ? "^" : "\x{25b2}") . $reset;
 my $chr_cml = $clr_dbg . ($opt_a ? ">" : "\x{21b1}") . $reset;
 my $chr_cmr = $clr_dbg . ($opt_a ? "<" : "\x{21b0}") . $reset;
 my $chr_eql = " ";
-my $chr_lft = defined $opt_u ? "-" : "<";
-my $chr_rgt = defined $opt_u ? "+" : ">";
+my $chr_lft = $clr_old . (defined $opt_u ? "-" : "<") . " " . $reset;
+my $chr_rgt = $clr_new . (defined $opt_u ? "+" : ">") . " " . $reset;
 
 binmode STDOUT, ":encoding(utf-8)";
 
@@ -187,11 +187,11 @@ while ($diff->Next) {
 
     if (!@{$d[1]}) {
 	printf "%d,%dd%d\n", $diff->Get (qw( Min1 Max1 Max2 ));
-	$_ = $clr_old . (s/$/$reset/r) for @{$d[0]}
+	$_ = $clr_old . (s/$/$reset/r) for @{$d[0]};
 	}
     elsif (!@{$d[0]}) {
 	printf "%da%d,%d\n", $diff->Get (qw( Max1 Min2 Max2 ));
-	$_ = $clr_new . (s/$/$reset/r) for @{$d[1]}
+	$_ = $clr_new . (s/$/$reset/r) for @{$d[1]};
 	}
     else {
 	$sep = "---\n" unless defined $opt_u;
@@ -201,9 +201,9 @@ while ($diff->Next) {
     if ($opt_u and @s) {
 	print "  $_" for grep { defined } map { $s[$#s - $opt_u + $_] } 1..$opt_u;
 	}
-    print "$chr_lft $_" for @{$d[0]};
+    print "$chr_lft$_" for @{$d[0]};
     print $sep;
-    print "$chr_rgt $_" for @{$d[1]};
+    print "$chr_rgt$_" for @{$d[1]};
     }
 
 sub subdiff {
