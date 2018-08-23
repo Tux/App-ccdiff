@@ -5,6 +5,7 @@
     * Add threshold for horizontal diff (issue#9)
     * Remove one leading space for unified diffs
     * Add git integration to integrated docs (issue#10)
+    * Add all Term::ANSIColor colors as known
 
 0.22	- 2018-08-21
     * Fix issue tracker (issue#6, jwilk)
