@@ -469,26 +469,26 @@ This is useful in combination with C<--verbose>.
 
 Ignore case on comparison.
 
-=item --ignore-all-space -w 
+=item --ignore-all-space -w
 
 Ignore all white-space changes. This will set all options C<-b>, C<-Z>, C<-E>,
 and C<-B>.
 
-=item --ignore-trailing-space -Z 
+=item --ignore-trailing-space -Z
 
 Ignore changes in trailing white-space (TAB's and spaces).
 
-=item --ignore-ws|ignore-space-change -b 
+=item --ignore-ws|ignore-space-change -b
 
 Ignore changes in horizontal white-space (TAB's and spaces). This does not
 include white-space changes that splits non-white-space or removes white-space
 between two non-white-space elements.
 
-=item --ignore-tab-expansion -E 
+=item --ignore-tab-expansion -E
 
 NYI
 
-=item --ignore-blank-lines -B 
+=item --ignore-blank-lines -B
 
 B<Just Partly Implemented> (WIP)
 
@@ -673,6 +673,33 @@ and that argument being an existing file, the arguments will act as
 if file~ exists.
 
 =back
+
+=head1 Git integration
+
+You can use ccdiff to show diffs in git. It may work like this:
+
+ $ git config --global diff.tool ccdiff
+ $ git config --global difftool.prompt false
+ $ git config --global difftool.ccdiff.cmd 'ccdiff --utf-8 -u -r $LOCAL $REMOTE'
+ $ git difftool SHA~..SHA
+ $ cat >~/bin/git-ccdiff <<EOF
+ #!/bin/sh
+
+ commit=$1
+ shift
+ if [ "$commit" = "" ]; then
+     git difftool
+ else
+     git difftool $commit~1..$commit
+     fi
+ EOF
+ $ chmod 755 ~/bin/git-ccdiff
+ $ git ccdiff SHA
+
+From then on you can do
+
+ $ git ccdiff
+ $ git ccdiff 5c5a39f2
 
 =head1 CAVEATS
 

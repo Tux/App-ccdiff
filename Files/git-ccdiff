@@ -11,4 +11,9 @@
 
 commit=$1
 shift
-git difftool $commit~1..$commit $@
+export CCDIFF_OPTIONS="$@"
+if [ "$commit" = "" ]; then
+    git difftool
+else
+    git difftool $commit~1..$commit
+    fi
