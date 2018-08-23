@@ -104,6 +104,7 @@ my %clr = map { $_ => color (s{^(.*)[ _]bold$}{bold $1}ir =~
                              s{^bold[ _]}{bold }ir) }
 	  map {( $_, "on_$_", "bold $_" )}
     qw( red green blue black white cyan magenta yellow );
+$clr{$_} //= color ($_) for tac_colors ();
 $clr{none} = $clr{on_none} = "";
 for ([ \$old_color, $rc{old} ], [ \$new_color, $rc{new} ], [ \$rev_color, $rc{bg} ]) {
     my ($c, $def) = @$_;
@@ -117,7 +118,7 @@ my $clr_rev = $clr{$rev_color};
 my $clr_dbg = $clr{$rc{verbose}};
 my $reset   = RESET;
 if ($list_colors) {
-    say $clr{$_}, $_, $reset for keys %clr;
+    say $clr{$_}, $_, $reset for sort keys %clr;
     exit;
     }
 
@@ -294,6 +295,38 @@ sub read_rc {
 	    }
 	}
     } # read_rc
+
+# Return the known colors from Term::ANSIColor
+# Stolen striaght from the pm
+sub tac_colors {
+    my @c256;
+    foreach my $r (0 .. 5) {
+        foreach my $g (0 .. 5) {
+            push @c256, map {("RGB$r$g$_", "ON_RGB$r$g$_")} 0 .. 5;
+	    }
+	}
+    map { lc }
+      # Basic colors
+      qw(
+	CLEAR           RESET             BOLD            DARK
+	FAINT           ITALIC            UNDERLINE       UNDERSCORE
+	BLINK           REVERSE           CONCEALED
+
+	BLACK           RED               GREEN           YELLOW
+	BLUE            MAGENTA           CYAN            WHITE
+	ON_BLACK        ON_RED            ON_GREEN        ON_YELLOW
+	ON_BLUE         ON_MAGENTA        ON_CYAN         ON_WHITE
+
+	BRIGHT_BLACK    BRIGHT_RED        BRIGHT_GREEN    BRIGHT_YELLOW
+	BRIGHT_BLUE     BRIGHT_MAGENTA    BRIGHT_CYAN     BRIGHT_WHITE
+	ON_BRIGHT_BLACK ON_BRIGHT_RED     ON_BRIGHT_GREEN ON_BRIGHT_YELLOW
+	ON_BRIGHT_BLUE  ON_BRIGHT_MAGENTA ON_BRIGHT_CYAN  ON_BRIGHT_WHITE
+	),
+      # 256 colors
+      (map { ("ANSI$_", "ON_ANSI$_") } 0 .. 255),
+      (map { ("GREY$_", "ON_GREY$_") } 0 .. 23),
+      @c256;
+    } # tac_colors
 
 __END__
 
