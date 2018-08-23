@@ -3,7 +3,7 @@
 use 5.14.0;
 use warnings;
 
-our $VERSION = "0.23 - 20180822";
+our $VERSION = "0.23 - 20180823";
 our $CMD     = $0 =~ s{.*/}{}r;
 
 sub usage {
@@ -115,8 +115,9 @@ my $chr_new = $clr_new . ($opt_a ? "^" : "\x{25b2}") . $reset;
 my $chr_cml = $clr_dbg . ($opt_a ? ">" : "\x{21b1}") . $reset;
 my $chr_cmr = $clr_dbg . ($opt_a ? "<" : "\x{21b0}") . $reset;
 my $chr_eql = " ";
-my $chr_lft = $clr_old . (defined $opt_u ? "-" : "<") . " " . $reset;
-my $chr_rgt = $clr_new . (defined $opt_u ? "+" : ">") . " " . $reset;
+my $chr_lft = $clr_old . (defined $opt_u ? "-" : "< ") . $reset;
+my $chr_rgt = $clr_new . (defined $opt_u ? "+" : "> ") . $reset;
+my $chr_ctx =             defined $opt_u ? " " : "  ";
 
 binmode STDOUT, ":encoding(utf-8)";
 
@@ -167,7 +168,7 @@ while ($diff->Next) {
     if ($diff->Same) {
 	if (defined $opt_u) {
 	    @s = $diff->Items (1);
-	    $N > 1 and print "  $_" for grep { defined } @s[0..($opt_u - 1)];
+	    $N > 1 and print "$chr_ctx$_" for grep { defined } @s[0..($opt_u - 1)];
 	    unshift @s, undef while @s < $opt_u;
 	    }
 	next;
@@ -199,7 +200,7 @@ while ($diff->Next) {
 	@d = subdiff (@d);
 	}
     if ($opt_u and @s) {
-	print "  $_" for grep { defined } map { $s[$#s - $opt_u + $_] } 1..$opt_u;
+	print "$chr_ctx$_" for grep { defined } map { $s[$#s - $opt_u + $_] } 1..$opt_u;
 	}
     print "$chr_lft$_" for @{$d[0]};
     print $sep;
@@ -338,10 +339,10 @@ The default is to use traditional diff:
 a unified diff (-u1) would be
 
  5,5c5,5
-   Tue Sep  6 05:43:59 2005,B.O.Q.S.,,1125978239,1943341
- - Sat Dec 18 07:00:33 1993,I.O.D.U.,,756194433,1442539
- + Sat Dec 18 07:08:33 1998,I.O.D.U.,,756194433,1442539
-   Mon Feb 23 10:37:02 2004,R.X.K.S.,van,1077529022,1654127
+  Tue Sep  6 05:43:59 2005,B.O.Q.S.,,1125978239,1943341
+ -Sat Dec 18 07:00:33 1993,I.O.D.U.,,756194433,1442539
+ +Sat Dec 18 07:08:33 1998,I.O.D.U.,,756194433,1442539
+  Mon Feb 23 10:37:02 2004,R.X.K.S.,van,1077529022,1654127
 
 =item --verbose[=1] -v[1]
 
@@ -360,32 +361,32 @@ An example of this:
 With -Uu0v0:
 
  1,1c1,1
- -  A  BCDE Fg
- +  A BcdE​Fg
+ - A  BCDE Fg
+ + A BcdE​Fg
 
 With -Uu0v1:
 
  1,1c1,1
- -  A  BCDE Fg
- -  -- verbose : SPACE, LATIN CAPITAL LETTER C, LATIN CAPITAL LETTER D, SPACE
- +  A BcdE​Fg
- +  -- verbose : LATIN SMALL LETTER C, LATIN SMALL LETTER D, ZERO WIDTH SPACE
+ - A  BCDE Fg
+ - -- verbose : SPACE, LATIN CAPITAL LETTER C, LATIN CAPITAL LETTER D, SPACE
+ + A BcdE​Fg
+ + -- verbose : LATIN SMALL LETTER C, LATIN SMALL LETTER D, ZERO WIDTH SPACE
 
 With -Uu0v2:
 
  1,1c1,1
- -  A ↱ ↰B↱CD↰E↱ ↰Fg
- -  -- verbose : SPACE, LATIN CAPITAL LETTER C, LATIN CAPITAL LETTER D, SPACE
- +  A B↱cd↰E↱​↰Fg
- +  -- verbose : LATIN SMALL LETTER C, LATIN SMALL LETTER D, ZERO WIDTH SPACE
+ - A ↱ ↰B↱CD↰E↱ ↰Fg
+ - -- verbose : SPACE, LATIN CAPITAL LETTER C, LATIN CAPITAL LETTER D, SPACE
+ + A B↱cd↰E↱​↰Fg
+ + -- verbose : LATIN SMALL LETTER C, LATIN SMALL LETTER D, ZERO WIDTH SPACE
 
 With -Uu0v2 --ascii:
 
  1,1c1,1
- -  A > <B>CD<E> <Fg
- -  -- verbose : SPACE, LATIN CAPITAL LETTER C, LATIN CAPITAL LETTER D, SPACE
- +  A B>cd<E>​<Fg
- +  -- verbose : LATIN SMALL LETTER C, LATIN SMALL LETTER D, ZERO WIDTH SPACE
+ - A > <B>CD<E> <Fg
+ - -- verbose : SPACE, LATIN CAPITAL LETTER C, LATIN CAPITAL LETTER D, SPACE
+ + A B>cd<E>​<Fg
+ + -- verbose : LATIN SMALL LETTER C, LATIN SMALL LETTER D, ZERO WIDTH SPACE
 
 the word "verbose" and the character markers will be displayed using the
 C<verbose> color.
@@ -401,10 +402,10 @@ markers will have the same color as added or deleted text.
 This will look like (with unified diff):
 
  5,5c5,5
- - Sat Dec 18 07:08:33 1998,I.O.D.U.,,756194433,1442539
- -                ▼       ▼
- + Sat Dec 18 07:00:33 1993,I.O.D.U.,,756194433,1442539
- +                ▲       ▲
+ -Sat Dec 18 07:08:33 1998,I.O.D.U.,,756194433,1442539
+ -               ▼       ▼
+ +Sat Dec 18 07:00:33 1993,I.O.D.U.,,756194433,1442539
+ +               ▲       ▲
 
 =item --ascii -a
 
@@ -415,10 +416,10 @@ as added or deleted text.
 For the vertical markers (C<-m>) that would look like:
 
  5,5c5,5
- - Sat Dec 18 07:08:33 1998,I.O.D.U.,,756194433,1442539
- -                ^       ^
- + Sat Dec 18 07:00:33 1993,I.O.D.U.,,756194433,1442539
- +                ^       ^
+ -Sat Dec 18 07:08:33 1998,I.O.D.U.,,756194433,1442539
+ -               ^       ^
+ +Sat Dec 18 07:00:33 1993,I.O.D.U.,,756194433,1442539
+ +               ^       ^
 
 For the positional indicators, I did consider using U+034e (COMBINING UPWARDS
 ARROW BELOW), but as most terminals are probably unable to show it due to line
@@ -457,8 +458,8 @@ Define the background color for changed text.
 Prefix position indicators with an index.
 
  [001] 5,5c5,5
- - Sat Dec 18 07:08:33 1998,I.O.D.U.,,756194433,1442539
- + Sat Dec 18 07:00:33 1993,I.O.D.U.,,756194433,1442539
+ -Sat Dec 18 07:08:33 1998,I.O.D.U.,,756194433,1442539
+ +Sat Dec 18 07:00:33 1993,I.O.D.U.,,756194433,1442539
 
 If a positive number is passed (C<--index=4> or C<-I 4>), display just the
 chunk with that index, using the C<verbose> color:
