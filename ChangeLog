@@ -2,6 +2,7 @@
     * Add color "none" to disable a color
     * Try to prevent unsupported colors
     * Also color line-change-indicators (-, +, <, and >) (issue#8)
+    * Add threshold for horizontal diff
     * Remove one leading space for unified diffs
     * Add git integration to integrated docs
 

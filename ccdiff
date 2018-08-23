@@ -24,6 +24,7 @@ sub usage {
     say "   -B    --ignore-blank-lines    Ignore changes where lines are all blank";
     say "   -i    --ignore-case           Ignore case changes";
     say "  Other options:";
+    say "   -t n  --threshold=2  Horizontal diff threshold";
     say "   -m    --markers      Use markers to indicate change positions";
     say "   -a    --ascii        Use ASCII instead of Unicode indicators";
     say "         --list-colors  List available colors and exit";
@@ -45,6 +46,7 @@ my %rc = (
     new		=> "green",
     old		=> "red",
     reverse	=> 0,
+    threshold	=> 2,
     utf8	=> 0,
     verbose	=> "cyan",
     );
@@ -68,6 +70,7 @@ GetOptions (
 #   "c|context:3"	=> \ my $opt_c,	# implement context-diff?
     "u|unified:3"	=> \ my $opt_u,
     "I|idx|index:-1"	=> \(my $opt_I = $rc{index}),
+    "t|threshold=i"	=> \(my $opt_t = $rc{threshold}),
       "emacs!"		=> \(my $emacs = $rc{emacs}),
 
     "a|ascii"		=> sub { $opt_a ^= 1 },
@@ -210,7 +213,13 @@ while ($diff->Next) {
     else {
 	$sep = "---\n" unless defined $opt_u;
 	printf "%d,%dc%d,%d\n", $diff->Get (qw( Min1 Max1 Min2 Max2 ));
-	@d = subdiff (@d);
+	if ($opt_t > 0 and abs (@{$d[0]} - @{$d[1]}) > $opt_t) {
+	    $_ = $clr_old . (s/$/$reset/r) for @{$d[0]};
+	    $_ = $clr_new . (s/$/$reset/r) for @{$d[1]};
+	    }
+	else {
+	    @d = subdiff (@d);
+	    }
 	}
     if ($opt_u and @s) {
 	print "$chr_ctx$_" for grep { defined } map { $s[$#s - $opt_u + $_] } 1..$opt_u;
@@ -474,6 +483,15 @@ chunk with that index, using the C<verbose> color:
 
 This is useful in combination with C<--verbose>.
 
+=item --threshold=2 -t 2
+
+Defines the number of lines a change block may differ before the fall-back of
+horizontal diff to vertical diff.
+
+If a chunk describes a change, and the number of lines in the original block
+has less or more lines than the new block and that difference exceeds this
+threshold, C<ccdiff> will fall-back to vertical diff.
+
 =item --ignore-case -i
 
 Ignore case on comparison.
@@ -680,6 +698,13 @@ and that argument being an existing file, the arguments will act as
  $ ccdiff file~ file
 
 if file~ exists.
+
+=item threshold (-t)
+
+ threshold : 2
+
+Defines the number of lines a change block may differ before the fall-back of
+horizontal diff to vertical diff.
 
 =back
 
