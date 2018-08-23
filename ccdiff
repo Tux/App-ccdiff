@@ -246,14 +246,28 @@ sub subdiff {
 	    }
 	if (@{$c[0]}) {
 	    $d1 .= $cml.$clr_old;
-	    $d1 .= $_ for @{$c[0]};
+        for (@{$c[0]}) {
+            if ($_ eq "\n") {
+                $d1 .= $reset . $_ . $clr_new;
+                }
+            else {
+                $d1 .= $_;
+                }
+        }
 	    $d1 .= $reset.$cmr;
 	    $x1 .= $_ for map { s/[^\t\r\n]/$cmd/gr } @{$c[0]};
 	    $opt_v and push @h1, map { $opt_U ? charnames::viacode (ord) : unpack "H*"; } @{$c[0]};
 	    }
 	if (@{$c[1]}) {
 	    $d2 .= $cml.$clr_new;
-	    $d2 .= $_ for @{$c[1]};
+        for (@{$c[1]}) {
+            if ($_ eq "\n") {
+                $d2 .= $reset . $_ . $clr_new;
+                }
+            else {
+                $d2 .= $_;
+                }
+        }
 	    $d2 .= $reset.$cmr;
 	    $x2 .= $_ for map { s/[^\t\r\n]/$cma/gr } @{$c[1]};
 	    $opt_v and push @h2, map { $opt_U ? charnames::viacode (ord) : unpack "H*"; } @{$c[1]};
