@@ -124,6 +124,8 @@ output and might cause displacement of other indicators.
 
 There is no provision (yet) for coping with double-width characters.
 
+Large datasets may consume all available memory, causing the diff to fail.
+
 ## LICENSE
 
 The Artistic License 2.0
