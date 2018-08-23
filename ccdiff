@@ -46,7 +46,7 @@ my %rc = (
     new		=> "green",
     old		=> "red",
     reverse	=> 0,
-    threshold	=> 2,
+    threshold	=> 0,
     utf8	=> 0,
     verbose	=> "cyan",
     );
@@ -214,6 +214,7 @@ while ($diff->Next) {
     else {
 	$sep = "---\n" unless defined $opt_u;
 	printf "%d,%dc%d,%d\n", $diff->Get (qw( Min1 Max1 Min2 Max2 ));
+    printf "diff=%d limit=%d\n", abs (@{$d[0]} - @{$d[1]}), $opt_t;
 	if ($opt_t > 0 and abs (@{$d[0]} - @{$d[1]}) > $opt_t) {
 	    $_ = $clr_old . (s/$/$reset/r) for @{$d[0]};
 	    $_ = $clr_new . (s/$/$reset/r) for @{$d[1]};
@@ -232,6 +233,7 @@ while ($diff->Next) {
 
 sub subdiff {
     my $d = Algorithm::Diff->new (map { [ map { split m// } @$_ ] } @_);
+    my (%changes_hist, %all_hist);
     my ($d1, $d2, $x1, $x2, @h1, @h2) = ("", "", "", "");
     my ($cml, $cmr) = $opt_v < 2 ? ("", "") : ($chr_cml, $chr_cmr);
     my ($cmd, $cma) = ($chr_old, $chr_new);
@@ -242,6 +244,7 @@ sub subdiff {
 	    $d2 .= $_ for @{$c[1]};
 	    $x1 .= $_ for map { s/\S/$chr_eql/gr } @{$c[0]};
 	    $x2 .= $_ for map { s/\S/$chr_eql/gr } @{$c[0]};
+        $all_hist{ +@{$c[1]} }++;
 	    next;
 	    }
 	if (@{$c[0]}) {
@@ -250,6 +253,8 @@ sub subdiff {
 	    $d1 .= $reset.$cmr;
 	    $x1 .= $_ for map { s/[^\t\r\n]/$cmd/gr } @{$c[0]};
 	    $opt_v and push @h1, map { $opt_U ? charnames::viacode (ord) : unpack "H*"; } @{$c[0]};
+        $all_hist{ +@{$c[0]} }++;
+        $changes_hist{ +@{$c[0]} }++;
 	    }
 	if (@{$c[1]}) {
 	    $d2 .= $cml.$clr_new;
@@ -257,8 +262,11 @@ sub subdiff {
 	    $d2 .= $reset.$cmr;
 	    $x2 .= $_ for map { s/[^\t\r\n]/$cma/gr } @{$c[1]};
 	    $opt_v and push @h2, map { $opt_U ? charnames::viacode (ord) : unpack "H*"; } @{$c[1]};
+        $all_hist{ +@{$c[1]} }++;
+        $changes_hist{ +@{$c[1]} }++;
 	    }
 	}
+    return @_ if skip_subdiff_heuristics (\%all_hist, \%changes_hist);
     my @d = map { [ split m/(?<=\n)/ ] } $d1, $d2;
     if ($opt_m) {
 	$opt_v > 1 and s/(\S+)/ $1 /g for $x1, $x2;
@@ -273,6 +281,16 @@ sub subdiff {
 	}
     @d;
     } # subdiff
+
+sub skip_subdiff_heuristics {
+    my ($all, $change) = @_;
+    my ($sum_all, $sum_change) = (0, 0);
+    $sum_all++ foreach (values %$all);
+    $sum_change++ foreach (values %$change);
+    # return false if kept < change
+    printf("sum=%d kept=%d change=%d -> skip=%s\n", $sum_all, $sum_all - $sum_change, $sum_change, $sum_all - $sum_change < $sum_change ? 1 : 0);
+    return $sum_all - $sum_change < $sum_change;
+    }
 
 sub read_rc {
     foreach my $rcf (
