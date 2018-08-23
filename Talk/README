@@ -25,6 +25,26 @@ meld		Python
 kdiff3		C X11	Qt
 tkdiff		Tcl/Tk
 
+    # To be checked ...
+    araxis - Windows, should work under wine
+    bc
+    bc3
+    codecompare
+    deltawalker
+    diffmerge
+    ecmerge
+    emerge
+    examdiff
+    guiffy
+    gvimdiff
+    gvimdiff2
+    gvimdiff3
+    opendiff
+    p4merge
+    vimdiff2
+    vimdiff3
+    winmerge
+
 ccdiff		Perl
 
 ccdiff termcap termcap-blue
