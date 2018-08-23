@@ -35,27 +35,40 @@ sub usage {
     exit $err;
     } # usage
 
-my %rc = read_rc ();
+$ENV{CCDIFF_OPTIONS} and unshift @ARGV, split m/\s+/ => $ENV{CCDIFF_OPTIONS};
+my %rc = (
+    ascii	=> 0,
+    bg		=> "white",
+    emacs	=> 0,
+    index	=> 0,
+    markers	=> 0,
+    new		=> "green",
+    old		=> "red",
+    reverse	=> 0,
+    utf8	=> 0,
+    verbose	=> "cyan",
+    );
+read_rc ();
 
 use charnames ();
 use Algorithm::Diff;
 use Term::ANSIColor qw(:constants color);
 use Getopt::Long qw(:config bundling);
-my $opt_a = $rc{ascii}   // 0;
-my $opt_r = $rc{reverse} // 0;
-my $opt_m = $rc{markers} // 0;
+my $opt_a = $rc{ascii};
+my $opt_r = $rc{reverse};
+my $opt_m = $rc{markers};
 GetOptions (
     "help|?"		=> sub { usage (0); },
     "V|version"		=> sub { say "$CMD [$VERSION]"; exit 0; },
       "man"		=> sub { exec "pod2man $0 | nroff -man"; },
       "info"		=> sub { exec "pod2text $0"; },
 
-    "U|utf-8!"		=> \(my $opt_U = $rc{utf8} // 0),
+    "U|utf-8!"		=> \(my $opt_U = $rc{utf8}),
 
 #   "c|context:3"	=> \ my $opt_c,	# implement context-diff?
     "u|unified:3"	=> \ my $opt_u,
-    "I|idx|index:-1"	=> \(my $opt_I = $rc{index} // 0),
-      "emacs!"		=> \(my $emacs = $rc{emacs} // 0),
+    "I|idx|index:-1"	=> \(my $opt_I = $rc{index}),
+      "emacs!"		=> \(my $emacs = $rc{emacs}),
 
     "a|ascii"		=> sub { $opt_a ^= 1 },
     "m|markers"		=> sub { $opt_m ^= 1 },
@@ -98,7 +111,7 @@ for ([ \$old_color, $rc{old} ], [ \$new_color, $rc{new} ], [ \$rev_color, $rc{bg
 my $clr_red = $clr{$old_color};
 my $clr_grn = $clr{$new_color};
 my $clr_rev = $clr{$rev_color};
-my $clr_dbg = $clr{$rc{verbose} || "cyan"};
+my $clr_dbg = $clr{$rc{verbose}};
 my $reset   = RESET;
 if ($list_colors) {
     say $clr{$_}, $_, $reset for keys %clr;
@@ -252,7 +265,6 @@ sub subdiff {
     } # subdiff
 
 sub read_rc {
-    my %_rc;
     foreach my $rcf (
 	    "$ENV{HOME}/ccdiff.rc",
 	    "$ENV{HOME}/.ccdiffrc",
@@ -263,7 +275,7 @@ sub read_rc {
 	open my $fh, "<", $rcf or next;
 	while (<$fh>) {
 	    my ($k, $v) = (m/^\s*([-\w]+)\s*[:=]\s*(.*\S)/) or next;
-	    $_rc{ lc $k
+	    $rc{ lc $k
 	        =~ s{[-_]colou?r$}{}ir
 	        =~ s{background}{bg}ir
 	        =~ s{^(?:unicode|utf-?8?)$}{utf8}ir
@@ -272,10 +284,6 @@ sub read_rc {
 		=~ s{^(?:yes|true)$}{-1}ir; # -1 is still true
 	    }
 	}
-    $_rc{old} //= "red";
-    $_rc{new} //= "green";
-    $_rc{bg}  //= "white";
-    %_rc;
     } # read_rc
 
 __END__

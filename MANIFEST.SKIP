@@ -6,6 +6,6 @@
 ^Talk
 [gbx]z$
 MANIFEST.SKIP
-^Makefile
+^Makefile$
 ^pm_to
 ^MYMETA
