@@ -323,7 +323,7 @@ sub tac_colors {
 	ON_BRIGHT_BLUE  ON_BRIGHT_MAGENTA ON_BRIGHT_CYAN  ON_BRIGHT_WHITE
 	),
       # 256 colors
-      (map { ("ANSI$_", "ON_ANSI$_") } 0 .. 255),
+      (map { ("ANSI$_", "ON_ANSI$_") } 0 .. 15),
       (map { ("GREY$_", "ON_GREY$_") } 0 .. 23),
       @c256;
     } # tac_colors
