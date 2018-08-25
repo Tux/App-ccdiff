@@ -3,7 +3,7 @@
 use 5.14.0;
 use warnings;
 
-our $VERSION = "0.23 - 20180823";
+our $VERSION = "0.24 - 20180825";
 our $CMD     = $0 =~ s{.*/}{}r;
 
 sub usage {
@@ -299,13 +299,13 @@ sub read_rc {
 # Return the known colors from Term::ANSIColor
 # Stolen striaght from the pm
 sub tac_colors {
-    my @c256;
+    my %c256;
     foreach my $r (0 .. 5) {
         foreach my $g (0 .. 5) {
-            push @c256, map {("RGB$r$g$_", "ON_RGB$r$g$_")} 0 .. 5;
+            $c256{lc $_}++ for map {("RGB$r$g$_", "ON_RGB$r$g$_")} 0 .. 5;
 	    }
 	}
-    map { lc }
+    $c256{lc $_}++ for
       # Basic colors
       qw(
 	CLEAR           RESET             BOLD            DARK
@@ -324,8 +324,14 @@ sub tac_colors {
 	),
       # 256 colors
       (map { ("ANSI$_", "ON_ANSI$_") } 0 .. 255),
-      (map { ("GREY$_", "ON_GREY$_") } 0 .. 23),
-      @c256;
+      (map { ("GREY$_", "ON_GREY$_") } 0 .. 23);
+
+    my $ACV = $Term::ANSIColor::VERSION;
+    say "Filtering colors based on $ACV";
+    $ACV < 3.02 and delete @c256{grep m/italic/   => keys %c256};
+    $ACV < 4.00 and delete @c256{grep m/rgb|grey/ => keys %c256};
+    $ACV < 4.06 and delete @c256{grep m/ansi/     => keys %c256};
+    sort keys %c256;
     } # tac_colors
 
 __END__
