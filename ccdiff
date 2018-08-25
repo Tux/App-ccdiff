@@ -122,10 +122,12 @@ if ($list_colors) {
     exit;
     }
 
-my $clr_old = $opt_r ? $clr_rev . $clr{"on_$old_color" =~ s/bold //ir}
-                     : $clr_red . $clr{"on_$rev_color" =~ s/bold //ir};
-my $clr_new = $opt_r ? $clr_rev . $clr{"on_$new_color" =~ s/bold //ir}
-                     : $clr_grn . $clr{"on_$rev_color" =~ s/bold //ir};
+my $bg_old = $clr{$rc{bg_old} || ($opt_r ? "on_$old_color" =~ s/bold //ir :
+					   "on_$rev_color" =~ s/bold //ir)};
+my $bg_new = $clr{$rc{bg_new} || ($opt_r ? "on_$new_color" =~ s/bold //ir :
+					   "on_$rev_color" =~ s/bold //ir)};
+my $clr_old = $opt_r ? $clr_rev . $bg_old : $clr_red . $bg_old;
+my $clr_new = $opt_r ? $clr_rev . $bg_new : $clr_grn . $bg_new;
 # Indicators
 my $chr_old = $clr_old . ($opt_a ? "^" : "\x{25bc}") . $reset;
 my $chr_new = $clr_new . ($opt_a ? "^" : "\x{25b2}") . $reset;
