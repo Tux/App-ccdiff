@@ -327,7 +327,6 @@ sub tac_colors {
       (map { ("GREY$_", "ON_GREY$_") } 0 .. 23);
 
     my $ACV = $Term::ANSIColor::VERSION;
-    say "Filtering colors based on $ACV";
     $ACV < 3.02 and delete @c256{grep m/italic/   => keys %c256};
     $ACV < 4.00 and delete @c256{grep m/rgb|grey/ => keys %c256};
     $ACV < 4.06 and delete @c256{grep m/ansi/     => keys %c256};
