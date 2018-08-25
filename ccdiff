@@ -118,7 +118,10 @@ my $clr_rev = $clr{$rev_color};
 my $clr_dbg = $clr{$rc{verbose}};
 my $reset   = RESET;
 if ($list_colors) {
-    say $clr{$_}, $_, $reset for sort keys %clr;
+    my @clr = map { sprintf "%s%-18s%s", $clr{$_}, $_, $reset } sort keys %clr;
+    while (@clr) {
+	say join "  " => map { $_ // "" } splice @clr, 0, 4;
+	}
     exit;
     }
 
