@@ -1,5 +1,6 @@
 0.24	- 2018-08-25
     * Filter colors on Term::ANSIColor version
+    * Add heuristics
 
 0.23	- 2018-08-23
     * Add color "none" to disable a color

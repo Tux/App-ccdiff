@@ -24,7 +24,8 @@ sub usage {
     say "   -B    --ignore-blank-lines    Ignore changes where lines are all blank";
     say "   -i    --ignore-case           Ignore case changes";
     say "  Other options:";
-    say "   -t n  --threshold=2  Horizontal diff threshold";
+    say "   -t n  --threshold=2  Horizontal line diff threshold";
+    say "   -h n  --heuristics=n Horizontal char diff treshold";
     say "   -m    --markers      Use markers to indicate change positions";
     say "   -a    --ascii        Use ASCII instead of Unicode indicators";
     say "         --list-colors  List available colors and exit";
@@ -41,6 +42,7 @@ my %rc = (
     ascii	=> 0,
     bg		=> "white",
     emacs	=> 0,
+    heuristics	=> 0,
     index	=> 0,
     markers	=> 0,
     new		=> "green",
@@ -71,6 +73,7 @@ GetOptions (
     "u|unified:3"	=> \ my $opt_u,
     "I|idx|index:-1"	=> \(my $opt_I = $rc{index}),
     "t|threshold=i"	=> \(my $opt_t = $rc{threshold}),
+    "h|heuristics=i"	=> \(my $opt_h = $rc{heuristics}),
       "emacs!"		=> \(my $emacs = $rc{emacs}),
 
     "a|ascii"		=> sub { $opt_a ^= 1 },
@@ -92,7 +95,8 @@ GetOptions (
 
     "v|verbose:1"	=> \(my $opt_v = 0),
     ) or usage (1);
-$opt_w and $opt_b = $opt_Z = $opt_E = $opt_B = 1;
+$opt_w     and $opt_b = $opt_Z = $opt_E = $opt_B = 1;
+$opt_h > 1 and $opt_h /= 100;
 
 # Color initialization
 $opt_p and $old_color = "magenta";
@@ -196,9 +200,11 @@ while ($diff->Next) {
 	next;
 	}
     my $sep = "";
-    my @d = map {[ $diff->Items ($_) ]} 1, 2;
+    my @d  = map {[ $diff->Items ($_) ]} 1, 2;
+    my @do = @{$d[0]};
+    my @dn = @{$d[1]};
 
-    if ($opt_B and "@{$d[0]}" !~ m/\S/ && "@{$d[1]}" !~ m/\S/) {
+    if ($opt_B and "@do" !~ m/\S/ && "@dn" !~ m/\S/) {
 	# Modify @s for -u?
 	next;
 	}
@@ -208,62 +214,78 @@ while ($diff->Next) {
 	printf "%s[%03d]%s ", ${clr_dbg}, $idx, $reset;
 	}
 
-    if (!@{$d[1]}) {
+    if (!@dn) {
 	printf "%d,%dd%d\n", $diff->Get (qw( Min1 Max1 Max2 ));
-	$_ = $clr_old . (s/$/$reset/r) for @{$d[0]};
+	$_ = $clr_old . (s/$/$reset/r) for @do;
 	}
-    elsif (!@{$d[0]}) {
+    elsif (!@do) {
 	printf "%da%d,%d\n", $diff->Get (qw( Max1 Min2 Max2 ));
-	$_ = $clr_new . (s/$/$reset/r) for @{$d[1]};
+	$_ = $clr_new . (s/$/$reset/r) for @dn;
 	}
     else {
 	$sep = "---\n" unless defined $opt_u;
 	printf "%d,%dc%d,%d\n", $diff->Get (qw( Min1 Max1 Min2 Max2 ));
-	if ($opt_t > 0 and abs (@{$d[0]} - @{$d[1]}) > $opt_t) {
-	    $_ = $clr_old . (s/$/$reset/r) for @{$d[0]};
-	    $_ = $clr_new . (s/$/$reset/r) for @{$d[1]};
+	if ($opt_t > 0 and abs (@do - @dn) > $opt_t) {
+	    $_ = $clr_old . (s/$/$reset/r) for @do;
+	    $_ = $clr_new . (s/$/$reset/r) for @dn;
 	    }
 	else {
-	    @d = subdiff (@d);
+	    my @D = subdiff (@d, my $heu = {});
+	    if ($opt_h and $heu->{pct} > $opt_h) {
+		$_ = $clr_old . (s/$/$reset/r) for @do;
+		$_ = $clr_new . (s/$/$reset/r) for @dn;
+		}
+	    else {
+		@do = @{$D[0]};
+		@dn = @{$D[1]};
+		}
 	    }
 	}
     if ($opt_u and @s) {
 	print "$chr_ctx$_" for grep { defined } map { $s[$#s - $opt_u + $_] } 1..$opt_u;
 	}
-    print "$chr_lft$_" for @{$d[0]};
+    print "$chr_lft$_" for @do;
     print $sep;
-    print "$chr_rgt$_" for @{$d[1]};
+    print "$chr_rgt$_" for @dn;
     }
 
 sub subdiff {
-    my $d = Algorithm::Diff->new (map { [ map { split m// } @$_ ] } @_);
+    my ($old, $new, $heu) = @_;
+    my $d = Algorithm::Diff->new (map { [ map { split m// } @$_ ] } $old, $new);
     my ($d1, $d2, $x1, $x2, @h1, @h2) = ("", "", "", "");
     my ($cml, $cmr) = $opt_v < 2 ? ("", "") : ($chr_cml, $chr_cmr);
     my ($cmd, $cma) = ($chr_old, $chr_new);
+    @{$heu}{qw( old new same )} = (1, 1, 1); # prevent div/0
     while ($d->Next) {
-	my @c = map {[ $d->Items ($_) ]} 1, 2;
+	my @c  = map {[ $d->Items ($_) ]} 1, 2;
+	my @co = @{$c[0]};
+	my @cn = @{$c[1]};
 	if ($d->Same) {
-	    $d1 .= $_ for @{$c[0]};
-	    $d2 .= $_ for @{$c[1]};
-	    $x1 .= $_ for map { s/\S/$chr_eql/gr } @{$c[0]};
-	    $x2 .= $_ for map { s/\S/$chr_eql/gr } @{$c[0]};
+	    $d1 .= $_ for @co;
+	    $d2 .= $_ for @cn;
+	    $x1 .= $_ for map { s/\S/$chr_eql/gr } @co;
+	    $x2 .= $_ for map { s/\S/$chr_eql/gr } @co;
+	    $heu->{same} += scalar @co;
 	    next;
 	    }
-	if (@{$c[0]}) {
+	if (@co) {
 	    $d1 .= $cml.$clr_old;
-	    $d1 .= s/\n/$reset\n$clr_old/gr for @{$c[0]};
+	    $d1 .= s/\n/$reset\n$clr_old/gr for @co;
 	    $d1 .= $reset.$cmr;
-	    $x1 .= $_ for map { s/[^\t\r\n]/$cmd/gr } @{$c[0]};
-	    $opt_v and push @h1, map { $opt_U ? charnames::viacode (ord) : unpack "H*"; } @{$c[0]};
+	    $x1 .= $_ for map { s/[^\t\r\n]/$cmd/gr } @co;
+	    $opt_v and push @h1, map { $opt_U ? charnames::viacode (ord) : unpack "H*"; } @co;
+	    $heu->{old} += scalar @co;
 	    }
-	if (@{$c[1]}) {
+	if (@cn) {
 	    $d2 .= $cml.$clr_new;
-	    $d2 .= s/\n/$reset\n$clr_new/gr for @{$c[1]};
+	    $d2 .= s/\n/$reset\n$clr_new/gr for @cn;
 	    $d2 .= $reset.$cmr;
-	    $x2 .= $_ for map { s/[^\t\r\n]/$cma/gr } @{$c[1]};
-	    $opt_v and push @h2, map { $opt_U ? charnames::viacode (ord) : unpack "H*"; } @{$c[1]};
+	    $x2 .= $_ for map { s/[^\t\r\n]/$cma/gr } @cn;
+	    $opt_v and push @h2, map { $opt_U ? charnames::viacode (ord) : unpack "H*"; } @cn;
+	    $heu->{new} += scalar @cn;
 	    }
 	}
+    $heu->{pct} = ($heu->{old} + $heu->{new}) / (2 * $heu->{same});
     my @d = map { [ split m/(?<=\n)/ ] } $d1, $d2;
     if ($opt_m) {
 	$opt_v > 1 and s/(\S+)/ $1 /g for $x1, $x2;
@@ -535,6 +557,14 @@ If a chunk describes a change, and the number of lines in the original block
 has less or more lines than the new block and that difference exceeds this
 threshold, C<ccdiff> will fall-back to vertical diff.
 
+=item --heuristics=n -h n
+
+Defines the percentage of character-changes a change block may differ before
+the fall-back of horizontal diff to vertical diff.
+
+This percentage is calculated as C<(characters removed + characters added) /
+(2 * characters unchanged))>. 
+
 =item --ignore-case -i
 
 Ignore case on comparison.
@@ -748,6 +778,14 @@ if file~ exists.
 
 Defines the number of lines a change block may differ before the fall-back of
 horizontal diff to vertical diff.
+
+=item heuristics (-h)
+
+ heuristics : 40
+
+Defines the percentage of character-changes a change block may differ before
+the fall-back of horizontal diff to vertical diff. The default is undefined,
+meaning no fallback based on heuristics.
 
 =back
 
