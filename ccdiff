@@ -95,8 +95,8 @@ GetOptions (
 
     "v|verbose:1"	=> \(my $opt_v = 0),
     ) or usage (1);
-$opt_w     and $opt_b = $opt_Z = $opt_E = $opt_B = 1;
-$opt_h > 1 and $opt_h /= 100;
+$opt_w      and $opt_b = $opt_Z = $opt_E = $opt_B = 1;
+$opt_h >= 1 and $opt_h /= 100;
 
 # Color initialization
 $opt_p and $old_color = "magenta";
