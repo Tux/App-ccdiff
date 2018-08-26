@@ -3,7 +3,7 @@
 use 5.14.0;
 use warnings;
 
-our $VERSION = "0.24 - 20180825";
+our $VERSION = "0.24 - 20180826";
 our $CMD     = $0 =~ s{.*/}{}r;
 
 sub usage {
@@ -25,7 +25,7 @@ sub usage {
     say "   -i    --ignore-case           Ignore case changes";
     say "  Other options:";
     say "   -t n  --threshold=2  Horizontal line diff threshold";
-    say "   -h n  --heuristics=n Horizontal char diff treshold";
+    say "   -h n  --heuristics=n Horizontal char diff threshold";
     say "   -m    --markers      Use markers to indicate change positions";
     say "   -a    --ascii        Use ASCII instead of Unicode indicators";
     say "         --list-colors  List available colors and exit";
