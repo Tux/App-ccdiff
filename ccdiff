@@ -3,7 +3,7 @@
 use 5.14.0;
 use warnings;
 
-our $VERSION = "0.24 - 20180826";
+our $VERSION = "0.25 - 20180826";
 our $CMD     = $0 =~ s{.*/}{}r;
 
 sub usage {
@@ -65,7 +65,10 @@ GetOptions (
     "help|?"		=> sub { usage (0); },
     "V|version"		=> sub { say "$CMD [$VERSION]"; exit 0; },
       "man"		=> sub { exec "pod2man $0 | nroff -man"; },
-      "info"		=> sub { exec "pod2text $0"; },
+      "info"		=> sub { require Pod::Usage;
+				 Pod::Usage::pod2usage (VERBOSE => 2);
+				 exit;
+				 },
 
     "U|utf-8!"		=> \(my $opt_U = $rc{utf8}),
 

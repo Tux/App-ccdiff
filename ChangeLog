@@ -1,3 +1,6 @@
+0.25	- 2018-08-26
+    * Use CORE module for --info
+
 0.24	- 2018-08-26
     * Filter colors on Term::ANSIColor version
     * Add heuristics
