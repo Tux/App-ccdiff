@@ -38,7 +38,7 @@ sub postamble {
         'spellcheck:',
         '	pod-spell-check --aspell --ispell ccdiff',
         '',
-        'META.json:	ccdiff',
+        'META.json META.yml:	ccdiff',
         '	-@make metafile',
         '	-@mv $(DISTVNAME)/META.* .',
         '	-@rm -rf $(DISTVNAME)',
