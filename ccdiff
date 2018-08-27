@@ -1,5 +1,7 @@
 #!/usr/bin/env perl
 
+package App::ccdiff;
+
 use 5.14.0;
 use warnings;
 
@@ -37,7 +39,6 @@ sub usage {
     exit $err;
     } # usage
 
-$ENV{CCDIFF_OPTIONS} and unshift @ARGV, split m/\s+/ => $ENV{CCDIFF_OPTIONS};
 my %rc = (
     ascii	=> 0,
     bg		=> "white",
@@ -59,50 +60,72 @@ use Algorithm::Diff;
 use Term::ANSIColor qw(:constants color);
 use Getopt::Long qw(:config bundling);
 my $opt_a = $rc{ascii};
-my $opt_r = $rc{reverse};
+my $opt_b;
+my $opt_B;
+#y $opt_c;
+my $opt_E;
+my $opt_h = $rc{heuristics};
+my $opt_i;
+my $opt_I = $rc{index};
 my $opt_m = $rc{markers};
-GetOptions (
-    "help|?"		=> sub { usage (0); },
-    "V|version"		=> sub { say "$CMD [$VERSION]"; exit 0; },
-      "man"		=> sub { exec "pod2man $0 | nroff -man"; },
-      "info"		=> sub { require Pod::Usage;
+my $opt_r = $rc{reverse};
+my $opt_t = $rc{threshold};
+my $opt_u = $rc{unified};
+my $opt_U = $rc{utf8};
+my $opt_v = 0;
+my $opt_w;
+my $opt_Z;
+my $emacs     = $rc{emacs};
+my $old_color = $rc{old};
+my $new_color = $rc{new};
+my $rev_color = $rc{bg};
+my $list_colors;
+
+unless (caller) {
+    $ENV{CCDIFF_OPTIONS} and unshift @ARGV, split m/\s+/ => $ENV{CCDIFF_OPTIONS};
+    GetOptions (
+	"help|?"	=> sub { usage (0); },
+	"V|version"	=> sub { say "$CMD [$VERSION]"; exit 0; },
+	  "man"		=> sub { exec "pod2man $0 | nroff -man"; },
+	  "info"	=> sub { require Pod::Usage;
 				 Pod::Usage::pod2usage (VERBOSE => 2);
 				 exit;
 				 },
 
-    "U|utf-8!"		=> \(my $opt_U = $rc{utf8}),
+	"U|utf-8!"		=> \$opt_U,
 
-#   "c|context:3"	=> \ my $opt_c,	# implement context-diff?
-    "u|unified:3"	=> \ my $opt_u,
-    "I|idx|index:-1"	=> \(my $opt_I = $rc{index}),
-    "t|threshold=i"	=> \(my $opt_t = $rc{threshold}),
-    "h|heuristics=i"	=> \(my $opt_h = $rc{heuristics}),
-      "emacs!"		=> \(my $emacs = $rc{emacs}),
+    #   "c|context:3"		=> \$opt_c,	# implement context-diff?
+	"u|unified:3"		=> \$opt_u,
+	"I|idx|index:-1"	=> \$opt_I,
+	"t|threshold=i"		=> \$opt_t,
+	"h|heuristics=i"	=> \$opt_h,
+	  "emacs!"		=> \$emacs,
 
-    "a|ascii"		=> sub { $opt_a ^= 1 },
-    "m|markers"		=> sub { $opt_m ^= 1 },
-    "r|reverse"		=> sub { $opt_r ^= 1 },
+	"a|ascii"		=> sub { $opt_a ^= 1 },
+	"m|markers"		=> sub { $opt_m ^= 1 },
+	"r|reverse"		=> sub { $opt_r ^= 1 },
 
-    "i|ignore-case!"			=> \ my $opt_i,
-    "w|ignore-all-space!"		=> \ my $opt_w,
-    "b|ignore-ws|ignore-space-change!"	=> \ my $opt_b,
-    "Z|ignore-trailing-space!"		=> \ my $opt_Z,
-    "E|ignore-tab-expansion!"		=> \ my $opt_E, # NYI
-    "B|ignore-blank-lines!"		=> \ my $opt_B, # NYI
+	"i|ignore-case!"			=> \$opt_i,
+	"w|ignore-all-space!"			=> \$opt_w,
+	"b|ignore-ws|ignore-space-change!"	=> \$opt_b,
+	"Z|ignore-trailing-space!"		=> \$opt_Z,
+	"E|ignore-tab-expansion!"		=> \$opt_E, # NYI
+	"B|ignore-blank-lines!"			=> \$opt_B, # Partly implemented
 
-    "p|pink!"		=> \ my $opt_p,
-      "old=s"		=> \(my $old_color = $rc{old}),
-      "new=s"		=> \(my $new_color = $rc{new}),
-      "bg=s"		=> \(my $rev_color = $rc{bg}),
-      "list-colors!"	=> \ my $list_colors,
+	"p|pink!"		=> sub { $old_color = "magenta" },
+	  "old=s"		=> \$old_color,
+	  "new=s"		=> \$new_color,
+	  "bg=s"		=> \$rev_color,
+	  "list-colors!"	=> \$list_colors,
 
-    "v|verbose:1"	=> \(my $opt_v = 0),
-    ) or usage (1);
+	"v|verbose:1"	=> \$opt_v,
+	) or usage (1);
+    }
+
 $opt_w      and $opt_b = $opt_Z = $opt_E = $opt_B = 1;
 $opt_h >= 1 and $opt_h /= 100;
 
 # Color initialization
-$opt_p and $old_color = "magenta";
 for ($old_color, $new_color, $rev_color) {
     s/^(.*)[ _]bold$/bold $1/i;
     s/^bold_/bold /i;
@@ -148,38 +171,6 @@ my $chr_lft = $clr_old . (defined $opt_u ? "-" : "< ") . $reset;
 my $chr_rgt = $clr_new . (defined $opt_u ? "+" : "> ") . $reset;
 my $chr_ctx =             defined $opt_u ? " " : "  ";
 
-binmode STDOUT, ":encoding(utf-8)";
-
-my $f1 = shift or usage (1);
-my $f2 = $ARGV[0] // "-";
-$emacs and @ARGV == 0 && -f $f1 && -f "$f1~" and ($f1, $f2) = ("$f1~", $f1);
-
-$f1 eq "-" && $f2 eq "-" and usage (1);
-
-$opt_U and binmode STDIN,  ":encoding(utf-8)";
-$opt_U and binmode STDOUT, ":encoding(utf-8)";
-
-my @d1 = $f1 eq "-" ? <> : do {
-    open my $fh, "<", $f1 or die "$f1: $!\n";
-    $opt_U and binmode $fh, ":encoding(utf-8)";
-    <$fh>;
-    };
-my @d2 = $f2 eq "-" ? <> : do {
-    open my $fh, "<", $f2 or die "$f2: $!\n";
-    $opt_U and binmode $fh, ":encoding(utf-8)";
-    <$fh>;
-    };
-if ($opt_u) {
-    for ([ "---", $f1 ], [ "+++", $f2 ]) {
-	if (-f $_->[1]) {
-	    say $_->[0], " $_->[1]\t", scalar localtime ((stat $_->[1])[9]);
-	    }
-	else {
-	    say $_->[0], " *STDIN\t",  scalar localtime;
-	    }
-	}
-    }
-
 my $cmp_sub = $opt_i || $opt_b || $opt_Z ? { keyGen => sub {
     my $line = shift;
     $opt_i and $line = lc $line;
@@ -188,69 +179,105 @@ my $cmp_sub = $opt_i || $opt_b || $opt_Z ? { keyGen => sub {
     return $line;
     }} : undef;
 
-my $diff = Algorithm::Diff->new (\@d1, \@d2, $cmp_sub);
-$diff->Base (1);
+caller or ccdiff (@ARGV);
 
-my ($N, $idx, @s) = (0, 0);
-while ($diff->Next) {
-    $N++;
-    if ($diff->Same) {
-	if (defined $opt_u) {
-	    @s = $diff->Items (1);
-	    $N > 1 and print "$chr_ctx$_" for grep { defined } @s[0..($opt_u - 1)];
-	    unshift @s, undef while @s < $opt_u;
+sub ccdiff {
+    binmode STDOUT, ":encoding(utf-8)";
+
+    my $f1 = shift or usage (1);
+    my $f2 = $_[0] // "-";
+    $emacs and @_ == 0 && -f $f1 && -f "$f1~" and ($f1, $f2) = ("$f1~", $f1);
+
+    $f1 eq "-" && $f2 eq "-" and usage (1);
+
+    $opt_U and binmode STDIN,  ":encoding(utf-8)";
+    $opt_U and binmode STDOUT, ":encoding(utf-8)";
+
+    my @d1 = $f1 eq "-" ? <> : do {
+	open my $fh, "<", $f1 or die "$f1: $!\n";
+	$opt_U and binmode $fh, ":encoding(utf-8)";
+	<$fh>;
+	};
+    my @d2 = $f2 eq "-" ? <> : do {
+	open my $fh, "<", $f2 or die "$f2: $!\n";
+	$opt_U and binmode $fh, ":encoding(utf-8)";
+	<$fh>;
+	};
+    if ($opt_u) {
+	for ([ "---", $f1 ], [ "+++", $f2 ]) {
+	    if (-f $_->[1]) {
+		say $_->[0], " $_->[1]\t", scalar localtime ((stat $_->[1])[9]);
+		}
+	    else {
+		say $_->[0], " *STDIN\t",  scalar localtime;
+		}
 	    }
-	next;
-	}
-    my $sep = "";
-    my @d  = map {[ $diff->Items ($_) ]} 1, 2;
-    my @do = @{$d[0]};
-    my @dn = @{$d[1]};
-
-    if ($opt_B and "@do" !~ m/\S/ && "@dn" !~ m/\S/) {
-	# Modify @s for -u?
-	next;
-	}
-    if ($opt_I) {
-	$idx++;
-	$opt_I > 0 && $idx != $opt_I and next;
-	printf "%s[%03d]%s ", ${clr_dbg}, $idx, $reset;
 	}
 
-    if (!@dn) {
-	printf "%d,%dd%d\n", $diff->Get (qw( Min1 Max1 Max2 ));
-	$_ = $clr_old . (s/$/$reset/r) for @do;
-	}
-    elsif (!@do) {
-	printf "%da%d,%d\n", $diff->Get (qw( Max1 Min2 Max2 ));
-	$_ = $clr_new . (s/$/$reset/r) for @dn;
-	}
-    else {
-	$sep = "---\n" unless defined $opt_u;
-	printf "%d,%dc%d,%d\n", $diff->Get (qw( Min1 Max1 Min2 Max2 ));
-	if ($opt_t > 0 and abs (@do - @dn) > $opt_t) {
+    my $diff = Algorithm::Diff->new (\@d1, \@d2, $cmp_sub);
+    $diff->Base (1);
+
+    my ($N, $idx, @s) = (0, 0);
+    while ($diff->Next) {
+	$N++;
+	if ($diff->Same) {
+	    if (defined $opt_u) {
+		@s = $diff->Items (1);
+		$N > 1 and print "$chr_ctx$_" for grep { defined } @s[0..($opt_u - 1)];
+		unshift @s, undef while @s < $opt_u;
+		}
+	    next;
+	    }
+	my $sep = "";
+	my @d  = map {[ $diff->Items ($_) ]} 1, 2;
+	my @do = @{$d[0]};
+	my @dn = @{$d[1]};
+
+	if ($opt_B and "@do" !~ m/\S/ && "@dn" !~ m/\S/) {
+	    # Modify @s for -u?
+	    next;
+	    }
+	if ($opt_I) {
+	    $idx++;
+	    $opt_I > 0 && $idx != $opt_I and next;
+	    printf "%s[%03d]%s ", ${clr_dbg}, $idx, $reset;
+	    }
+
+	if (!@dn) {
+	    printf "%d,%dd%d\n", $diff->Get (qw( Min1 Max1 Max2 ));
 	    $_ = $clr_old . (s/$/$reset/r) for @do;
+	    }
+	elsif (!@do) {
+	    printf "%da%d,%d\n", $diff->Get (qw( Max1 Min2 Max2 ));
 	    $_ = $clr_new . (s/$/$reset/r) for @dn;
 	    }
 	else {
-	    my @D = subdiff (@d, my $heu = {});
-	    if ($opt_h and $heu->{pct} > $opt_h) {
+	    $sep = "---\n" unless defined $opt_u;
+	    printf "%d,%dc%d,%d\n", $diff->Get (qw( Min1 Max1 Min2 Max2 ));
+	    if ($opt_t > 0 and abs (@do - @dn) > $opt_t) {
 		$_ = $clr_old . (s/$/$reset/r) for @do;
 		$_ = $clr_new . (s/$/$reset/r) for @dn;
 		}
 	    else {
-		@do = @{$D[0]};
-		@dn = @{$D[1]};
+		my @D = subdiff (@d, my $heu = {});
+		if ($opt_h and $heu->{pct} > $opt_h) {
+		    $_ = $clr_old . (s/$/$reset/r) for @do;
+		    $_ = $clr_new . (s/$/$reset/r) for @dn;
+		    }
+		else {
+		    @do = @{$D[0]};
+		    @dn = @{$D[1]};
+		    }
 		}
 	    }
+	if ($opt_u and @s) {
+	    print "$chr_ctx$_" for grep { defined } map { $s[$#s - $opt_u + $_] } 1..$opt_u;
+	    }
+	print "$chr_lft$_" for @do;
+	print $sep;
+	print "$chr_rgt$_" for @dn;
 	}
-    if ($opt_u and @s) {
-	print "$chr_ctx$_" for grep { defined } map { $s[$#s - $opt_u + $_] } 1..$opt_u;
-	}
-    print "$chr_lft$_" for @do;
-    print $sep;
-    print "$chr_rgt$_" for @dn;
-    }
+    } # ccdiff
 
 sub subdiff {
     my ($old, $new, $heu) = @_;
@@ -362,6 +389,8 @@ sub tac_colors {
     $ACV < 4.06 and delete @c256{grep m/ansi/     => keys %c256};
     sort keys %c256;
     } # tac_colors
+
+1;
 
 __END__
 
@@ -624,6 +653,15 @@ true value).
 Between parens is the corresponding command-line option.
 
 =over 2
+
+=item unified (-u)
+
+If you prefer unified-diff over old-style diff by default, set this to the
+desired number of context lines:
+
+ unified : 3
+
+The default is undefined
 
 =item markers (-m)
 
