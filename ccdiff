@@ -4,6 +4,10 @@ package App::ccdiff;
 
 use 5.14.0;
 use warnings;
+use charnames ();
+use Algorithm::Diff;
+use Term::ANSIColor qw(:constants color);
+use Getopt::Long    qw(:config bundling);
 
 our $VERSION = "0.25";
 our $CMD     = $0 =~ s{.*/}{}r;
@@ -55,10 +59,6 @@ my %rc = (
     );
 read_rc ();
 
-use charnames ();
-use Algorithm::Diff;
-use Term::ANSIColor qw(:constants color);
-use Getopt::Long qw(:config bundling);
 my $opt_a = $rc{ascii};
 my $opt_b;
 my $opt_B;
@@ -182,13 +182,50 @@ my $cmp_sub = $opt_i || $opt_b || $opt_Z ? { keyGen => sub {
 caller or ccdiff (@ARGV);
 
 sub ccdiff {
-    binmode STDOUT, ":encoding(utf-8)";
-
     my $f1 = shift or usage (1);
     my $f2 = $_[0] // "-";
+
+    my $fh;
+
+    if (@_ > 1 && ref $_[1]) { # optional hash with overruling arguments
+	my %opt = %{$_[1]};
+	foreach my $o (keys %opt) {
+	    my $v = $opt{$o};
+	    $o eq "ascii"			and $opt_a = $v;
+	    $o eq "bg"				and $rev_color = $v;
+#	    $o eq "context"			and $opt_c = $v;
+	    $o eq "emacs"			and $emacs = $v;
+	    $o eq "heuristics"			and $opt_h = $v;
+	    $o eq "ignore-all-space"		and $opt_w = $v;
+	    $o eq "ignore-blank-lines"		and $opt_B = $v;
+	    $o eq "ignore-case"			and $opt_i = $v;
+	    $o eq "ignore-space-change"		and $opt_b = $v;
+	    $o eq "ignore-tab-expansion"	and $opt_E = $v;
+	    $o eq "ignore-trailing-space"	and $opt_Z = $v;
+	    $o eq "index"			and $opt_I = $v;
+	    $o eq "list-colors"			and $list_colors = $v;
+	    $o eq "markers"			and $opt_m = $v;
+	    $o eq "new"				and $new_color = $v;
+	    $o eq "old"				and $old_color = $v;
+	    $o eq "reverse"			and $opt_r = $v;
+	    $o eq "threshold"			and $opt_t = $v;
+	    $o eq "unified"			and $opt_u = $v;
+	    $o eq "unified"			and $opt_u = $v;
+	    $o eq "utf-8"			and $opt_U = $v;
+	    $o eq "verbose"			and $opt_v = $v;
+
+	    if ($o eq "out") {
+		open   $fh, ">", $v or die "Cannot select out: $!\n";
+		select $fh;
+		}
+	    }
+	}
+
     $emacs and @_ == 0 && -f $f1 && -f "$f1~" and ($f1, $f2) = ("$f1~", $f1);
 
     $f1 eq "-" && $f2 eq "-" and usage (1);
+
+               binmode STDERR, ":encoding(utf-8)";
 
     $opt_U and binmode STDIN,  ":encoding(utf-8)";
     $opt_U and binmode STDOUT, ":encoding(utf-8)";
@@ -276,6 +313,11 @@ sub ccdiff {
 	print "$chr_lft$_" for @do;
 	print $sep;
 	print "$chr_rgt$_" for @dn;
+	}
+
+    if ($fh) {
+	select STDOUT;
+	close $fh;
 	}
     } # ccdiff
 
