@@ -5,7 +5,7 @@ package App::ccdiff;
 use 5.14.0;
 use warnings;
 
-our $VERSION = "0.25 - 20180826";
+our $VERSION = "0.25";
 our $CMD     = $0 =~ s{.*/}{}r;
 
 sub usage {
@@ -319,7 +319,7 @@ sub subdiff {
     my @d = map { [ split m/(?<=\n)/ => s/\n*\z/\n/r ] } $d1, $d2;
     if ($opt_m) {
 	$opt_v > 1 and s/(\S+)/ $1 /g for $x1, $x2;
-	s/(?:$chr_eql)*\n*\z/\n/ for $x1, $x2;
+	s/[ \t]*\n*\z/\n/ for $x1, $x2;
 	my @x = map { /\S/ ? [ split m/(?<=\n)/ ] : [] } $x1, $x2;
 	foreach my $n (0, 1) {
 	    @{$x[$n]} and $d[$n] = [ map {( $d[$n][$_], $x[$n][$_] // "" )} 0 .. (scalar @{$d[$n]} - 1) ];
