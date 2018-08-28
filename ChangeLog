@@ -1,5 +1,6 @@
-0.25	- 2018-08-26
+0.25	- 2018-08-28
     * Use CORE module for --info
+    * Show codepoints under -v3 (issue#14)
 
 0.24	- 2018-08-26
     * Filter colors on Term::ANSIColor version

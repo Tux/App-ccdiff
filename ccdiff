@@ -326,6 +326,7 @@ sub subdiff {
 	    }
 	}
     if ($opt_v) {
+	$opt_U && $opt_v > 2 and $_ .= sprintf " (U+%06X)", charnames::vianame ($_) for @h1, @h2;
 	@h1 and push @{$d[0]}, sprintf " -- ${clr_dbg}verbose$reset : %s\n", join ", " => map { $clr_old.$_.$reset } @h1;
 	@h2 and push @{$d[1]}, sprintf " -- ${clr_dbg}verbose$reset : %s\n", join ", " => map { $clr_new.$_.$reset } @h2;
 	}
@@ -469,7 +470,8 @@ This is a debugging option, so invisible characters can still be "seen".
 
 C<--verbose> accepts an optional verbosity-level. On level 2 and up, all
 horizontal changes get left-and-right markers inserted to enable seeing the
-location of the ZERO WIDTH or invisible characters.
+location of the ZERO WIDTH or invisible characters. With level 3 and up and
+Unicode enabled, the changed characters will also show the codepoint in hex.
 
 An example of this:
 
@@ -494,6 +496,14 @@ With -Uu0v2:
  - -- verbose : SPACE, LATIN CAPITAL LETTER C, LATIN CAPITAL LETTER D, SPACE
  + A B↱cd↰E↱​↰Fg
  + -- verbose : LATIN SMALL LETTER C, LATIN SMALL LETTER D, ZERO WIDTH SPACE
+
+With -Uu0v3:
+
+ 1,1c1,1
+ - A ↱ ↰B↱CD↰E↱ ↰Fg
+ - -- verbose : SPACE (U+000020), LATIN CAPITAL LETTER C (U+000043), LATIN CAPITAL LETTER D (U+000044), SPACE (U+000020)
+ + A B↱cd↰E↱​↰Fg
+ + -- verbose : LATIN SMALL LETTER C (U+000063), LATIN SMALL LETTER D (U+000064), ZERO WIDTH SPACE (U+00200B)
 
 With -Uu0v2 --ascii:
 
