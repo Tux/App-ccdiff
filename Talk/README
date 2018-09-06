@@ -31,6 +31,7 @@ tkdiff		Tcl/Tk
     bc3
     codecompare
     deltawalker
+    diff-so-fancy - https://github.com/so-fancy/diff-so-fancy
     diffmerge
     ecmerge
     emerge
@@ -39,6 +40,7 @@ tkdiff		Tcl/Tk
     gvimdiff
     gvimdiff2
     gvimdiff3
+    klondiff - https://github.com/pierstitus/klondiff (python)
     opendiff
     p4merge
     vimdiff2
