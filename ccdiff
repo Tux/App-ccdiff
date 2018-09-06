@@ -40,7 +40,7 @@ sub usage {
     say "         --new=green    Color to indicate added   content";
     say "         --bg=white     Background color for colored indicators";
     say "   -p    --pink         Shortcut for --old=magenta";
-    say "   -r    --reverse      Reverse the colors of the indicators";
+    say "   -r    --reverse      Reverse/invert the colors of the indicators";
     exit $err;
     } # usage
 
@@ -105,7 +105,7 @@ unless (caller) {
 
 	"a|ascii"		=> sub { $opt_a ^= 1 },
 	"m|markers"		=> sub { $opt_m ^= 1 },
-	"r|reverse"		=> sub { $opt_r ^= 1 },
+	"r|reverse|invert"	=> sub { $opt_r ^= 1 },
 
 	"i|ignore-case!"			=> \$opt_i,
 	"w|ignore-all-space!"			=> \$opt_w,
@@ -603,7 +603,7 @@ is supported by L<Term::ANSIColor>: C<magenta>.
 
 =item --reverse -r
 
-Reverse the foreground and background for the colored indicators.
+Reverse/invert the foreground and background for the colored indicators.
 
 If the foreground color has C<bold>, it will be stripped from the new background
 color.
