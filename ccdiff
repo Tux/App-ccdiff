@@ -34,6 +34,7 @@ sub usage {
     say "   -h n  --heuristics=n Horizontal char diff threshold";
     say "   -m    --markers      Use markers to indicate change positions";
     say "   -a    --ascii        Use ASCII instead of Unicode indicators";
+    say "         --no-color     Reset all colors to none.";
     say "         --list-colors  List available colors and exit";
     say "         --old=red      Color to indicate removed content";
     say "         --new=green    Color to indicate added   content";
@@ -79,6 +80,7 @@ my $emacs     = $rc{emacs};
 my $old_color = $rc{old};
 my $new_color = $rc{new};
 my $rev_color = $rc{bg};
+my $no_colors;
 my $list_colors;
 
 unless (caller) {
@@ -116,6 +118,7 @@ unless (caller) {
 	  "old=s"		=> \$old_color,
 	  "new=s"		=> \$new_color,
 	  "bg=s"		=> \$rev_color,
+	  "no-colors"		=> \$no_colors,
 	  "list-colors!"	=> \$list_colors,
 
 	"v|verbose:1"	=> \$opt_v,
@@ -135,6 +138,7 @@ my %clr = map { $_ => color (s{^(.*)[ _]bold$}{bold $1}ir =~
 	  map {( $_, "on_$_", "bold $_" )}
     qw( red green blue black white cyan magenta yellow );
 $clr{$_} //= color ($_) for tac_colors ();
+$no_colors and $clr{$_} = "" for keys %clr;
 $clr{none} = $clr{on_none} = "";
 for ([ \$old_color, $rc{old} ], [ \$new_color, $rc{new} ], [ \$rev_color, $rc{bg} ]) {
     my ($c, $def) = @$_;
@@ -146,7 +150,7 @@ my $clr_red = $clr{$old_color};
 my $clr_grn = $clr{$new_color};
 my $clr_rev = $clr{$rev_color};
 my $clr_dbg = $clr{$rc{verbose}};
-my $reset   = RESET;
+my $reset   = $no_colors ? "" : RESET;
 if ($list_colors) {
     my @clr = map { sprintf "%s%-18s%s", $clr{$_}, $_, $reset } sort keys %clr;
     while (@clr) {
@@ -607,6 +611,11 @@ color.
 =item --list-colors
 
 List available colors and exit.
+
+=item --no-colors
+
+Disable all colors. Useful for redirecting the diff output to a file that is to
+be included in documentation.
 
 =item --old=color
 
