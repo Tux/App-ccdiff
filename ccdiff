@@ -149,7 +149,7 @@ for ([ \$old_color, $rc{old} ], [ \$new_color, $rc{new} ], [ \$rev_color, $rc{bg
 my $clr_red = $clr{$old_color};
 my $clr_grn = $clr{$new_color};
 my $clr_rev = $clr{$rev_color};
-my $clr_dbg = $clr{$rc{verbose}};
+my $clr_dbg = $opt_r && exists $clr{"on_$rc{verbose}"} ? $clr{"on_$rc{verbose}"} : $clr{$rc{verbose}};
 my $reset   = $no_colors ? "" : RESET;
 if ($list_colors) {
     my @clr = map { sprintf "%s%-18s%s", $clr{$_}, $_, $reset } sort keys %clr;
