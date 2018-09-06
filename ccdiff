@@ -170,12 +170,12 @@ my $bg_new = $clr{$rc{bg_new} || ($opt_r ? "on_$new_color" =~ s/bold //ir :
 my $clr_old = $opt_r ? $clr_rev . $bg_old : $clr_red . $bg_old;
 my $clr_new = $opt_r ? $clr_rev . $bg_new : $clr_grn . $bg_new;
 # Indicators
-my $chr_old = $clr_old . ($opt_a ? "^" : "\x{25bc}") . $reset;
-my $chr_new = $clr_new . ($opt_a ? "^" : "\x{25b2}") . $reset;
-my $chr_cml = $clr_dbg . ($opt_a ? ">" : "\x{21b1}") . $reset;
-my $chr_cmr = $clr_dbg . ($opt_a ? "<" : "\x{21b0}") . $reset;
-my $chr_eli = $clr_dbg . ($opt_a ? "-" : "\x{2508}") . $reset; # or 2509. 2026 does not stand out
-my $chr_eql = " ";
+my $chr_old = $clr_old . ($opt_a ? "^" : $rc{chr_old} || "\x{25bc}") . $reset;
+my $chr_new = $clr_new . ($opt_a ? "^" : $rc{chr_new} || "\x{25b2}") . $reset;
+my $chr_cml = $clr_dbg . ($opt_a ? ">" : $rc{chr_cml} || "\x{21b1}") . $reset;
+my $chr_cmr = $clr_dbg . ($opt_a ? "<" : $rc{chr_cmr} || "\x{21b0}") . $reset;
+my $chr_eli = $clr_dbg . ($opt_a ? "-" : $rc{chr_eli} || "\x{2508}") . $reset; # or 2509. 2026 does not stand out
+my $chr_eql =                            $rc{chr_eql} || " ";
 my $chr_lft = $clr_old . (defined $opt_u ? "-" : "< ") . $reset;
 my $chr_rgt = $clr_new . (defined $opt_u ? "+" : "> ") . $reset;
 my $chr_ctx =             defined $opt_u ? " " : "  ";
@@ -404,6 +404,7 @@ sub read_rc {
 	        =~ s{background}{bg}ir
 	        =~ s{^(?:unicode|utf-?8?)$}{utf8}ir
 	      } = $v
+		=~ s{U\+?([0-9A-Fa-f]{2,7})}{chr hex $1}ger
 		=~ s{^(?:no|false)$}{0}ir
 		=~ s{^(?:yes|true)$}{-1}ir; # -1 is still true
 	    }
@@ -569,7 +570,9 @@ With -Uu0v2 --ascii:
  + -- verbose : LATIN SMALL LETTER C, LATIN SMALL LETTER D, ZERO WIDTH SPACE
 
 the word "verbose" and the character markers will be displayed using the
-C<verbose> color.
+C<verbose> color. The characters used for the markers can be defined in your
+configuration file as C<chr_cml> (the character used as marker on the left)
+and C<chr_cmr> (the character used as marker on the right).
 
 =item --markers -m
 
@@ -586,6 +589,10 @@ This will look like (with unified diff):
  -               ▼       ▼
  +Sat Dec 18 07:00:33 1993,I.O.D.U.,,756194433,1442539
  +               ▲       ▲
+
+The characters used for the markers can be defined in your configuration file
+as C<chr_old> (the character used as marker under removed characters) and
+C<chr_new> (the character used as marker under added characters).
 
 =item --ascii -a
 
@@ -685,6 +692,9 @@ With C<-me3> that would be like
  -        ▼        ▼
  +Sat┈07:00:33┈ 1993,I.┈539
  +        ▲        ▲
+
+The text used for the replaced text can be defined in your configuration file
+as C<chr_eli>.
 
 =item --ignore-case -i
 
@@ -922,7 +932,68 @@ meaning no fallback based on heuristics.
  ellipsis : 0
 
 Defines the number of characters to keep on each side of a horizontal-equal
-segment. The default is C<0>, meaning to not compress.
+segment. The default is C<0>, meaning to not compress. See also C<chr_eli>.
+
+=item chr_old
+
+ chr_old : U+25BC
+
+Defines the character used to indicate the position of removed text on the
+line below the text when option C<-m> is in effect.
+
+=item chr_new
+
+ chr_new : U+25B2
+
+Defines the character used to indicate the position of added text on the
+line below the text when option C<-m> is in effect.
+
+=item chr_cml
+
+ chr_cml : U+21B1
+
+Defines the character used to indicate the starting position of changed text
+in a line when verbose level is 3 and up.
+
+=item chr_cmr
+
+ chr_cmr : U+21B0
+
+Defines the character used to indicate the ending position of changed text
+in a line when verbose level is 3 and up.
+
+=item chr_eli
+
+ chr_eli : U+21B0
+
+Defines the character used to indicate omitted text in large unchanged text
+when C<--ellipsis>/C<-e> is in effect.
+
+This character is not equally well visible on all terminals or in all fonts,
+so you might want to chane it to something that stands out better in you
+environment. Possible suggestions:
+
+ … U+2026 HORIZONTAL ELLIPSIS
+ ‴ U+2034 TRIPLE PRIME
+ ‷ U+2037 REVERSED TRIPLE PRIME
+ ↔ U+2194 LEFT RIGHT ARROW
+ ↭ U+21ad LEFT RIGHT WAVE ARROW
+ ↮ U+21ae LEFT RIGHT ARROW WITH STROKE
+ ↹ U+21b9 LEFTWARDS ARROW TO BAR OVER RIGHTWARDS ARROW TO BAR
+ ⇄ U+21c4 RIGHTWARDS ARROW OVER LEFTWARDS ARROW
+ ⇆ U+21c6 LEFTWARDS ARROW OVER RIGHTWARDS ARROW
+ ⇎ U+21ce LEFT RIGHT DOUBLE ARROW WITH STROKE
+ ⇔ U+21d4 LEFT RIGHT DOUBLE ARROW
+ ⇹ U+21f9 LEFT RIGHT ARROW WITH VERTICAL STROKE
+ ⇼ U+21fc LEFT RIGHT ARROW WITH DOUBLE VERTICAL STROKE
+ ⇿ U+21ff LEFT RIGHT OPEN-HEADED ARROW
+ ≋ U+224b TRIPLE TILDE
+ ┄ U+2504 BOX DRAWINGS LIGHT TRIPLE DASH HORIZONTAL
+ ┅ U+2505 BOX DRAWINGS HEAVY TRIPLE DASH HORIZONTAL
+ ┈ U+2508 BOX DRAWINGS LIGHT QUADRUPLE DASH HORIZONTAL
+ ┉ U+2509 BOX DRAWINGS HEAVY QUADRUPLE DASH HORIZONTAL
+ ⧻ U+29fb TRIPLE PLUS
+ ⬌ U+2b0c LEFT RIGHT BLACK ARROW
 
 =back
 

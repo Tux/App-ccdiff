@@ -4,6 +4,7 @@
     * Add --no-colors
     * Reverse/invert debug color too under -r if possible
     * Add --ellipsis / -e
+    * Allow used character indicators in RC
 
 0.24	- 2018-08-26
     * Filter colors on Term::ANSIColor version
