@@ -32,6 +32,7 @@ sub usage {
     say "  Other options:";
     say "   -t n  --threshold=2  Horizontal line diff threshold";
     say "   -h n  --heuristics=n Horizontal char diff threshold";
+    say "   -e n  --ellipsis=n   Compress horizontal equal sections";
     say "   -m    --markers      Use markers to indicate change positions";
     say "   -a    --ascii        Use ASCII instead of Unicode indicators";
     say "         --no-color     Reset all colors to none.";
@@ -47,6 +48,7 @@ sub usage {
 my %rc = (
     ascii	=> 0,
     bg		=> "white",
+    ellipsis	=> 0,
     emacs	=> 0,
     heuristics	=> 0,
     index	=> 0,
@@ -71,6 +73,7 @@ my $opt_I = $rc{index};
 my $opt_m = $rc{markers};
 my $opt_r = $rc{reverse};
 my $opt_t = $rc{threshold};
+my $opt_e = $rc{ellipsis};
 my $opt_u = $rc{unified};
 my $opt_U = $rc{utf8};
 my $opt_v = 0;
@@ -101,6 +104,7 @@ unless (caller) {
 	"I|idx|index:-1"	=> \$opt_I,
 	"t|threshold=i"		=> \$opt_t,
 	"h|heuristics=i"	=> \$opt_h,
+	"e|ellipsis=i"		=> \$opt_e,
 	  "emacs!"		=> \$emacs,
 
 	"a|ascii"		=> sub { $opt_a ^= 1 },
@@ -170,6 +174,7 @@ my $chr_old = $clr_old . ($opt_a ? "^" : "\x{25bc}") . $reset;
 my $chr_new = $clr_new . ($opt_a ? "^" : "\x{25b2}") . $reset;
 my $chr_cml = $clr_dbg . ($opt_a ? ">" : "\x{21b1}") . $reset;
 my $chr_cmr = $clr_dbg . ($opt_a ? "<" : "\x{21b0}") . $reset;
+my $chr_eli = $clr_dbg . ($opt_a ? "-" : "\x{2508}") . $reset; # or 2509. 2026 does not stand out
 my $chr_eql = " ";
 my $chr_lft = $clr_old . (defined $opt_u ? "-" : "< ") . $reset;
 my $chr_rgt = $clr_new . (defined $opt_u ? "+" : "> ") . $reset;
@@ -198,6 +203,7 @@ sub ccdiff {
 	    $o eq "ascii"			and $opt_a = $v;
 	    $o eq "bg"				and $rev_color = $v;
 #	    $o eq "context"			and $opt_c = $v;
+	    $o eq "ellipsis"			and $opt_e = $v;
 	    $o eq "emacs"			and $emacs = $v;
 	    $o eq "heuristics"			and $opt_h = $v;
 	    $o eq "ignore-all-space"		and $opt_w = $v;
@@ -337,28 +343,31 @@ sub subdiff {
 	my @co = @{$c[0]};
 	my @cn = @{$c[1]};
 	if ($d->Same) {
-	    $d1 .= $_ for @co;
-	    $d2 .= $_ for @cn;
-	    $x1 .= $_ for map { s/\S/$chr_eql/gr } @co;
-	    $x2 .= $_ for map { s/\S/$chr_eql/gr } @co;
 	    $heu->{same} += scalar @co;
+	    my $e = 0;
+	    $opt_e && @co > (2 * $opt_e) and
+		splice @co, $opt_e, $#co - (2 * $opt_e), $chr_eli;
+	    $d1 .= $_ for @co;
+	    $d2 .= $_ for @co;
+	    $x1 .= $_ for map { s/(?:\Q$chr_eli\E|\S)/$chr_eql/gr } @co;
+	    $x2 .= $_ for map { s/(?:\Q$chr_eli\E|\S)/$chr_eql/gr } @co;
 	    next;
 	    }
 	if (@co) {
+	    $heu->{old} += scalar @co;
 	    $d1 .= $cml.$clr_old;
 	    $d1 .= s/\n/$reset\n$clr_old/gr for @co;
 	    $d1 .= $reset.$cmr;
 	    $x1 .= $_ for map { s/[^\t\r\n]/$cmd/gr } @co;
 	    $opt_v and push @h1, map { $opt_U ? charnames::viacode (ord) : unpack "H*"; } @co;
-	    $heu->{old} += scalar @co;
 	    }
 	if (@cn) {
+	    $heu->{new} += scalar @cn;
 	    $d2 .= $cml.$clr_new;
 	    $d2 .= s/\n/$reset\n$clr_new/gr for @cn;
 	    $d2 .= $reset.$cmr;
 	    $x2 .= $_ for map { s/[^\t\r\n]/$cma/gr } @cn;
 	    $opt_v and push @h2, map { $opt_U ? charnames::viacode (ord) : unpack "H*"; } @cn;
-	    $heu->{new} += scalar @cn;
 	    }
 	}
     $heu->{pct} = ($heu->{old} + $heu->{new}) / (2 * $heu->{same});
@@ -659,6 +668,24 @@ the fall-back of horizontal diff to vertical diff.
 This percentage is calculated as C<(characters removed + characters added) /
 (2 * characters unchanged))>. 
 
+=item --ellipsis=n -e n
+
+Defines the number of characters to keep on each side of a horizontal-equal
+segment. The default is C<0>, meaning to not compress.
+
+If set to a positive number, and the length of a segment of equal characters
+inside a horizontal diff is longer than twice this value, the middle part is
+replaced with C<┈ U02508 \N{BOX DRAWINGS LIGHT QUADRUPLE DASH HORIZONTAL}>
+(instead of … U02026, as HORIZONTAL ELLIPSIS does not stand out enough).
+
+With C<-me3> that would be like
+
+ 5,5c5,5
+ -Sat┈07:08:33┈ 1998,I.┈539
+ -        ▼        ▼
+ +Sat┈07:00:33┈ 1993,I.┈539
+ +        ▲        ▲
+
 =item --ignore-case -i
 
 Ignore case on comparison.
@@ -889,6 +916,13 @@ horizontal diff to vertical diff.
 Defines the percentage of character-changes a change block may differ before
 the fall-back of horizontal diff to vertical diff. The default is undefined,
 meaning no fallback based on heuristics.
+
+=item ellipsis (-e)
+
+ ellipsis : 0
+
+Defines the number of characters to keep on each side of a horizontal-equal
+segment. The default is C<0>, meaning to not compress.
 
 =back
 
