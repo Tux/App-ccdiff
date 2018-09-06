@@ -9,3 +9,4 @@ MANIFEST.SKIP
 ^Makefile$
 ^pm_to
 ^MYMETA
+^\.releaserc
