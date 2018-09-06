@@ -25,3 +25,4 @@ tmp/*
 sandbox/cover_db*
 Talk/*.mp4
 Talk/*.jpg
+*-git
