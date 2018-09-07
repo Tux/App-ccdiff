@@ -13,6 +13,7 @@ $vsn =~ s/ - [0-9]{8}//;
 mkdir "lib";
 mkdir "lib/App";
 open $fh, ">", "lib/App/ccdiff.pm";
-say $fh "package App::ccdiff;\n\n$vsn\n\nuse strict;\nuse warnings\n\n1;\n\n",
-    $src =~ s{.*(?=__END__\n)}{}sr;
+#say $fh "package App::ccdiff;\n\n$vsn\n\nuse strict;\nuse warnings\n\n1;\n\n",
+#    $src =~ s{.*(?=__END__\n)}{}sr;
+print $fh $src;
 close $fh;
