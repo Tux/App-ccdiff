@@ -355,26 +355,45 @@ sub subdiff {
 	if ($d->Same) {
 	    $heu->{same} += scalar @co;
 	    my $e = $chr_eli;
-	    my @cor;
+	    my $c = join "" => @co;
 	    if ($opt_e) {
-		my $l = @co - (2 * $opt_e);
-		my $ee = $opt_v <= 1 ? $e : $e =~ s/^.\K(?=.$)/$l/r; 
-		if ($l > length $ee) {
-		    $opt_v >= 2 and $e =~ s/^.\K(?=.$)/$l/;
-		    @cor = @co[($#co - $opt_e) .. $#co];
-		    splice @co, $opt_e;
+		my $join = "";
+		foreach my $sc (split m/\n/ => $c) {
+		    $_ .= $join for $d1, $d2, $x1, $x2;
+		    $join = "\n";
+		    my $l  = length $sc;      # The length of this "same" chunck
+		    my $le = $l - 2 * $opt_e; # The length of the text replaces with ellipsis
+		    my $ee = $opt_v <= 1 ? $e : $e =~ s/^.\K(?=.$)/$le/r; 
+		    if ($le > length $ee) {
+			my $lsc = substr $sc, 0,           $opt_e;
+			$d1 .= $lsc;
+			$d2 .= $lsc;
+			$lsc =~ s/\S/$chr_eql/g;
+			$x1 .= $lsc;
+			$x2 .= $lsc;
+			my $rsc = substr $sc, $l - $opt_e, $opt_e;
+			$d1 .= $clr_dbg . $ee . $reset . $rsc;
+			$d2 .= $clr_dbg . $ee . $reset . $rsc;
+			$rsc =~ s/\S/$chr_eql/g;
+			$x1 .= $chr_eql x length ($ee) . $rsc;
+			$x2 .= $chr_eql x length ($ee) . $rsc;
+			next;
+			}
+		    else {
+			$d1 .= $sc;
+			$d2 .= $sc;
+			$sc =~ s/\S/$chr_eql/g;
+			$x1 .= $sc;
+			$x2 .= $sc;
+			}
 		    }
+		next;
 		}
-	    $d1 .= join "" => @co;
-	    $d2 .= join "" => @co;
-	    $x1 .= join "" => map { s/\S/$chr_eql/gr } @co;
-	    $x2 .= join "" => map { s/\S/$chr_eql/gr } @co;
-	    if (@cor) {
-		$d1 .= join "" => $clr_dbg, $e, $reset, @cor;
-		$d2 .= join "" => $clr_dbg, $e, $reset, @cor;
-		$x1 .= join "" => $chr_eql x length ($e), map { s/\S/$chr_eql/gr } @co;
-		$x2 .= join "" => $chr_eql x length ($e), map { s/\S/$chr_eql/gr } @co;
-		}
+	    $d1 .= $c;
+	    $d2 .= $c;
+	    $c =~ s/\S/$chr_eql/g;
+	    $x1 .= $c;
+	    $x2 .= $c;
 	    next;
 	    }
 	if (@co) {
@@ -713,9 +732,6 @@ inside a horizontal diff is longer than twice this value, the middle part is
 replaced with C<┈ U02508 \N{BOX DRAWINGS LIGHT QUADRUPLE DASH HORIZONTAL}>
 (instead of … U02026, as HORIZONTAL ELLIPSIS does not stand out enough).
 
-Note that this I<includes> newlines, so text that wraps over multiple lines
-might show compressed as less lines than original, which might be confusing.
-
 With C<-u0me3> that would be like
 
  5,5c5,5
@@ -1036,7 +1052,7 @@ environment. Possible suggestions:
 
 =item chr_eli_v
 
- chr_eli : U+21A4U+21A6
+ chr_eli_v : U+21A4U+21A6
 
 When ussing C<--ellipsis> with C<--verbose> level 2 or up, the single character
 indicator will be replaced with this character. If it is 2 characters wide, the

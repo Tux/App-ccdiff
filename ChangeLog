@@ -1,4 +1,4 @@
-0.25	- 2018-09-06
+0.25	- 2018-09-07
     * Use CORE module for --info
     * Show codepoints under -v3 (issue#14)
     * Add --no-colors
