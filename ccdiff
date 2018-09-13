@@ -9,7 +9,7 @@ use Algorithm::Diff;
 use Term::ANSIColor qw(:constants color);
 use Getopt::Long    qw(:config bundling);
 
-our $VERSION = "0.25";
+our $VERSION = "0.26";
 our $CMD     = $0 =~ s{.*/}{}r;
 
 sub usage {
@@ -1071,15 +1071,30 @@ You can use ccdiff to show diffs in git. It may work like this:
  $ git config --global difftool.ccdiff.cmd 'ccdiff --utf-8 -u -r $LOCAL $REMOTE'
  $ git difftool SHA~..SHA
  $ cat >~/bin/git-ccdiff <<EOF
- #!/bin/sh
+ #!/usr/bin/env perl
 
- commit=$1
- shift
- if [ "$commit" = "" ]; then
-     git difftool
- else
-     git difftool $commit~1..$commit
-     fi
+ use 5.14.2;
+ use warnings;
+
+ my @opt;
+ my $commit;
+ my $file;
+
+ my @git = qw( git difftool );
+ for (@ARGV) {
+     if (m/^-/) {
+         push @opt, $_;
+         }
+     elsif (-f) {
+         push @git, $_;
+         }
+     else {
+         push @git, "$_~1..$_";
+         }
+     }
+
+ @opt and $ENV{CCDIFF_OPTIONS} = join " " => @opt;
+ system @git;
  EOF
  $ chmod 755 ~/bin/git-ccdiff
  $ git ccdiff SHA

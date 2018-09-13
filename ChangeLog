@@ -1,3 +1,6 @@
+0.26	- 2018-09-13
+    * Update git-ccdiff
+
 0.25	- 2018-09-07
     * Use CORE module for --info
     * Show codepoints under -v3 (issue#14)

@@ -105,11 +105,30 @@ $ git config --global difftool.prompt false
 $ git config --global difftool.ccdiff.cmd 'ccdiff --utf-8 -u -r $LOCAL $REMOTE'
 $ git difftool SHA~..SHA
 $ cat >~/bin/git-ccdiff <<EOF
-#!/bin/sh
+#!/usr/bin/env perl
 
-commit=$1
-shift
-git difftool $commit~1..$commit $@
+use 5.14.2;
+use warnings;
+
+my @opt;
+my $commit;
+my $file;
+
+my @git = qw( git difftool );
+for (@ARGV) {
+    if (m/^-/) {
+        push @opt, $_;
+        }
+    elsif (-f) {
+        push @git, $_;
+        }
+    else {
+        push @git, "$_~1..$_";
+        }
+    }
+
+@opt and $ENV{CCDIFF_OPTIONS} = join " " => @opt;
+system @git;
 EOF
 $ chmod 755 ~/bin/git-ccdiff
 $ git ccdiff SHA
@@ -117,14 +136,12 @@ $ git ccdiff SHA
 
 ## LIMITATIONS
 
-There is no provision yet for showing zero-width unicode "characters", like
-U+200b (ZERO WIDTH SPACE), U+200c (ZERO WITDH NON_JOINER), U+200D (ZERO WIDTH
-JOINER), and U+feff (ZERO WIDTH NO-BREAK SPACE) will not show (yet) in normal
-output and might cause displacement of other indicators.
-
 There is no provision (yet) for coping with double-width characters.
 
 Large datasets may consume all available memory, causing the diff to fail.
+
+Not all that can be set from the configuration files can be overruled by
+comman-line options.
 
 ## LICENSE
 
