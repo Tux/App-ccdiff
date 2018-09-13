@@ -31,9 +31,13 @@ my $rv = WriteMakefile (%wmf);
 package MY;
 
 sub postamble {
-    my $mpm = (-d ".git" && -x "2lib")
-        ? "lib/App/ccdiff.pm: ccdiff\n\tperl ./2lib\n\nall::\t\tdoc spellcheck\n"
-        : "";
+    my @mpm = (-d ".git" && -x "2lib")
+        ? ( '','lib/App/ccdiff.pm:	ccdiff',
+		'	perl ./2lib',
+		'',
+		'all::			lib/App/ccdiff.pm doc spellcheck',
+		)
+        : ();
     join "\n" =>
         'spellcheck:',
         '	pod-spell-check --aspell --ispell ccdiff',
@@ -59,8 +63,7 @@ sub postamble {
 	'	nroff -mandoc < $? > $@',
 	'doc/README.md:		README.md',
 	'	cp -p $? $@',
-	'',
-        $mpm;
+        @mpm;
     } # postamble
 
 1;
