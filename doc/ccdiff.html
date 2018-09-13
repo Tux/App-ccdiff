@@ -1,0 +1,674 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>ccdiff - Colored Character diff</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:hmbrand@cpan.org" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#OPTIONS">OPTIONS</a>
+    <ul>
+      <li><a href="#Command-line-options">Command line options</a></li>
+      <li><a href="#Configuration-files">Configuration files</a></li>
+    </ul>
+  </li>
+  <li><a href="#Git-integration">Git integration</a></li>
+  <li><a href="#CAVEATS">CAVEATS</a></li>
+  <li><a href="#SEE-ALSO">SEE ALSO</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+  <li><a href="#COPYRIGHT-AND-LICENSE">COPYRIGHT AND LICENSE</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p>ccdiff - Colored Character diff</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code> ccdiff [options] file1|- file2|-
+
+ ccdiff --help
+ ccdiff --man
+ ccdiff --info</code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<h1 id="OPTIONS">OPTIONS</h1>
+
+<h2 id="Command-line-options">Command line options</h2>
+
+<dl>
+
+<dt id="help">--help -?</dt>
+<dd>
+
+<p>Show a summary op the available command-line options and exit.</p>
+
+</dd>
+<dt id="version--V">--version -V</dt>
+<dd>
+
+<p>Show the version and exit.</p>
+
+</dd>
+<dt id="man">--man</dt>
+<dd>
+
+<p>Show this manual using pod2man and nroff.</p>
+
+</dd>
+<dt id="info">--info</dt>
+<dd>
+
+<p>Show this manual using pod2text.</p>
+
+</dd>
+<dt id="utf-8--U">--utf-8 -U</dt>
+<dd>
+
+<p>All I/O (streams to compare and standard out) are in UTF-8.</p>
+
+</dd>
+<dt id="unified-3--u-3">--unified[=3] -u [3]</dt>
+<dd>
+
+<p>Generate a unified diff. The number of context lines is optional. When omitted it defaults to 3. Currently there is no provision of dealing with overlapping diff chunks. If the common part between two diff chunks is shorter than twice the number of context lines, some lines may show twice.</p>
+
+<p>The default is to use traditional diff:</p>
+
+<pre><code> 5,5c5,5
+ &lt; Sat Dec 18 07:00:33 1993,I.O.D.U.,,756194433,1442539
+ ---
+ &gt; Sat Dec 18 07:08:33 1998,I.O.D.U.,,756194433,1442539</code></pre>
+
+<p>a unified diff (-u1) would be</p>
+
+<pre><code> 5,5c5,5
+  Tue Sep  6 05:43:59 2005,B.O.Q.S.,,1125978239,1943341
+ -Sat Dec 18 07:00:33 1993,I.O.D.U.,,756194433,1442539
+ +Sat Dec 18 07:08:33 1998,I.O.D.U.,,756194433,1442539
+  Mon Feb 23 10:37:02 2004,R.X.K.S.,van,1077529022,1654127</code></pre>
+
+</dd>
+<dt id="verbose-1--v-1">--verbose[=1] -v[1]</dt>
+<dd>
+
+<p>Show an additional line for each old or new section in a change chunk (not for added or deleted lines) that shows the hexadecimal value of each character. If <code>--utf-8</code> is in effect, it will show the Unicode character name(s).</p>
+
+<p>This is a debugging option, so invisible characters can still be &quot;seen&quot;.</p>
+
+<p><code>--verbose</code> accepts an optional verbosity-level. On level 2 and up, all horizontal changes get left-and-right markers inserted to enable seeing the location of the ZERO WIDTH or invisible characters. With level 3 and up and Unicode enabled, the changed characters will also show the codepoint in hex.</p>
+
+<p>An example of this:</p>
+
+<p>With -Uu0v0:</p>
+
+<pre><code> 1,1c1,1
+ - A  BCDE Fg
+ + A BcdE&#x200B;Fg</code></pre>
+
+<p>With -Uu0v1:</p>
+
+<pre><code> 1,1c1,1
+ - A  BCDE Fg
+ - -- verbose : SPACE, LATIN CAPITAL LETTER C, LATIN CAPITAL LETTER D, SPACE
+ + A BcdE&#x200B;Fg
+ + -- verbose : LATIN SMALL LETTER C, LATIN SMALL LETTER D, ZERO WIDTH SPACE</code></pre>
+
+<p>With -Uu0v2:</p>
+
+<pre><code> 1,1c1,1
+ - A &#x21B1; &#x21B0;B&#x21B1;CD&#x21B0;E&#x21B1; &#x21B0;Fg
+ - -- verbose : SPACE, LATIN CAPITAL LETTER C, LATIN CAPITAL LETTER D, SPACE
+ + A B&#x21B1;cd&#x21B0;E&#x21B1;&#x200B;&#x21B0;Fg
+ + -- verbose : LATIN SMALL LETTER C, LATIN SMALL LETTER D, ZERO WIDTH SPACE</code></pre>
+
+<p>With -Uu0v3:</p>
+
+<pre><code> 1,1c1,1
+ - A &#x21B1; &#x21B0;B&#x21B1;CD&#x21B0;E&#x21B1; &#x21B0;Fg
+ - -- verbose : SPACE (U+000020), LATIN CAPITAL LETTER C (U+000043), LATIN CAPITAL LETTER D (U+000044), SPACE (U+000020)
+ + A B&#x21B1;cd&#x21B0;E&#x21B1;&#x200B;&#x21B0;Fg
+ + -- verbose : LATIN SMALL LETTER C (U+000063), LATIN SMALL LETTER D (U+000064), ZERO WIDTH SPACE (U+00200B)</code></pre>
+
+<p>With -Uu0v2 --ascii:</p>
+
+<pre><code> 1,1c1,1
+ - A &gt; &lt;B&gt;CD&lt;E&gt; &lt;Fg
+ - -- verbose : SPACE, LATIN CAPITAL LETTER C, LATIN CAPITAL LETTER D, SPACE
+ + A B&gt;cd&lt;E&gt;&#x200B;&lt;Fg
+ + -- verbose : LATIN SMALL LETTER C, LATIN SMALL LETTER D, ZERO WIDTH SPACE</code></pre>
+
+<p>the word &quot;verbose&quot; and the character markers will be displayed using the <code>verbose</code> color. The characters used for the markers can be defined in your configuration file as <code>chr_cml</code> (the character used as marker on the left) and <code>chr_cmr</code> (the character used as marker on the right).</p>
+
+</dd>
+<dt id="markers--m">--markers -m</dt>
+<dd>
+
+<p>Use markers under each changed character in change-chunks.</p>
+
+<p><code>--markers</code> is especially useful if the terminal does not support colors, or if you want to copy/paste the output to (ASCII) mail. See also <code>--ascii</code>. The markers will have the same color as added or deleted text.</p>
+
+<p>This will look like (with unified diff):</p>
+
+<pre><code> 5,5c5,5
+ -Sat Dec 18 07:08:33 1998,I.O.D.U.,,756194433,1442539
+ -               &#x25BC;       &#x25BC;
+ +Sat Dec 18 07:00:33 1993,I.O.D.U.,,756194433,1442539
+ +               &#x25B2;       &#x25B2;</code></pre>
+
+<p>The characters used for the markers can be defined in your configuration file as <code>chr_old</code> (the character used as marker under removed characters) and <code>chr_new</code> (the character used as marker under added characters).</p>
+
+<p>If <code>--ellipsis</code> is also in effect and either the <code>chr_eli</code> is longer than one character or <code>--verbose</code> level is over 2, this options is automatically disabled.</p>
+
+</dd>
+<dt id="ascii--a">--ascii -a</dt>
+<dd>
+
+<p>Use (colored) ASCII indicators instead of Unicode. The default indicators are Unicode characters that stand out better. The markers will have the same color as added or deleted text.</p>
+
+<p>For the vertical markers (<code>-m</code>) that would look like:</p>
+
+<pre><code> 5,5c5,5
+ -Sat Dec 18 07:08:33 1998,I.O.D.U.,,756194433,1442539
+ -               ^       ^
+ +Sat Dec 18 07:00:33 1993,I.O.D.U.,,756194433,1442539
+ +               ^       ^</code></pre>
+
+<p>For the positional indicators, I did consider using U+034e (COMBINING UPWARDS ARROW BELOW), but as most terminals are probably unable to show it due to line height changes, I did not pursue the idea.</p>
+
+</dd>
+<dt id="pink--p">--pink -p</dt>
+<dd>
+
+<p>Change the default <code>red</code> for deleted text to the color closest to pink that is supported by <a>Term::ANSIColor</a>: <code>magenta</code>.</p>
+
+</dd>
+<dt id="reverse--r">--reverse -r</dt>
+<dd>
+
+<p>Reverse/invert the foreground and background for the colored indicators.</p>
+
+<p>If the foreground color has <code>bold</code>, it will be stripped from the new background color.</p>
+
+</dd>
+<dt id="list-colors">--list-colors</dt>
+<dd>
+
+<p>List available colors and exit.</p>
+
+</dd>
+<dt id="no-colors">--no-colors</dt>
+<dd>
+
+<p>Disable all colors. Useful for redirecting the diff output to a file that is to be included in documentation.</p>
+
+</dd>
+<dt id="old-color">--old=color</dt>
+<dd>
+
+<p>Define the foreground color for deleted text.</p>
+
+</dd>
+<dt id="new-color">--new=color</dt>
+<dd>
+
+<p>Define the foreground color for added text.</p>
+
+</dd>
+<dt id="bg-color">--bg=color</dt>
+<dd>
+
+<p>Define the background color for changed text.</p>
+
+</dd>
+<dt id="index---idx--I">--index --idx -I</dt>
+<dd>
+
+<p>Prefix position indicators with an index.</p>
+
+<pre><code> [001] 5,5c5,5
+ -Sat Dec 18 07:08:33 1998,I.O.D.U.,,756194433,1442539
+ +Sat Dec 18 07:00:33 1993,I.O.D.U.,,756194433,1442539</code></pre>
+
+<p>If a positive number is passed (<code>--index=4</code> or <code>-I 4</code>), display just the chunk with that index, using the <code>verbose</code> color:</p>
+
+<p>This is useful in combination with <code>--verbose</code>.</p>
+
+</dd>
+<dt id="threshold-2--t-2">--threshold=2 -t 2</dt>
+<dd>
+
+<p>Defines the number of lines a change block may differ before the fall-back of horizontal diff to vertical diff.</p>
+
+<p>If a chunk describes a change, and the number of lines in the original block has less or more lines than the new block and that difference exceeds this threshold, <code>ccdiff</code> will fall-back to vertical diff.</p>
+
+</dd>
+<dt id="heuristics-n--h-n">--heuristics=n -h n</dt>
+<dd>
+
+<p>Defines the percentage of character-changes a change block may differ before the fall-back of horizontal diff to vertical diff.</p>
+
+<p>This percentage is calculated as <code>(characters removed + characters added) / (2 * characters unchanged))</code>.</p>
+
+</dd>
+<dt id="ellipsis-n--e-n">--ellipsis=n -e n</dt>
+<dd>
+
+<p>Defines the number of characters to keep on each side of a horizontal-equal segment. The default is <code>0</code>, meaning do not compress.</p>
+
+<p>If set to a positive number, and the length of a segment of equal characters inside a horizontal diff is longer than twice this value, the middle part is replaced with <code>&#x2508; U02508 \N{BOX DRAWINGS LIGHT QUADRUPLE DASH HORIZONTAL}</code> (instead of &hellip; U02026, as HORIZONTAL ELLIPSIS does not stand out enough).</p>
+
+<p>With <code>-u0me3</code> that would be like</p>
+
+<pre><code> 5,5c5,5
+ -Sat&#x2508;07:08:33&#x2508; 1998,I.&#x2508;539
+ -        &#x25BC;        &#x25BC;
+ +Sat&#x2508;07:00:33&#x2508; 1993,I.&#x2508;539
+ +        &#x25B2;        &#x25B2;</code></pre>
+
+<p>With <code>-u0e3 -v2</code> like</p>
+
+<pre><code> 5,5c5,5
+ -Sat&#x21A4;9&#x21A6;07:0&#x21B1;0&#x21B0;:33 199&#x21B1;3&#x21B0;,I.&#x21A4;23&#x21A6;539
+ - -- verbose : DIGIT ZERO, DIGIT THREE
+ +Sat&#x21A4;9&#x21A6;07:0&#x21B1;8&#x21B0;:33 199&#x21B1;8&#x21B0;,I.&#x21A4;23&#x21A6;539
+ + -- verbose : DIGIT EIGHT, DIGIT EIGHT</code></pre>
+
+<p>The text used for the replaced text can be defined in your configuration file as <code>chr_eli</code> and/or <code>chr_eli_v</code>.</p>
+
+</dd>
+<dt id="ignore-case--i">--ignore-case -i</dt>
+<dd>
+
+<p>Ignore case on comparison.</p>
+
+</dd>
+<dt id="ignore-all-space--w">--ignore-all-space -w</dt>
+<dd>
+
+<p>Ignore all white-space changes. This will set all options <code>-b</code>, <code>-Z</code>, <code>-E</code>, and <code>-B</code>.</p>
+
+</dd>
+<dt id="ignore-trailing-space--Z">--ignore-trailing-space -Z</dt>
+<dd>
+
+<p>Ignore changes in trailing white-space (TAB&#39;s and spaces).</p>
+
+</dd>
+<dt id="ignore-ws-ignore-space-change--b">--ignore-ws|ignore-space-change -b</dt>
+<dd>
+
+<p>Ignore changes in horizontal white-space (TAB&#39;s and spaces). This does not include white-space changes that splits non-white-space or removes white-space between two non-white-space elements.</p>
+
+</dd>
+<dt id="ignore-tab-expansion--E">--ignore-tab-expansion -E</dt>
+<dd>
+
+<p>NYI</p>
+
+</dd>
+<dt id="ignore-blank-lines--B">--ignore-blank-lines -B</dt>
+<dd>
+
+<p><b>Just Partly Implemented</b> (WIP)</p>
+
+</dd>
+</dl>
+
+<h2 id="Configuration-files">Configuration files</h2>
+
+<p>In order to be able to overrule the defaults set in <code>ccdiff</code>, one can set options specific for this login. The following option files are looked for in this order:</p>
+
+<pre><code> - $HOME/ccdiff.rc
+ - $HOME/.ccdiffrc
+ - $HOME/.config/ccdiff</code></pre>
+
+<p>and evaluated in that order. Any options specified in a file later in that chain will overwrite previously set options.</p>
+
+<p>Option files are only read and evaluated if it is not empty and not writable by others than the owner.</p>
+
+<p>The syntax of the file is one option per line. where leading and trailing white-space is ignored. If that line then starts with one of the options listed below, followed by optional white-space followed by either an <code>=</code> or a <code>:</code>, followed by optional white-space and the values, the value is assigned to the option. The values <code>no</code> and <code>false</code> (case insensitive) are aliases for <code>0</code>. The values <code>yes</code> and <code>true</code> are aliases to <code>-1</code> (<code>-1</code> being a true value).</p>
+
+<p>Between parens is the corresponding command-line option.</p>
+
+<dl>
+
+<dt id="unified--u">unified (-u)</dt>
+<dd>
+
+<p>If you prefer unified-diff over old-style diff by default, set this to the desired number of context lines:</p>
+
+<pre><code> unified : 3</code></pre>
+
+<p>The default is undefined</p>
+
+</dd>
+<dt id="markers--m1">markers (-m)</dt>
+<dd>
+
+<pre><code> markers : false</code></pre>
+
+<p>Defines if markers should be used under changed characters. The default is to use colors only. The <code>-m</code> command line option will toggle the option when set from a configuration file.</p>
+
+</dd>
+<dt id="ascii--a1">ascii (-a)</dt>
+<dd>
+
+<pre><code> ascii   : false</code></pre>
+
+<p>Defines to use ASCII markers instead of Unicode markers. The default is to use Unicode markers.</p>
+
+</dd>
+<dt id="reverse--r1">reverse (-r)</dt>
+<dd>
+
+<pre><code> reverse : false</code></pre>
+
+<p>Defines if changes are displayed as foreground-color over background-color or background-color over foreground-color. The default is <code>false</code>, so it will color the changes with the appropriate color (<code>new</code> or <code>old</code>) over the default background color.</p>
+
+</dd>
+<dt id="new---new">new (--new)</dt>
+<dd>
+
+<pre><code> new     : green</code></pre>
+
+<p>Defines the color to be used for added text. The default is <code>green</code>.</p>
+
+<p>The color <code>none</code> is also accepted and disables this color.</p>
+
+<p>Any color accepted by <a>Term::ANSIColor</a> is allowed. Any other color will result in a warning. This option can include <code>bold</code> either as prefix or as suffix.</p>
+
+<p>This option may also be specified as</p>
+
+<pre><code> new-color
+ new_color
+ new-colour
+ new_colour</code></pre>
+
+</dd>
+<dt id="old---old">old (--old)</dt>
+<dd>
+
+<pre><code> old     : red</code></pre>
+
+<p>Defines the color to be used for delete text. The default is <code>red</code>.</p>
+
+<p>The color <code>none</code> is also accepted and disables this color.</p>
+
+<p>Any color accepted by <a>Term::ANSIColor</a> is allowed. Any other color will result in a warning. This option can include <code>bold</code> either as prefix or as suffix.</p>
+
+<p>This option may also be specified as</p>
+
+<pre><code> old-color
+ old_color
+ old-colour
+ old_colour</code></pre>
+
+</dd>
+<dt id="bg---bg">bg (--bg)</dt>
+<dd>
+
+<pre><code> bg      : white</code></pre>
+
+<p>Defines the color to be used as background for changed text. The default is <code>white</code>.</p>
+
+<p>The color <code>none</code> is also accepted and disables this color.</p>
+
+<p>Any color accepted by <a>Term::ANSIColor</a> is allowed. Any other color will result in a warning. The <code>bold</code> attribute is not allowed.</p>
+
+<p>This option may also be specified as</p>
+
+<pre><code> bg-color
+ bg_color
+ bg-colour
+ bg_colour
+ background
+ background-color
+ background_color
+ background-colour
+ background_colour</code></pre>
+
+</dd>
+<dt id="verbose">verbose</dt>
+<dd>
+
+<pre><code> verbose : cyan</code></pre>
+
+<p>Defines the color to be used as color for the verbose tag. The default is <code>cyan</code>. This color will only be used under <code>--verbose</code>.</p>
+
+<p>The color <code>none</code> is also accepted and disables this color.</p>
+
+<p>Any color accepted by <a>Term::ANSIColor</a> is allowed. Any other color will result in a warning.</p>
+
+<p>This option may also be specified as</p>
+
+<pre><code> verbose-color
+ verbose_color
+ verbose-colour
+ verbose_colour</code></pre>
+
+</dd>
+<dt id="utf8--U">utf8 (-U)</dt>
+<dd>
+
+<pre><code> utf8    : yes</code></pre>
+
+<p>Defines whether all I/O is to be interpreted as UTF-8. The default is <code>no</code>.</p>
+
+<p>This option may also be specified as</p>
+
+<pre><code> unicode
+ utf
+ utf-8</code></pre>
+
+</dd>
+<dt id="index--I">index (-I)</dt>
+<dd>
+
+<pre><code> index   : no</code></pre>
+
+<p>Defines if the position indication for a change chunk is prefixed with an index number. The default is <code>no</code>. The index is 1-based.</p>
+
+<p>Without this option, the position indication would be like</p>
+
+<pre><code> 5,5c5,5
+ 19,19d18
+ 42a42,42</code></pre>
+
+<p>with this option, it would be</p>
+
+<pre><code> [001] 5,5c5,5
+ [002] 19,19d18
+ [005] 42a42,42</code></pre>
+
+<p>When this option contains a positive integer, <code>ccdiff</code> will only show diff the diff chunk with that index.</p>
+
+</dd>
+<dt id="emacs">emacs</dt>
+<dd>
+
+<pre><code> emacs   : no</code></pre>
+
+<p>If this option is yes/true, calling <code>ccdiff</code> with just one single argument, and that argument being an existing file, the arguments will act as</p>
+
+<pre><code> $ ccdiff file~ file</code></pre>
+
+<p>if file~ exists.</p>
+
+</dd>
+<dt id="threshold--t">threshold (-t)</dt>
+<dd>
+
+<pre><code> threshold : 2</code></pre>
+
+<p>Defines the number of lines a change block may differ before the fall-back of horizontal diff to vertical diff.</p>
+
+</dd>
+<dt id="heuristics--h">heuristics (-h)</dt>
+<dd>
+
+<pre><code> heuristics : 40</code></pre>
+
+<p>Defines the percentage of character-changes a change block may differ before the fall-back of horizontal diff to vertical diff. The default is undefined, meaning no fallback based on heuristics.</p>
+
+</dd>
+<dt id="ellipsis--e">ellipsis (-e)</dt>
+<dd>
+
+<pre><code> ellipsis : 0</code></pre>
+
+<p>Defines the number of characters to keep on each side of a horizontal-equal segment. The default is <code>0</code>, meaning to not compress. See also <code>chr_eli</code>.</p>
+
+</dd>
+<dt id="chr_old">chr_old</dt>
+<dd>
+
+<pre><code> chr_old : U+25BC</code></pre>
+
+<p>Defines the character used to indicate the position of removed text on the line below the text when option <code>-m</code> is in effect.</p>
+
+</dd>
+<dt id="chr_new">chr_new</dt>
+<dd>
+
+<pre><code> chr_new : U+25B2</code></pre>
+
+<p>Defines the character used to indicate the position of added text on the line below the text when option <code>-m</code> is in effect.</p>
+
+</dd>
+<dt id="chr_cml">chr_cml</dt>
+<dd>
+
+<pre><code> chr_cml : U+21B1</code></pre>
+
+<p>Defines the character used to indicate the starting position of changed text in a line when verbose level is 3 and up.</p>
+
+</dd>
+<dt id="chr_cmr">chr_cmr</dt>
+<dd>
+
+<pre><code> chr_cmr : U+21B0</code></pre>
+
+<p>Defines the character used to indicate the ending position of changed text in a line when verbose level is 3 and up.</p>
+
+</dd>
+<dt id="chr_eli">chr_eli</dt>
+<dd>
+
+<pre><code> chr_eli : U+21B0</code></pre>
+
+<p>Defines the character used to indicate omitted text in large unchanged text when <code>--ellipsis</code>/<code>-e</code> is in effect.</p>
+
+<p>This character is not equally well visible on all terminals or in all fonts, so you might want to chane it to something that stands out better in you environment. Possible suggestions:</p>
+
+<pre><code> &hellip; U+2026 HORIZONTAL ELLIPSIS
+ &#x2034; U+2034 TRIPLE PRIME
+ &#x2037; U+2037 REVERSED TRIPLE PRIME
+ &harr; U+2194 LEFT RIGHT ARROW
+ &#x21AD; U+21ad LEFT RIGHT WAVE ARROW
+ &#x21AE; U+21ae LEFT RIGHT ARROW WITH STROKE
+ &#x21B9; U+21b9 LEFTWARDS ARROW TO BAR OVER RIGHTWARDS ARROW TO BAR
+ &#x21C4; U+21c4 RIGHTWARDS ARROW OVER LEFTWARDS ARROW
+ &#x21C6; U+21c6 LEFTWARDS ARROW OVER RIGHTWARDS ARROW
+ &#x21CE; U+21ce LEFT RIGHT DOUBLE ARROW WITH STROKE
+ &hArr; U+21d4 LEFT RIGHT DOUBLE ARROW
+ &#x21F9; U+21f9 LEFT RIGHT ARROW WITH VERTICAL STROKE
+ &#x21FC; U+21fc LEFT RIGHT ARROW WITH DOUBLE VERTICAL STROKE
+ &#x21FF; U+21ff LEFT RIGHT OPEN-HEADED ARROW
+ &#x224B; U+224b TRIPLE TILDE
+ &#x2504; U+2504 BOX DRAWINGS LIGHT TRIPLE DASH HORIZONTAL
+ &#x2505; U+2505 BOX DRAWINGS HEAVY TRIPLE DASH HORIZONTAL
+ &#x2508; U+2508 BOX DRAWINGS LIGHT QUADRUPLE DASH HORIZONTAL
+ &#x2509; U+2509 BOX DRAWINGS HEAVY QUADRUPLE DASH HORIZONTAL
+ &#x29FB; U+29fb TRIPLE PLUS
+ &#x2B0C; U+2b0c LEFT RIGHT BLACK ARROW</code></pre>
+
+</dd>
+<dt id="chr_eli_v">chr_eli_v</dt>
+<dd>
+
+<pre><code> chr_eli_v : U+21A4U+21A6</code></pre>
+
+<p>When ussing <code>--ellipsis</code> with <code>--verbose</code> level 2 or up, the single character indicator will be replaced with this character. If it is 2 characters wide, the length of the compressed part is put between the characters.</p>
+
+<p>A suggested alternative might be U+21E4U+21E5</p>
+
+</dd>
+</dl>
+
+<h1 id="Git-integration">Git integration</h1>
+
+<p>You can use ccdiff to show diffs in git. It may work like this:</p>
+
+<pre><code> $ git config --global diff.tool ccdiff
+ $ git config --global difftool.prompt false
+ $ git config --global difftool.ccdiff.cmd &#39;ccdiff --utf-8 -u -r $LOCAL $REMOTE&#39;
+ $ git difftool SHA~..SHA
+ $ cat &gt;~/bin/git-ccdiff &lt;&lt;EOF
+ #!/usr/bin/env perl
+
+ use 5.14.2;
+ use warnings;
+
+ my @opt;
+ my $commit;
+ my $file;
+
+ my @git = qw( git difftool );
+ for (@ARGV) {
+     if (m/^-/) {
+         push @opt, $_;
+         }
+     elsif (-f) {
+         push @git, $_;
+         }
+     else {
+         push @git, &quot;$_~1..$_&quot;;
+         }
+     }
+
+ @opt and $ENV{CCDIFF_OPTIONS} = join &quot; &quot; =&gt; @opt;
+ system @git;
+ EOF
+ $ chmod 755 ~/bin/git-ccdiff
+ $ git ccdiff SHA</code></pre>
+
+<p>From then on you can do</p>
+
+<pre><code> $ git ccdiff
+ $ git ccdiff 5c5a39f2</code></pre>
+
+<h1 id="CAVEATS">CAVEATS</h1>
+
+<p>Due to the implementation, where both sides of the comparison are completely kept in memory, this tool might not be able to deal with (very) large datasets.</p>
+
+<h1 id="SEE-ALSO">SEE ALSO</h1>
+
+<p><a>Algorithm::Diff</a>, <a>Text::Diff</a></p>
+
+<h1 id="AUTHOR">AUTHOR</h1>
+
+<p>H.Merijn Brand</p>
+
+<h1 id="COPYRIGHT-AND-LICENSE">COPYRIGHT AND LICENSE</h1>
+
+<pre><code> Copyright (C) 2018-2018 H.Merijn Brand.  All rights reserved.</code></pre>
+
+<p>This library is free software; you can redistribute and/or modify it under the same terms as The Artistic License 2.0.</p>
+
+
+</body>
+
+</html>
+
+

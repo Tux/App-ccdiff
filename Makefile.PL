@@ -32,7 +32,7 @@ package MY;
 
 sub postamble {
     my $mpm = (-d ".git" && -x "2lib")
-        ? "lib/App/ccdiff.pm: ccdiff\n\tperl ./2lib\n"
+        ? "lib/App/ccdiff.pm: ccdiff\n\tperl ./2lib\n\nall::\t\tdoc spellcheck\n"
         : "";
     join "\n" =>
         'spellcheck:',
@@ -48,6 +48,18 @@ sub postamble {
         '	-@cpants_lint.pl $(DISTVNAME).tgz',
         '	-@rm -f Debian_CPANTS.txt',
         '',
+	'doc:			doc/ccdiff.md doc/ccdiff.html doc/ccdiff.man doc/README.md',
+	'doc/ccdiff.md:		ccdiff',
+	'	pod2markdown  < $? > $@',
+	'doc/ccdiff.html:	ccdiff',
+	'	pod2html      < $? 2>&1 | grep -v "^Cannot find" > $@',
+	'doc/ccdiff.3:		ccdiff',
+	'	pod2man	      < $? > $@',
+	'doc/ccdiff.man:	doc/ccdiff.3',
+	'	nroff -mandoc < $? > $@',
+	'doc/README.md:		README.md',
+	'	cp -p $? $@',
+	'',
         $mpm;
     } # postamble
 

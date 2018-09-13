@@ -2,6 +2,7 @@
 ^\.git.*
 ^2lib
 ^blib
+^doc
 ^sandbox
 ^Talk
 [gbx]z$
