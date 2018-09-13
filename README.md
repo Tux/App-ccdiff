@@ -29,7 +29,10 @@ will get Unicode characters.
 # Installation
 
 Change the first line of `ccdiff` to start your favorite perl interpreter
-and then move the file to a folder in your `$PATH`.
+and then move the file to a folder in your `$PATH`, or install from CPAN:
+```
+$ cpan App::ccdiff
+```
 
 # Alternatives
 
