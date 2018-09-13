@@ -44,6 +44,8 @@ $ cpan App::ccdiff
 
  * `colordiff`
 
+ * `klondiff`
+
  * `git`
 
    This however requires a long command:
@@ -54,6 +56,8 @@ $ git -c color.diff.new='bold reverse green' \
               --word-diff=color --word-diff-regex=. \
              <file1> <file2>
 ```
+   An alternative for integration with git is `diff-so-fancy`
+
 ## ASCII
 
  * `vimdiff`
@@ -82,6 +86,26 @@ changes in lines visually outstanding:
  * `kdiff3` (C, X11, Qt)
 
  * `tkdiff` (Tcl/Tk)
+
+## Other (not checked yet)
+
+Reasons for not checking include Windows and emacs.
+
+ * araxis
+ * bc
+ * bc3
+ * codecompare
+ * deltaworker
+ * diffmerge
+ * ecmerge
+ * emerge
+ * examdiff
+ * guiffy
+ * gvimdiff2
+ * gvimdiff3
+ * opendiff
+ * p4merge
+ * winmerge
 
 # Dependencies
 
