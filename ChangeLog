@@ -1,6 +1,7 @@
-0.26	- 2018-09-13
+0.26	- 2018-09-25
     * Update git-ccdiff
     * Docs for git
+    * Include git-ccdiff as file
 
 0.25	- 2018-09-07
     * Use CORE module for --info

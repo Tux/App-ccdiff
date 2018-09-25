@@ -614,34 +614,13 @@
  $ git config --global difftool.prompt false
  $ git config --global difftool.ccdiff.cmd &#39;ccdiff --utf-8 -u -r $LOCAL $REMOTE&#39;
  $ git difftool SHA~..SHA
- $ cat &gt;~/bin/git-ccdiff &lt;&lt;EOF
- #!/usr/bin/env perl
-
- use 5.14.2;
- use warnings;
-
- my @opt;
- my $commit;
- my $file;
-
- my @git = qw( git difftool );
- for (@ARGV) {
-     if (m/^-/) {
-         push @opt, $_;
-         }
-     elsif (-f) {
-         push @git, $_;
-         }
-     else {
-         push @git, &quot;$_~1..$_&quot;;
-         }
-     }
-
- @opt and $ENV{CCDIFF_OPTIONS} = join &quot; &quot; =&gt; @opt;
- system @git;
- EOF
+ $ wget https://github.com/Tux/App-ccdiff/blob/master/Files/git-ccdiff \
+    -O ~/bin/git-ccdiff
+ $ perl -pi -e &#39;s{/pro/bin/perl}{/usr/bin/env perl}&#39; ~/bin/git-ccdiff
  $ chmod 755 ~/bin/git-ccdiff
  $ git ccdiff SHA</code></pre>
+
+<p>Of course you can use <code>curl</code> instead of <code>wget</code> and you can choose your own (fixed) path to <code>perl</code> instead of using <code>/usr/bin/env</code>.</p>
 
 <p>From then on you can do</p>
 

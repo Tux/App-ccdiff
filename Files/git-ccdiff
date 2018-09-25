@@ -1,4 +1,4 @@
-#!/usr/bin/sh
+#!/pro/bin/perl
 
 # With this file as git-ccdiff in your $PATH
 #
@@ -9,11 +9,26 @@
 # ->
 # git ccdiff   5c5a
 
-commit=$1
-shift
-export CCDIFF_OPTIONS="$@"
-if [ "$commit" = "" ]; then
-    git difftool
-else
-    git difftool $commit~1..$commit
-    fi
+use 5.14.2;
+use warnings;
+
+my @opt;
+
+my @git = qw( git difftool );
+for (@ARGV) {
+    if (m/^-/) {	# an option
+	push @opt, $_;
+	}
+    elsif (-f) {	# a file
+	push @git, $_;
+	}
+    else {		# a commit
+	push @git, "$_~1..$_";
+        }
+    }
+
+#use Data::Peek;
+#DDumper \@ARGV;
+
+@opt and $ENV{CCDIFF_OPTIONS} = join " " => @opt;
+system @git;

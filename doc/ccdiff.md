@@ -563,34 +563,14 @@ You can use ccdiff to show diffs in git. It may work like this:
     $ git config --global difftool.prompt false
     $ git config --global difftool.ccdiff.cmd 'ccdiff --utf-8 -u -r $LOCAL $REMOTE'
     $ git difftool SHA~..SHA
-    $ cat >~/bin/git-ccdiff <<EOF
-    #!/usr/bin/env perl
-
-    use 5.14.2;
-    use warnings;
-
-    my @opt;
-    my $commit;
-    my $file;
-
-    my @git = qw( git difftool );
-    for (@ARGV) {
-        if (m/^-/) {
-            push @opt, $_;
-            }
-        elsif (-f) {
-            push @git, $_;
-            }
-        else {
-            push @git, "$_~1..$_";
-            }
-        }
-
-    @opt and $ENV{CCDIFF_OPTIONS} = join " " => @opt;
-    system @git;
-    EOF
+    $ wget https://github.com/Tux/App-ccdiff/blob/master/Files/git-ccdiff \
+       -O ~/bin/git-ccdiff
+    $ perl -pi -e 's{/pro/bin/perl}{/usr/bin/env perl}' ~/bin/git-ccdiff
     $ chmod 755 ~/bin/git-ccdiff
     $ git ccdiff SHA
+
+Of course you can use `curl` instead of `wget` and you can choose your own
+(fixed) path to `perl` instead of using `/usr/bin/env`.
 
 From then on you can do
 
