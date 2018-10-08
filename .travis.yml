@@ -1,0 +1,27 @@
+language: perl
+os:
+  - linux
+perl:
+  - "5.26"
+  - "5.24"
+  - "5.22"
+  - "5.20"
+  - "5.18"
+  - "5.16"
+  - "5.14"
+env:
+  - AUTOMATED_TESTING=1
+before_install:
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then perlbrew install-cpanm ; fi
+install:
+  - cpanm --quiet Getopt::Long                      || true
+  - cpanm --quiet Term::ANSIColor                   || true
+  - cpanm --quiet Test::More                        || true
+  - cpanm --quiet Algorithm::Diff                   || true
+  - cpanm --quiet Capture::Tiny                     || true
+notifications:
+  irc:
+    channels:
+      - "irc.perl.org#csv"
+    on_success: always
+    on_failure: always
