@@ -3,6 +3,7 @@
     * Docs for git
     * Include git-ccdiff as file
     * $HOME for Windows users
+    * Add option to skip header
 
 0.25	- 2018-09-07
     * Use CORE module for --info
