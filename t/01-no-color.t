@@ -21,7 +21,7 @@ while (<DATA>) {
     $exp =~ s/STAMP:2/$stamp{$f2}/g;
     #diag "Description: $dsc";
     #diag "Options:     $opt";
-    my @cmd = ($^X, "ccdiff", "--no-color", "Files/$f1", "Files/$f2");
+    my @cmd = ($^X, "ccdiff", "--utf-8", "--no-color", "Files/$f1", "Files/$f2");
     $opt and push @cmd, split m/ / => $opt;
     #diag "@cmd";
     my ($out, $err, $exit) = capture { system @cmd; };
