@@ -432,10 +432,11 @@ sub subdiff {
     } # subdiff
 
 sub read_rc {
+    my $home = $ENV{HOME} || $ENV{USERPROFILE} || $ENV{HOMEPATH};
     foreach my $rcf (
-	    "$ENV{HOME}/ccdiff.rc",
-	    "$ENV{HOME}/.ccdiffrc",
-	    "$ENV{HOME}/.config/ccdiff",
+	    "$home/ccdiff.rc",
+	    "$home/.ccdiffrc",
+	    "$home/.config/ccdiff",
 	    ) {
 	-s $rcf or next;
 	(stat $rcf)[2] & 022 and next;
