@@ -17,9 +17,14 @@ my %wmf = (
 	"Term::ANSIColor"	=> 0,
 	"Getopt::Long"		=> 0,
 	},
+    CONFIGURE_REQUIRES => {
+	"ExtUtils::MakeMaker"	=> 0,
+	},
+    TEST_REQUIRES      => {
+	"Test::More"		=> 0,
+	"Capture::Tiny"		=> 0,
+	},
     LICENSE            => "artistic_2",
-    CONFIGURE_REQUIRES => { "ExtUtils::MakeMaker" => 0 },
-    TEST_REQUIRES      => { "Test::More"          => 0 },
     macro              => { TARFLAGS => "--format=ustar -c -v -f", },
     );
 
