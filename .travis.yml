@@ -19,6 +19,7 @@ install:
   - cpanm --quiet Test::More                        || true
   - cpanm --quiet Algorithm::Diff                   || true
   - cpanm --quiet Capture::Tiny                     || true
+  - perl ./2lib
 notifications:
   irc:
     channels:

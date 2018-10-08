@@ -1,0 +1,29 @@
+---
+abstract: 'Colored Character Diff'
+author:
+  - 'H.Merijn Brand'
+build_requires:
+  Capture::Tiny: '0'
+  ExtUtils::MakeMaker: '0'
+  Test::More: '0'
+configure_requires:
+  ExtUtils::MakeMaker: '0'
+dynamic_config: 1
+generated_by: 'ExtUtils::MakeMaker version 7.34, CPAN::Meta::Converter version 2.150010'
+license: artistic_2
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: '1.4'
+name: App-ccdiff
+no_index:
+  directory:
+    - t
+    - inc
+requires:
+  Algorithm::Diff: '0'
+  Getopt::Long: '0'
+  Term::ANSIColor: '0'
+  charnames: '0'
+  perl: '5.014000'
+version: '0.26'
+x_serialization_backend: 'CPAN::Meta::YAML version 0.018'

@@ -1,8 +1,6 @@
 blib
 cover_db
 Makefile
-META.yml
-META.json
 MYMETA.yml
 MYMETA.json
 pm_to_blib
