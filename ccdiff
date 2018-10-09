@@ -43,6 +43,7 @@ sub usage {
     say "         --bg=white     Background color for colored indicators";
     say "   -p    --pink         Shortcut for --old=magenta";
     say "   -r    --reverse      Reverse/invert the colors of the indicators";
+    say "         --settings     Show default settings (after reading rc)";
     exit $err;
     } # usage
 
@@ -135,6 +136,11 @@ unless (caller) {
 	  "bg=s"		=> \$rev_color,
 	  "no-colors"		=> \$no_colors,
 	  "list-colors!"	=> \$list_colors,
+	  "settings|defaults"	=> sub {
+		binmode STDOUT, ":encoding(utf-8)";
+		printf "%-10s : %s\n", $_, $rc{$_} // "<undef>" for sort keys %rc;
+		exit 0;
+		},
 
 	"v|verbose:1"	=> \$opt_v,
 	) or usage (1);

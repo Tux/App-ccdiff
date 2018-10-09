@@ -1,9 +1,11 @@
-0.26	- 2018-10-08
+0.26	- 2018-10-09
     * Update git-ccdiff
     * Docs for git
     * Include git-ccdiff as file
     * $HOME for Windows users
     * Add option to skip header
+    * Add tests
+    * Add --settings
 
 0.25	- 2018-09-07
     * Use CORE module for --info
