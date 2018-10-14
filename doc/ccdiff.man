@@ -561,4 +561,4 @@ STDIN(1)              User Contributed Perl Documentation             STDIN(1)
 
 
 
-perl v5.28.0                      2018-09-25                          STDIN(1)
+perl v5.28.0                      2018-10-14                          STDIN(1)
