@@ -46,7 +46,18 @@
          }
       }
    },
+   "provides" : {
+      "App::ccdiff" : {
+         "file" : "ccdiff",
+         "version" : "0.26"
+      }
+   },
    "release_status" : "stable",
+   "resources" : {
+      "X_type" : "git",
+      "X_url" : "git://github.com/Tux/App-ccdiff.git",
+      "X_web" : "https://github.com/Tux/App-ccdiff"
+   },
    "version" : "0.26",
    "x_serialization_backend" : "JSON::PP version 2.97001"
 }

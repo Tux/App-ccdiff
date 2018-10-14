@@ -19,11 +19,19 @@ no_index:
   directory:
     - t
     - inc
+provides:
+  App::ccdiff:
+    file: ccdiff
+    version: '0.26'
 requires:
   Algorithm::Diff: '0'
   Getopt::Long: '0'
   Term::ANSIColor: '0'
   charnames: '0'
   perl: '5.014000'
+resources:
+  X_type: git
+  X_url: git://github.com/Tux/App-ccdiff.git
+  X_web: https://github.com/Tux/App-ccdiff
 version: '0.26'
 x_serialization_backend: 'CPAN::Meta::YAML version 0.018'

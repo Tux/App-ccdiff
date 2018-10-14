@@ -3,29 +3,53 @@ use warnings;
 
 use ExtUtils::MakeMaker;
 
+my $VERSION;
+open my $fh, "<", "ccdiff";
+while (<$fh>) {
+    m/VERSION\s*=\s*["']?([0-9.]+)/ or next;
+    $VERSION = $1;
+    last;
+    }
+close $fh;
+
 my %wmf = (
-    NAME               => "App::ccdiff",
-    DISTNAME           => "App-ccdiff",
-    ABSTRACT           => "Colored Character Diff",
-    AUTHOR             => "H.Merijn Brand",
-    EXE_FILES          => [ "ccdiff" ],
-    VERSION_FROM       => "lib/App/ccdiff.pm",
-    MIN_PERL_VERSION   => "5.014000",
-    PREREQ_PM          => {
+    NAME			=> "App::ccdiff",
+    DISTNAME			=> "App-ccdiff",
+    ABSTRACT			=> "Colored Character Diff",
+    AUTHOR			=> "H.Merijn Brand",
+    EXE_FILES			=> [ "ccdiff" ],
+    VERSION			=> $VERSION,
+    MIN_PERL_VERSION		=> "5.014000",
+    PREREQ_PM			=> {
 	charnames		=> 0,
 	"Algorithm::Diff"	=> 0,
 	"Term::ANSIColor"	=> 0,
 	"Getopt::Long"		=> 0,
 	},
-    CONFIGURE_REQUIRES => {
+    CONFIGURE_REQUIRES		=> {
 	"ExtUtils::MakeMaker"	=> 0,
 	},
-    TEST_REQUIRES      => {
+    TEST_REQUIRES		=> {
 	"Test::More"		=> 0,
 	"Capture::Tiny"		=> 0,
 	},
-    LICENSE            => "artistic_2",
-    macro              => { TARFLAGS => "--format=ustar -c -v -f", },
+    LICENSE			=> "artistic_2",
+    macro			=> { TARFLAGS => "--format=ustar -c -v -f", },
+
+    META_MERGE			=> {
+	"meta-spec"		=> { version => 2 },
+	resources		=> {
+	    type		=> "git",
+	    url			=> "git://github.com/Tux/App-ccdiff.git",
+	    web			=> "https://github.com/Tux/App-ccdiff",
+	    },
+	provides		=> {
+	    "App::ccdiff"	=> {
+		file		=> "ccdiff",
+		version		=> $VERSION,
+		},
+	    },
+	},
     );
 
 eval { ExtUtils::MakeMaker->VERSION (6.63_03) } or
@@ -47,7 +71,8 @@ sub postamble {
         'spellcheck:',
         '	pod-spell-check --aspell --ispell ccdiff',
         '',
-        'META.json META.yml:	ccdiff',
+        'meta:			META.json META.yml',
+        'META.json META.yml:	ccdiff Makefile.PL',
         '	-@make metafile',
         '	-@mv $(DISTVNAME)/META.* .',
         '	-@rm -rf $(DISTVNAME)',
