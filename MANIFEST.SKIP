@@ -11,3 +11,4 @@ MANIFEST.SKIP
 ^pm_to
 ^MYMETA
 ^\.releaserc
+^\.travis.yml
