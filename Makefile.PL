@@ -22,7 +22,7 @@ my %wmf = (
     MIN_PERL_VERSION		=> "5.014000",
     PREREQ_PM			=> {
 	charnames		=> 0,
-	"Algorithm::Diff"	=> 0,
+	"Algorithm::Diff"	=> "1.1901",
 	"Term::ANSIColor"	=> 0,
 	"Getopt::Long"		=> 0,
 	},

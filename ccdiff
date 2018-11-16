@@ -9,7 +9,7 @@ use Algorithm::Diff;
 use Term::ANSIColor qw(:constants color);
 use Getopt::Long    qw(:config bundling);
 
-our $VERSION = "0.26";
+our $VERSION = "0.27";
 our $CMD     = $0 =~ s{.*/}{}r;
 
 sub usage {

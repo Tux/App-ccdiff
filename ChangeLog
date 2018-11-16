@@ -1,3 +1,6 @@
+0.27	- 2018-11-16
+    * Requires Algorithm::Diff 1.1901
+
 0.26	- 2018-10-14
     * Update git-ccdiff
     * Docs for git
