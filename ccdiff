@@ -94,7 +94,7 @@ my $emacs     = $rc{emacs};
 my $old_color = $rc{old};
 my $new_color = $rc{new};
 my $rev_color = $rc{bg};
-my $no_colors;
+my $no_colors = $ENV{NO_COLOR}; # https://no-color.org
 my $list_colors;
 
 unless (caller) {
