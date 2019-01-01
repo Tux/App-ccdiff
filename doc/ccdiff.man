@@ -554,11 +554,11 @@ STDIN(1)              User Contributed Perl Documentation             STDIN(1)
        H.Merijn Brand
 
 [1mCOPYRIGHT AND LICENSE[0m
-        Copyright (C) 2018-2018 H.Merijn Brand.  All rights reserved.
+        Copyright (C) 2018-2019 H.Merijn Brand.  All rights reserved.
 
        This library is free software;  you can redistribute and/or modify it
        under the same terms as The Artistic License 2.0.
 
 
 
-perl v5.28.0                      2018-10-14                          STDIN(1)
+perl v5.28.1                      2019-01-01                          STDIN(1)

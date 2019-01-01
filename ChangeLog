@@ -1,6 +1,7 @@
-0.27	- 2018-12-03
+0.27	- 2019-01-01
     * Requires Algorithm::Diff 1.1901
     * Default no-color to $ENV{NO_COLOR} - see https://no-color.org
+    * Happy 2019
 
 0.26	- 2018-10-14
     * Update git-ccdiff

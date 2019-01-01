@@ -22,9 +22,9 @@ no_index:
 provides:
   App::ccdiff:
     file: ccdiff
-    version: '0.26'
+    version: '0.27'
 requires:
-  Algorithm::Diff: '0'
+  Algorithm::Diff: '1.1901'
   Getopt::Long: '0'
   Term::ANSIColor: '0'
   charnames: '0'
@@ -33,5 +33,5 @@ resources:
   X_type: git
   X_url: git://github.com/Tux/App-ccdiff.git
   X_web: https://github.com/Tux/App-ccdiff
-version: '0.26'
+version: '0.27'
 x_serialization_backend: 'CPAN::Meta::YAML version 0.018'
