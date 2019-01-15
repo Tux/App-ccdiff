@@ -9,7 +9,7 @@ use Algorithm::Diff;
 use Term::ANSIColor qw(:constants color);
 use Getopt::Long    qw(:config bundling);
 
-our $VERSION = "0.27";
+our $VERSION = "0.28";
 our $CMD     = $0 =~ s{.*/}{}r;
 
 sub usage {
@@ -261,12 +261,12 @@ sub ccdiff {
     $opt_U and binmode STDIN,  ":encoding(utf-8)";
     $opt_U and binmode STDOUT, ":encoding(utf-8)";
 
-    my @d1 = $f1 eq "-" ? <> : do {
+    my @d1 = $f1 eq "-" ? <STDIN> : do {
 	open my $fh, "<", $f1 or die "$f1: $!\n";
 	$opt_U and binmode $fh, ":encoding(utf-8)";
 	<$fh>;
 	};
-    my @d2 = $f2 eq "-" ? <> : do {
+    my @d2 = $f2 eq "-" ? <STDIN> : do {
 	open my $fh, "<", $f2 or die "$f2: $!\n";
 	$opt_U and binmode $fh, ":encoding(utf-8)";
 	<$fh>;

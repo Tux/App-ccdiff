@@ -15,10 +15,6 @@ meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
   version: '1.4'
 name: App-ccdiff
-no_index:
-  directory:
-    - t
-    - inc
 provides:
   App::ccdiff:
     file: ccdiff
@@ -33,5 +29,6 @@ resources:
   X_type: git
   X_url: git://github.com/Tux/App-ccdiff.git
   X_web: https://github.com/Tux/App-ccdiff
+  X_IRC: irc://irc.perl.org/#csv
 version: '0.27'
 x_serialization_backend: 'CPAN::Meta::YAML version 0.018'
