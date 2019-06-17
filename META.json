@@ -3,7 +3,7 @@
       "H.Merijn Brand <h.m.brand@xs4all.nl>"
       ],
    "dynamic_config" : 1,
-   "generated_by" : "ExtUtils::MakeMaker version 7.34, CPAN::Meta::Converter version 2.150010",
+   "generated_by" : "ExtUtils::MakeMaker version 7.36, CPAN::Meta::Converter version 2.150010",
    "license" : [
       "perl_5"
       ],
@@ -12,6 +12,12 @@
       "version" : 2
       },
    "name" : "App-ccdiff",
+   "no_index" : {
+      "directory" : [
+         "t",
+         "inc"
+         ]
+      },
    "prereqs" : {
       "build" : {
          "requires" : {
@@ -42,7 +48,7 @@
    "provides" : {
       "App::ccdiff" : {
          "file" : "ccdiff",
-         "version" : "0.27"
+         "version" : "0.28"
          }
       },
    "release_status" : "stable",
@@ -52,6 +58,6 @@
       "X_web" : "https://github.com/Tux/App-ccdiff",
       "X_IRC" : "irc://irc.perl.org/#csv"
       },
-   "version" : "0.27",
-   "x_serialization_backend" : "JSON::PP version 4.00"
+   "version" : "0.28",
+   "x_serialization_backend" : "JSON::PP version 4.02"
    }

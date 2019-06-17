@@ -38,10 +38,12 @@ my %wmf = (
 
     META_MERGE			=> {
 	"meta-spec"		=> { version => 2 },
+	licence			=> "perl_5",
 	resources		=> {
 	    type		=> "git",
 	    url			=> "git://github.com/Tux/App-ccdiff.git",
 	    web			=> "https://github.com/Tux/App-ccdiff",
+	    IRC			=> "irc://irc.perl.org/#csv",
 	    },
 	provides		=> {
 	    "App::ccdiff"	=> {

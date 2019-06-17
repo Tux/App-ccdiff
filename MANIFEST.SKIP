@@ -1,5 +1,6 @@
 ^\.aspell.local.pws
 ^\.git.*
+^\.whitesource
 ^2lib
 ^blib
 ^doc
