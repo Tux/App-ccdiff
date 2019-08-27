@@ -1,9 +1,12 @@
 language: perl
 os:
   - linux
+dist: trusty
 perl:
+  - "5.30"
   - "5.28"
   - "5.26"
+  - "5.26-shrplib"
   - "5.24"
   - "5.22"
   - "5.20"
@@ -11,10 +14,10 @@ perl:
   - "5.16"
   - "5.14"
 env:
-  - AUTOMATED_TESTING=1
-before_install:
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then perlbrew install-cpanm ; fi
+  global:
+    - AUTOMATED_TESTING=1
 install:
+  - cpanm --quiet --installdeps --with-all-features --notest . || true
   - cpanm --quiet Getopt::Long                      || true
   - cpanm --quiet Term::ANSIColor                   || true
   - cpanm --quiet Test::More                        || true
