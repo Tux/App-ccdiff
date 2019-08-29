@@ -16,6 +16,14 @@ is not perfect. You can find my preferences for these in
 [.perltidy](https://github.com/Tux/Release-Checklist/blob/master/.perltidyrc) and
 [.perlcritic](https://github.com/Tux/Release-Checklist/blob/master/.perlcriticrc).
 
+# Mail
+
+Please, please, please, do *NOT* use HTML mail.
+[Plain text](https://useplaintext.email)
+[without](http://www.goldmark.org/jeff/stupid-disclaimers/)
+[disclaimers](https://www.economist.com/business/2011/04/07/spare-us-the-e-mail-yada-yada)
+will do fine!
+
 # Requirements
 
 The minimum version required to use this module is stated in
