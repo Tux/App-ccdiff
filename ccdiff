@@ -2,7 +2,7 @@
 
 package App::ccdiff;
 
-use 5.14.0;
+use 5.014000;
 use warnings;
 use charnames ();
 use Algorithm::Diff;

@@ -33,6 +33,7 @@ resources:
   X_type: git
   X_url: git://github.com/Tux/App-ccdiff.git
   X_web: https://github.com/Tux/App-ccdiff
-  X_IRC: irc://irc.perl.org/#csv
+  IRC: irc://irc.perl.org/#csv
 version: '0.28'
+x_licence: artistic_2
 x_serialization_backend: 'CPAN::Meta::YAML version 0.018'
