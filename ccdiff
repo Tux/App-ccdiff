@@ -375,7 +375,7 @@ sub subdiff {
 		    $join = "\n";
 		    my $l  = length $sc;      # The length of this "same" chunck
 		    my $le = $l - 2 * $opt_e; # The length of the text replaces with ellipsis
-		    my $ee = $opt_v <= 1 ? $e : $e =~ s/^.\K(?=.$)/$le/r; 
+		    my $ee = $opt_v <= 1 ? $e : $e =~ s/^.\K(?=.$)/$le/r;
 		    if ($le > length $ee) {
 			my $lsc = substr $sc, 0,           $opt_e;
 			$d1 .= $lsc;
@@ -733,7 +733,7 @@ Defines the percentage of character-changes a change block may differ before
 the fall-back of horizontal diff to vertical diff.
 
 This percentage is calculated as C<(characters removed + characters added) /
-(2 * characters unchanged))>. 
+(2 * characters unchanged))>.
 
 =item --ellipsis=n -e n
 
