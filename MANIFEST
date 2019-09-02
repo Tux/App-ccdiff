@@ -1,6 +1,7 @@
 ccdiff
 ChangeLog
 CONTRIBUTING.md
+cpanfile
 Files/01_1.txt
 Files/01_2.txt
 Files/git-ccdiff

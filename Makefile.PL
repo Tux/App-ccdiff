@@ -1,4 +1,4 @@
-use 5.12.1;
+use 5.14.0;
 use warnings;
 
 use ExtUtils::MakeMaker;
@@ -66,10 +66,13 @@ sub postamble {
         ? ( '','lib/App/ccdiff.pm:	ccdiff',
 		'	perl ./2lib',
 		'',
-		'all::			lib/App/ccdiff.pm doc spellcheck',
+		'all::			lib/App/ccdiff.pm doc spellcheck cpanfile',
 		)
         : ();
     join "\n" =>
+        'cpanfile:',
+        '	perl sandbox/genMETA.pl',
+        '',
         'spellcheck:',
         '	pod-spell-check --aspell --ispell ccdiff',
         '',
