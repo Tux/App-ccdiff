@@ -9,7 +9,7 @@ use Algorithm::Diff;
 use Term::ANSIColor qw(:constants color);
 use Getopt::Long    qw(:config bundling);
 
-our $VERSION = "0.28";
+our $VERSION = "0.29";
 our $CMD     = $0 =~ s{.*/}{}r;
 
 sub usage {
@@ -94,8 +94,17 @@ my $emacs     = $rc{emacs};
 my $old_color = $rc{old};
 my $new_color = $rc{new};
 my $rev_color = $rc{bg};
+my $cli_color = $ENV{CLICOLOR};	# https://bixense.com/clicolors/
 my $no_colors = $ENV{NO_COLOR}; # https://no-color.org
 my $list_colors;
+
+if ($no_colors) {
+    $ENV{CLICOLOR_FORCE}	and $no_colors = 0;
+    }
+elsif (defined $cli_color) {
+    # true $cli_color is the default for ccdiff
+    !$cli_color || !-t		and $no_colors = 1;
+    }
 
 unless (caller) {
     $ENV{CCDIFF_OPTIONS} and unshift @ARGV, split m/\s+/ => $ENV{CCDIFF_OPTIONS};
@@ -692,6 +701,10 @@ List available colors and exit.
 
 Disable all colors. Useful for redirecting the diff output to a file that is to
 be included in documentation.
+
+This is the defailt if the environment variable C<$NO_COLOR> has a true value or
+if the environment variable C<$CLICOLOR> is set to a false value.  If set,
+C<$CLICOLOR_FORCE> will overrule the default of C<$NO_COLOR>.
 
 =item --old=color
 
