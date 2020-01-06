@@ -3,7 +3,7 @@
       "H.Merijn Brand"
       ],
    "dynamic_config" : 1,
-   "generated_by" : "ExtUtils::MakeMaker version 7.36, CPAN::Meta::Converter version 2.150010",
+   "generated_by" : "ExtUtils::MakeMaker version 7.42, CPAN::Meta::Converter version 2.150010",
    "license" : [
       "artistic_2"
       ],
@@ -48,7 +48,7 @@
    "provides" : {
       "App::ccdiff" : {
          "file" : "ccdiff",
-         "version" : "0.28"
+         "version" : "0.29"
          }
       },
    "release_status" : "stable",
@@ -58,7 +58,7 @@
       "X_web" : "https://github.com/Tux/App-ccdiff",
       "x_IRC" : "irc://irc.perl.org/#csv"
       },
-   "version" : "0.28",
+   "version" : "0.29",
    "x_licence" : "artistic_2",
    "x_serialization_backend" : "JSON::PP version 4.04"
    }
