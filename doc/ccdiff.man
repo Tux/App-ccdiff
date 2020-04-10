@@ -173,6 +173,11 @@ STDIN(1)              User Contributed Perl Documentation             STDIN(1)
          Disable all colors. Useful for redirecting the diff output to a file
          that is to be included in documentation.
 
+         This is the defailt if the environment variable $NO_COLOR has a true
+         value or if the environment variable $CLICOLOR is set to a false
+         value.  If set, $CLICOLOR_FORCE will overrule the default of
+         $NO_COLOR.
+
        --old=color
          Define the foreground color for deleted text.
 
@@ -554,11 +559,11 @@ STDIN(1)              User Contributed Perl Documentation             STDIN(1)
        H.Merijn Brand
 
 [1mCOPYRIGHT AND LICENSE[0m
-        Copyright (C) 2018-2019 H.Merijn Brand.  All rights reserved.
+        Copyright (C) 2018-2020 H.Merijn Brand.  All rights reserved.
 
        This library is free software;  you can redistribute and/or modify it
        under the same terms as The Artistic License 2.0.
 
 
 
-perl v5.28.1                      2019-01-01                          STDIN(1)
+perl v5.30.0                      2020-04-10                          STDIN(1)

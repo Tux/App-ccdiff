@@ -161,7 +161,7 @@ ccdiff - Colored Character diff
 - --pink -p
 
     Change the default `red` for deleted text to the color closest to pink that
-    is supported by [Term::ANSIColor](https://metacpan.org/pod/Term::ANSIColor): `magenta`.
+    is supported by [Term::ANSIColor](https://metacpan.org/pod/Term%3A%3AANSIColor): `magenta`.
 
 - --reverse -r
 
@@ -178,6 +178,10 @@ ccdiff - Colored Character diff
 
     Disable all colors. Useful for redirecting the diff output to a file that is to
     be included in documentation.
+
+    This is the defailt if the environment variable `$NO_COLOR` has a true value or
+    if the environment variable `$CLICOLOR` is set to a false value.  If set,
+    `$CLICOLOR_FORCE` will overrule the default of `$NO_COLOR`.
 
 - --old=color
 
@@ -219,7 +223,7 @@ ccdiff - Colored Character diff
     the fall-back of horizontal diff to vertical diff.
 
     This percentage is calculated as `(characters removed + characters added) /
-    (2 * characters unchanged))`. 
+    (2 * characters unchanged))`.
 
 - --ellipsis=n -e n
 
@@ -344,7 +348,7 @@ Between parens is the corresponding command-line option.
 
     The color `none` is also accepted and disables this color.
 
-    Any color accepted by [Term::ANSIColor](https://metacpan.org/pod/Term::ANSIColor) is allowed. Any other color will
+    Any color accepted by [Term::ANSIColor](https://metacpan.org/pod/Term%3A%3AANSIColor) is allowed. Any other color will
     result in a warning. This option can include `bold` either as prefix or
     as suffix.
 
@@ -363,7 +367,7 @@ Between parens is the corresponding command-line option.
 
     The color `none` is also accepted and disables this color.
 
-    Any color accepted by [Term::ANSIColor](https://metacpan.org/pod/Term::ANSIColor) is allowed. Any other color will
+    Any color accepted by [Term::ANSIColor](https://metacpan.org/pod/Term%3A%3AANSIColor) is allowed. Any other color will
     result in a warning. This option can include `bold` either as prefix or
     as suffix.
 
@@ -383,7 +387,7 @@ Between parens is the corresponding command-line option.
 
     The color `none` is also accepted and disables this color.
 
-    Any color accepted by [Term::ANSIColor](https://metacpan.org/pod/Term::ANSIColor) is allowed. Any other color will
+    Any color accepted by [Term::ANSIColor](https://metacpan.org/pod/Term%3A%3AANSIColor) is allowed. Any other color will
     result in a warning. The `bold` attribute is not allowed.
 
     This option may also be specified as
@@ -407,7 +411,7 @@ Between parens is the corresponding command-line option.
 
     The color `none` is also accepted and disables this color.
 
-    Any color accepted by [Term::ANSIColor](https://metacpan.org/pod/Term::ANSIColor) is allowed. Any other color will
+    Any color accepted by [Term::ANSIColor](https://metacpan.org/pod/Term%3A%3AANSIColor) is allowed. Any other color will
     result in a warning.
 
     This option may also be specified as
@@ -584,7 +588,7 @@ kept in memory, this tool might not be able to deal with (very) large datasets.
 
 # SEE ALSO
 
-[Algorithm::Diff](https://metacpan.org/pod/Algorithm::Diff), [Text::Diff](https://metacpan.org/pod/Text::Diff)
+[Algorithm::Diff](https://metacpan.org/pod/Algorithm%3A%3ADiff), [Text::Diff](https://metacpan.org/pod/Text%3A%3ADiff)
 
 # AUTHOR
 
@@ -592,7 +596,7 @@ H.Merijn Brand
 
 # COPYRIGHT AND LICENSE
 
-    Copyright (C) 2018-2019 H.Merijn Brand.  All rights reserved.
+    Copyright (C) 2018-2020 H.Merijn Brand.  All rights reserved.
 
 This library is free software;  you can redistribute and/or modify it under
 the same terms as The Artistic License 2.0.
