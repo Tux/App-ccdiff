@@ -2,6 +2,7 @@
     * Fix Changes
     * Default changed by $ENV{CLICOLOR} - see https://bixense.com/clicolors/
     * It's 2020
+    * Fallback to Pod::Text if nroff not available for --man
 
 0.28	- 2019-09-02
     * Add cpanfile
