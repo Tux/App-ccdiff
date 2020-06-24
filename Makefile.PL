@@ -69,6 +69,11 @@ sub postamble {
 		'all::			lib/App/ccdiff.pm doc spellcheck cpanfile',
 		)
         : ();
+    -d "xt" && ($ENV{AUTOMATED_TESTING} || 0) != 1 and
+	push @mpm =>
+	    '',
+	    'test ::',
+	    '	-@env TEST_FILES="xt/*.t" make -e test_dynamic';
     join "\n" =>
         'cpanfile:',
         '	perl sandbox/genMETA.pl',

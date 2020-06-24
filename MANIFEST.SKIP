@@ -13,3 +13,5 @@ MANIFEST.SKIP
 ^MYMETA
 ^\.releaserc
 ^\.travis.yml
+^xt/
+\.tmp$
