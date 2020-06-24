@@ -37,8 +37,8 @@ No options
 01_1.txt
 01_2.txt
 
-< Files/01_1.txt Mon Oct  8 17:19:46 2018
-> Files/01_2.txt Mon Oct  8 18:03:59 2018
+< STAMP:1
+> STAMP:2
 3,3c3,3
 < usu. Ad duo posse theophrastus, vim in accumsan
 ---
