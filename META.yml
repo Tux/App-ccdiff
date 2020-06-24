@@ -9,7 +9,7 @@ build_requires:
 configure_requires:
   ExtUtils::MakeMaker: '0'
 dynamic_config: 1
-generated_by: 'ExtUtils::MakeMaker version 7.42, CPAN::Meta::Converter version 2.150010'
+generated_by: 'ExtUtils::MakeMaker version 7.44, CPAN::Meta::Converter version 2.150010'
 license: artistic_2
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -30,10 +30,10 @@ requires:
   charnames: '0'
   perl: '5.014000'
 resources:
+  IRC: irc://irc.perl.org/#csv
   X_type: git
   X_url: git://github.com/Tux/App-ccdiff.git
   X_web: https://github.com/Tux/App-ccdiff
-  IRC: irc://irc.perl.org/#csv
 version: '0.29'
-x_licence: artistic_2
+x_licence: perl_5
 x_serialization_backend: 'CPAN::Meta::YAML version 0.018'

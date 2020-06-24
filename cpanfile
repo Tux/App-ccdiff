@@ -1,5 +1,6 @@
 requires   "Algorithm::Diff"          => "1.1901";
 requires   "Getopt::Long";
+requires   "List::Util";
 requires   "Term::ANSIColor";
 requires   "charnames";
 

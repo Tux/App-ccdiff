@@ -23,6 +23,7 @@ my %wmf = (
     PREREQ_PM			=> {
 	charnames		=> 0,
 	"Algorithm::Diff"	=> "1.1901",
+	"List::Util"		=> 0,
 	"Term::ANSIColor"	=> 0,
 	"Getopt::Long"		=> 0,
 	},
