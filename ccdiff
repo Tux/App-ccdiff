@@ -6,8 +6,8 @@ use 5.014000;
 use warnings;
 use charnames ();
 use Algorithm::Diff;
+use List::Util      qw( first  max     );
 use Term::ANSIColor qw(:constants color);
-use List::Util      qw( first          );
 use Getopt::Long    qw(:config bundling);
 
 our $VERSION = "0.29";
@@ -60,7 +60,7 @@ my %rc = (
     chr_old	=> "\x{25bc}",
     ellipsis	=> 0,
     emacs	=> 0,
-    header	=> 1,
+    header	=> 1,	# A color name is allowed
     heuristics	=> 0,
     index	=> 0,
     markers	=> 0,
@@ -122,6 +122,7 @@ unless (caller) {
 	"I|idx|index:-1"	=> \$opt_I,
 	"t|threshold=i"		=> \$opt_t,
 	"H|header!"		=> \$opt_H,
+	  "HC|header-color=s"	=> \$opt_H,
 	"h|heuristics=i"	=> \$opt_h,
 	"e|ellipsis=i"		=> \$opt_e,
 	  "emacs!"		=> \$emacs,
@@ -300,15 +301,37 @@ sub ccdiff {
 	$opt_U and binmode $fh, ":encoding(utf-8)";
 	<$fh>;
 	};
-    if ($opt_H and defined $opt_u) {
-	# diff -c also provides (ugly) headers, but opt_c is NYI
-	for ([ "---", $f1 ], [ "+++", $f2 ]) {
-	    if (-f $_->[1]) {
-		say $_->[0], " $_->[1]\t", scalar localtime ((stat $_->[1])[9]);
+    if ($opt_H) {
+	my $hc = "";
+	if ($opt_H =~ m/^\w\w+/) {
+	    my ($hfg, $hbg) = split m/_?(?=on_)/ => lc $opt_H =~ s/\s+/_/gr;
+	    $hfg && defined $clr{$hfg} and $hc .= $clr{$hfg};
+	    $hbg && defined $clr{$hbg} and $hc .= $clr{$hbg};
+	    }
+	my $nl = max length $f1, length $f2, 7;
+	my $sl = $hc ? ($ENV{COLUMNS} || 80) - 4 - $nl : 1;
+	my @h = map { -f $_
+	    ? { tag   => "",
+		name  => $_,
+		stamp => scalar localtime ((stat $_)[9]),
 		}
-	    else {
-		say $_->[0], " *STDIN\t",  scalar localtime;
+	    : { tag   => "",
+		name  => "*STDIN",
+		stamp => scalar localtime,
 		}
+	    } $f1, $f2;
+	if (defined $opt_u) {
+	    ($h[0]{tag}, $h[1]{tag}) = ("---", "+++");
+	    $sl -= 2;
+	    printf "%s%s %-*s %-*s%s\n", $hc, $_->{tag},
+		$nl, $_->{name}, $sl, $_->{stamp}, $clr{reset} for @h;
+	    }
+	#elsif ($opt_c) { # diff -c also provides (ugly) headers, but opt_c is NYI
+	#   }
+	else {
+	    ($h[0]{tag}, $h[1]{tag}) = ("<", ">");
+	    printf "%s%s %-*s %-*s%s\n", $hc, $_->{tag},
+		$nl, $_->{name}, $sl, $_->{stamp}, $clr{reset} for @h;
 	    }
 	}
 
@@ -722,7 +745,7 @@ List available colors and exit.
 Disable all colors. Useful for redirecting the diff output to a file that is to
 be included in documentation.
 
-This is the defailt if the environment variable C<$NO_COLOR> has a true value or
+This is the default if the environment variable C<$NO_COLOR> has a true value or
 if the environment variable C<$CLICOLOR> is set to a false value.  If set,
 C<$CLICOLOR_FORCE> will overrule the default of C<$NO_COLOR>.
 
@@ -948,6 +971,18 @@ This option may also be specified as
  background_color
  background-colour
  background_colour
+
+=item header (-H --header --HC=color --header-color=color)
+
+ header  : 1
+ header  : blue_on_white
+
+Defines if a header is displayed above the diff (default is 1), supported
+colors are allowed.
+
+If the values is a valid supported color, it will show the header in that
+color scheme.  To disable the header set it to C<0> in the RC file or use
+C<--no-header> as a command line argument.
 
 =item verbose
 

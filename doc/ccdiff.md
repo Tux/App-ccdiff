@@ -179,7 +179,7 @@ ccdiff - Colored Character diff
     Disable all colors. Useful for redirecting the diff output to a file that is to
     be included in documentation.
 
-    This is the defailt if the environment variable `$NO_COLOR` has a true value or
+    This is the default if the environment variable `$NO_COLOR` has a true value or
     if the environment variable `$CLICOLOR` is set to a false value.  If set,
     `$CLICOLOR_FORCE` will overrule the default of `$NO_COLOR`.
 
@@ -401,6 +401,18 @@ Between parens is the corresponding command-line option.
         background_color
         background-colour
         background_colour
+
+- header (-H --header --HC=color --header-color=color)
+
+        header  : 1
+        header  : blue_on_white
+
+    Defines if a header is displayed above the diff (default is 1), supported
+    colors are allowed.
+
+    If the values is a valid supported color, it will show the header in that
+    color scheme.  To disable the header set it to `0` in the RC file or use
+    `--no-header` as a command line argument.
 
 - verbose
 

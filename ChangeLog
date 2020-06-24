@@ -1,8 +1,9 @@
-0.29	- 2020-04-10
+0.29	- 2020-06-24
     * Fix Changes
     * Default changed by $ENV{CLICOLOR} - see https://bixense.com/clicolors/
     * It's 2020
     * Fallback to Pod::Text if nroff not available for --man
+    * Support header colors and header for non-u
 
 0.28	- 2019-09-02
     * Add cpanfile

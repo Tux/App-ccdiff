@@ -212,7 +212,7 @@
 
 <p>Disable all colors. Useful for redirecting the diff output to a file that is to be included in documentation.</p>
 
-<p>This is the defailt if the environment variable <code>$NO_COLOR</code> has a true value or if the environment variable <code>$CLICOLOR</code> is set to a false value. If set, <code>$CLICOLOR_FORCE</code> will overrule the default of <code>$NO_COLOR</code>.</p>
+<p>This is the default if the environment variable <code>$NO_COLOR</code> has a true value or if the environment variable <code>$CLICOLOR</code> is set to a false value. If set, <code>$CLICOLOR_FORCE</code> will overrule the default of <code>$NO_COLOR</code>.</p>
 
 </dd>
 <dt id="old-color">--old=color</dt>
@@ -439,6 +439,17 @@
  background_color
  background-colour
  background_colour</code></pre>
+
+</dd>
+<dt id="header--H---header---HC-color---header-color-color">header (-H --header --HC=color --header-color=color)</dt>
+<dd>
+
+<pre><code> header  : 1
+ header  : blue_on_white</code></pre>
+
+<p>Defines if a header is displayed above the diff (default is 1), supported colors are allowed.</p>
+
+<p>If the values is a valid supported color, it will show the header in that color scheme. To disable the header set it to <code>0</code> in the RC file or use <code>--no-header</code> as a command line argument.</p>
 
 </dd>
 <dt id="verbose">verbose</dt>

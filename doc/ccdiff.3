@@ -133,7 +133,7 @@
 .\" ========================================================================
 .\"
 .IX Title "STDIN 1"
-.TH STDIN 1 "2020-04-10" "perl v5.30.0" "User Contributed Perl Documentation"
+.TH STDIN 1 "2020-06-24" "perl v5.32.0" "User Contributed Perl Documentation"
 .\" For nroff, turn off justification.  Always turn off hyphenation; it makes
 .\" way too many mistakes in technical documents.
 .if n .ad l
@@ -324,7 +324,7 @@ List available colors and exit.
 Disable all colors. Useful for redirecting the diff output to a file that is to
 be included in documentation.
 .Sp
-This is the defailt if the environment variable \f(CW$NO_COLOR\fR has a true value or
+This is the default if the environment variable \f(CW$NO_COLOR\fR has a true value or
 if the environment variable \f(CW$CLICOLOR\fR is set to a false value.  If set,
 \&\f(CW$CLICOLOR_FORCE\fR will overrule the default of \f(CW$NO_COLOR\fR.
 .IP "\-\-old=color" 2
@@ -553,6 +553,19 @@ This option may also be specified as
 \& background\-colour
 \& background_colour
 .Ve
+.IP "header (\-H \-\-header \-\-HC=color \-\-header\-color=color)" 2
+.IX Item "header (-H --header --HC=color --header-color=color)"
+.Vb 2
+\& header  : 1
+\& header  : blue_on_white
+.Ve
+.Sp
+Defines if a header is displayed above the diff (default is 1), supported
+colors are allowed.
+.Sp
+If the values is a valid supported color, it will show the header in that
+color scheme.  To disable the header set it to \f(CW0\fR in the \s-1RC\s0 file or use
+\&\f(CW\*(C`\-\-no\-header\*(C'\fR as a command line argument.
 .IP "verbose" 2
 .IX Item "verbose"
 .Vb 1

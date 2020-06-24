@@ -173,7 +173,7 @@ STDIN(1)              User Contributed Perl Documentation             STDIN(1)
          Disable all colors. Useful for redirecting the diff output to a file
          that is to be included in documentation.
 
-         This is the defailt if the environment variable $NO_COLOR has a true
+         This is the default if the environment variable $NO_COLOR has a true
          value or if the environment variable $CLICOLOR is set to a false
          value.  If set, $CLICOLOR_FORCE will overrule the default of
          $NO_COLOR.
@@ -378,6 +378,17 @@ STDIN(1)              User Contributed Perl Documentation             STDIN(1)
           background-colour
           background_colour
 
+       header (-H --header --HC=color --header-color=color)
+          header  : 1
+          header  : blue_on_white
+
+         Defines if a header is displayed above the diff (default is 1),
+         supported colors are allowed.
+
+         If the values is a valid supported color, it will show the header in
+         that color scheme.  To disable the header set it to 0 in the RC file
+         or use "--no-header" as a command line argument.
+
        verbose
           verbose : cyan
 
@@ -566,4 +577,4 @@ STDIN(1)              User Contributed Perl Documentation             STDIN(1)
 
 
 
-perl v5.30.0                      2020-04-10                          STDIN(1)
+perl v5.32.0                      2020-06-24                          STDIN(1)
