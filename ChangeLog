@@ -5,6 +5,7 @@
     * Fallback to Pod::Text if nroff not available for --man
     * Support header colors and header for non-u
     * Refuse to diff character and block devices
+    * Warn that --recurse and folders are not yet supported
 
 0.28	- 2019-09-02
     * Add cpanfile
