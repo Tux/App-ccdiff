@@ -244,6 +244,8 @@ sub ccdiff {
     my $f1 = shift or usage (1);
     my $f2 = $_[0] // "-";
 
+    -b $f1 || -c $f1 || -b $f2 || -c $f2 and
+	die "Character and block devices are not supported\n";
     my $fh;
 
     if (@_ > 1 && ref $_[1]) { # optional hash with overruling arguments
