@@ -598,9 +598,16 @@ From then on you can do
 Due to the implementation, where both sides of the comparison are completely
 kept in memory, this tool might not be able to deal with (very) large datasets.
 
+## Speed
+
+There are situations where [Algorithm::Diff](https://metacpan.org/pod/Algorithm%3A%3ADiff) takes considerable more time
+compared to e.g. GNU diff. Installing [Algorithm::Diff::XS](https://metacpan.org/pod/Algorithm%3A%3ADiff%3A%3AXS) will make
+`ccdiff` a lot faster. `ccdiff` will choose [Algorithm::Diff::XS](https://metacpan.org/pod/Algorithm%3A%3ADiff%3A%3AXS) if
+available.
+
 # SEE ALSO
 
-[Algorithm::Diff](https://metacpan.org/pod/Algorithm%3A%3ADiff), [Text::Diff](https://metacpan.org/pod/Text%3A%3ADiff)
+[Algorithm::Diff::XS](https://metacpan.org/pod/Algorithm%3A%3ADiff%3A%3AXS), [Algorithm::Diff](https://metacpan.org/pod/Algorithm%3A%3ADiff), [Text::Diff](https://metacpan.org/pod/Text%3A%3ADiff)
 
 # AUTHOR
 

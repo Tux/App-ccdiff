@@ -22,7 +22,11 @@
     </ul>
   </li>
   <li><a href="#Git-integration">Git integration</a></li>
-  <li><a href="#CAVEATS">CAVEATS</a></li>
+  <li><a href="#CAVEATS">CAVEATS</a>
+    <ul>
+      <li><a href="#Speed">Speed</a></li>
+    </ul>
+  </li>
   <li><a href="#SEE-ALSO">SEE ALSO</a></li>
   <li><a href="#AUTHOR">AUTHOR</a></li>
   <li><a href="#COPYRIGHT-AND-LICENSE">COPYRIGHT AND LICENSE</a></li>
@@ -644,9 +648,13 @@
 
 <p>Due to the implementation, where both sides of the comparison are completely kept in memory, this tool might not be able to deal with (very) large datasets.</p>
 
+<h2 id="Speed">Speed</h2>
+
+<p>There are situations where <a>Algorithm::Diff</a> takes considerable more time compared to e.g. GNU diff. Installing <a>Algorithm::Diff::XS</a> will make <code>ccdiff</code> a lot faster. <code>ccdiff</code> will choose <a>Algorithm::Diff::XS</a> if available.</p>
+
 <h1 id="SEE-ALSO">SEE ALSO</h1>
 
-<p><a>Algorithm::Diff</a>, <a>Text::Diff</a></p>
+<p><a>Algorithm::Diff::XS</a>, <a>Algorithm::Diff</a>, <a>Text::Diff</a></p>
 
 <h1 id="AUTHOR">AUTHOR</h1>
 

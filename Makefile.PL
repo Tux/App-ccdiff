@@ -39,7 +39,7 @@ my %wmf = (
 
     META_MERGE			=> {
 	"meta-spec"		=> { version => 2 },
-	licence			=> "perl_5",
+	licence			=> "artistic_2",
 	resources		=> {
 	    type		=> "git",
 	    url			=> "git://github.com/Tux/App-ccdiff.git",

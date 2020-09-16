@@ -563,8 +563,14 @@ STDIN(1)              User Contributed Perl Documentation             STDIN(1)
        completely kept in memory, this tool might not be able to deal with
        (very) large datasets.
 
+   [1mSpeed[0m
+       There are situations where Algorithm::Diff takes considerable more time
+       compared to e.g. GNU diff. Installing Algorithm::Diff::XS will make
+       "ccdiff" a lot faster. "ccdiff" will choose Algorithm::Diff::XS if
+       available.
+
 [1mSEE ALSO[0m
-       Algorithm::Diff, Text::Diff
+       Algorithm::Diff::XS, Algorithm::Diff, Text::Diff
 
 [1mAUTHOR[0m
        H.Merijn Brand
@@ -577,4 +583,4 @@ STDIN(1)              User Contributed Perl Documentation             STDIN(1)
 
 
 
-perl v5.32.0                      2020-06-24                          STDIN(1)
+perl v5.32.0                      2020-09-16                          STDIN(1)

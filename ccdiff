@@ -5,7 +5,6 @@ package App::ccdiff;
 use 5.014000;
 use warnings;
 use charnames ();
-use Algorithm::Diff;
 use List::Util      qw( first  max     );
 use Term::ANSIColor qw(:constants color);
 use Getopt::Long    qw(:config bundling);
@@ -238,6 +237,10 @@ my $cmp_sub = $opt_i || $opt_b || $opt_Z ? { keyGen => sub {
     return $line;
     }} : undef;
 
+my $diff_class = eval { require Algorithm::Diff::XS; "Algorithm::Diff::XS"; }
+              || eval { require Algorithm::Diff;     "Algorithm::Diff";     }
+              or die "Cannot load Algorithm::Diff:\n";
+
 caller or ccdiff (@ARGV);
 
 sub ccdiff {
@@ -340,7 +343,7 @@ sub ccdiff {
 	    }
 	}
 
-    my $diff = Algorithm::Diff->new (\@d1, \@d2, $cmp_sub);
+    my $diff = $diff_class->new (\@d1, \@d2, $cmp_sub);
     $diff->Base (1);
 
     my ($N, $idx, @s) = (0, 0);
@@ -412,7 +415,7 @@ sub ccdiff {
 
 sub subdiff {
     my ($old, $new, $heu) = @_;
-    my $d = Algorithm::Diff->new (map { [ map { split m// } @$_ ] } $old, $new);
+    my $d = $diff_class->new (map { [ map { split m// } @$_ ] } $old, $new);
     my ($d1, $d2, $x1, $x2, @h1, @h2) = ("", "", "", "");
     my ($cml, $cmr) = $opt_v < 2 ? ("", "") : ($chr_cml, $chr_cmr);
     my ($cmd, $cma) = ($chr_old, $chr_new);
@@ -1175,9 +1178,16 @@ From then on you can do
 Due to the implementation, where both sides of the comparison are completely
 kept in memory, this tool might not be able to deal with (very) large datasets.
 
+=head2 Speed
+
+There are situations where L<Algorithm::Diff> takes considerable more time
+compared to e.g. GNU diff. Installing L<Algorithm::Diff::XS> will make
+C<ccdiff> a lot faster. C<ccdiff> will choose L<Algorithm::Diff::XS> if
+available.
+
 =head1 SEE ALSO
 
-L<Algorithm::Diff>, L<Text::Diff>
+L<Algorithm::Diff::XS>, L<Algorithm::Diff>, L<Text::Diff>
 
 =head1 AUTHOR
 

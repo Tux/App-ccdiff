@@ -133,7 +133,7 @@
 .\" ========================================================================
 .\"
 .IX Title "STDIN 1"
-.TH STDIN 1 "2020-06-24" "perl v5.32.0" "User Contributed Perl Documentation"
+.TH STDIN 1 "2020-09-16" "perl v5.32.0" "User Contributed Perl Documentation"
 .\" For nroff, turn off justification.  Always turn off hyphenation; it makes
 .\" way too many mistakes in technical documents.
 .if n .ad l
@@ -777,9 +777,15 @@ From then on you can do
 .IX Header "CAVEATS"
 Due to the implementation, where both sides of the comparison are completely
 kept in memory, this tool might not be able to deal with (very) large datasets.
+.SS "Speed"
+.IX Subsection "Speed"
+There are situations where Algorithm::Diff takes considerable more time
+compared to e.g. \s-1GNU\s0 diff. Installing Algorithm::Diff::XS will make
+\&\f(CW\*(C`ccdiff\*(C'\fR a lot faster. \f(CW\*(C`ccdiff\*(C'\fR will choose Algorithm::Diff::XS if
+available.
 .SH "SEE ALSO"
 .IX Header "SEE ALSO"
-Algorithm::Diff, Text::Diff
+Algorithm::Diff::XS, Algorithm::Diff, Text::Diff
 .SH "AUTHOR"
 .IX Header "AUTHOR"
 H.Merijn Brand
