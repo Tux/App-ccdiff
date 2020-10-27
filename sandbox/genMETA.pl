@@ -55,6 +55,7 @@ requires:
     Term::ANSIColor:     0
     Getopt::Long:        0
 recommends:
+    Algorithm::Diff::XS: 0.04
     Algorithm::Diff:     1.1903
 configure_requires:
     ExtUtils::MakeMaker: 0
