@@ -41,7 +41,7 @@ version:                 VERSION
 abstract:                Colored Character Diff
 license:                 artistic_2
 author:
-    - H.Merijn Brand <h.m.brand@xs4all.nl>
+    - H.Merijn Brand <perl5@tux.freedom.nl>
 generated_by:            Author
 distribution_type:       module
 provides:
@@ -66,8 +66,8 @@ test_requires:
     Capture::Tiny:       0
 resources:
     license:             http://dev.perl.org/licenses/
-    repository:          https://github.com/Tux/App-ccdiff
     homepage:            https://metacpan.org/pod/App::ccdiff
+    repository:          https://github.com/Tux/App-ccdiff
     bugtracker:          https://github.com/Tux/App-ccdiff/issues
     IRC:                 irc://irc.perl.org/#csv
 meta-spec:

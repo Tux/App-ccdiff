@@ -7,6 +7,7 @@
     * Refuse to diff character and block devices
     * Warn that --recurse and folders are not yet supported
     * Prefer Algorithm::Diff::XS if installed (raf)
+    * Support arrarefs for when used as module
 
 0.28	- 2019-09-02
     * Add cpanfile
