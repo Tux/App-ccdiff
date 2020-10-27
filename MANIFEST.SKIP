@@ -15,3 +15,7 @@ MANIFEST.SKIP
 ^\.travis.yml
 ^xt/
 \.tmp$
+
+# These are TODO
+^foo.$
+Files/01_[34].txt
