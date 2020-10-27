@@ -190,17 +190,13 @@ my %clr = map { $_ => color (s{^(.*)[ _]bold$}{bold $1}ir =~
 $clr{$_} //= color ($_) for tac_colors ();
 $no_colors and $clr{$_} = "" for keys %clr;
 $clr{none} = $clr{on_none} = "";
-for ([ \$old_color, $rc{old} ], [ \$new_color, $rc{new} ], [ \$rev_color, $rc{bg} ]) {
-    my ($c, $def) = @$_;
-    $$c && exists $clr{$$c} and next;
-    warn "color ", $$c // "(undefined)", " is unknown, using $def instead\n";
-    $$c = $def;
-    }
-my $clr_red = $clr{$old_color};
-my $clr_grn = $clr{$new_color};
-my $clr_rev = $clr{$rev_color};
-my $clr_dbg = $opt_r && exists $clr{"on_$rc{verbose}"} ? $clr{"on_$rc{verbose}"} : $clr{$rc{verbose}};
-my $reset   = $no_colors ? "" : RESET;
+
+my ($reset,   $bg_new,  $bg_old,
+    $chr_cml, $chr_cmr, $chr_ctx, $chr_eli, $chr_eql, $chr_lft,
+    $chr_new, $chr_old, $chr_rgt,
+    $clr_dbg, $clr_grn, $clr_new, $clr_old, $clr_red, $clr_rev,
+    $cmp_sub) = (RESET);
+
 if ($list_colors) {
     my @clr = map { sprintf "%s%-18s%s", $clr{$_}, $_, $reset } sort keys %clr;
     while (@clr) {
@@ -209,33 +205,47 @@ if ($list_colors) {
     exit;
     }
 
-my $bg_old = $clr{$rc{bg_old} || ($opt_r ? "on_$old_color" =~ s/bold //ir :
-					   "on_$rev_color" =~ s/bold //ir)};
-my $bg_new = $clr{$rc{bg_new} || ($opt_r ? "on_$new_color" =~ s/bold //ir :
-					   "on_$rev_color" =~ s/bold //ir)};
-my $clr_old = $opt_r ? $clr_rev . $bg_old : $clr_red . $bg_old;
-my $clr_new = $opt_r ? $clr_rev . $bg_new : $clr_grn . $bg_new;
-# Indicators
-$opt_a and
-    @rc{qw( chr_old chr_new chr_cml chr_cmr chr_eli chr_eli_v )} = qw( ^ ^ > < - <> );
-my $chr_old = $clr_old . $rc{chr_old} . $reset;
-my $chr_new = $clr_new . $rc{chr_new} . $reset;
-my $chr_cml = $clr_dbg . $rc{chr_cml} . $reset;
-my $chr_cmr = $clr_dbg . $rc{chr_cmr} . $reset;
-my $chr_eql =            $rc{chr_eql};
-my $chr_lft = $clr_old . (defined $opt_u ? "-" : "< ") . $reset;
-my $chr_rgt = $clr_new . (defined $opt_u ? "+" : "> ") . $reset;
-my $chr_ctx =             defined $opt_u ? " " : "  ";
-my $chr_eli = $opt_v >= 2 ? $rc{chr_eli_v} : $rc{chr_eli};
-$opt_m && $opt_v > 1 && length ($chr_eli) > 1 and $opt_m = 0;
+sub set_options {
+    for ([ \$old_color, $rc{old} ], [ \$new_color, $rc{new} ], [ \$rev_color, $rc{bg} ]) {
+	my ($c, $def) = @$_;
+	$$c && exists $clr{$$c} and next;
+	warn "color ", $$c // "(undefined)", " is unknown, using $def instead\n";
+	$$c = $def;
+	}
+    $clr_red = $clr{$old_color};
+    $clr_grn = $clr{$new_color};
+    $clr_rev = $clr{$rev_color};
+    $clr_dbg = $opt_r && exists $clr{"on_$rc{verbose}"} ? $clr{"on_$rc{verbose}"} : $clr{$rc{verbose}};
+    $reset   = $no_colors ? "" : RESET;
 
-my $cmp_sub = $opt_i || $opt_b || $opt_Z ? { keyGen => sub {
-    my $line = shift;
-    $opt_i and $line = lc $line;
-    $opt_Z and $line =~ s/[ \t]+$//g;
-    $opt_b and $line =~ s/[ \t]+/ /g;
-    return $line;
-    }} : undef;
+    $bg_old = $clr{$rc{bg_old} || ($opt_r ? "on_$old_color" =~ s/bold //ir :
+					       "on_$rev_color" =~ s/bold //ir)};
+    $bg_new = $clr{$rc{bg_new} || ($opt_r ? "on_$new_color" =~ s/bold //ir :
+					       "on_$rev_color" =~ s/bold //ir)};
+    $clr_old = $opt_r ? $clr_rev . $bg_old : $clr_red . $bg_old;
+    $clr_new = $opt_r ? $clr_rev . $bg_new : $clr_grn . $bg_new;
+    # Indicators
+    $opt_a and
+	@rc{qw( chr_old chr_new chr_cml chr_cmr chr_eli chr_eli_v )} = qw( ^ ^ > < - <> );
+    $chr_old = $clr_old . $rc{chr_old} . $reset;
+    $chr_new = $clr_new . $rc{chr_new} . $reset;
+    $chr_cml = $clr_dbg . $rc{chr_cml} . $reset;
+    $chr_cmr = $clr_dbg . $rc{chr_cmr} . $reset;
+    $chr_eql =            $rc{chr_eql};
+    $chr_lft = $clr_old . (defined $opt_u ? "-" : "< ") . $reset;
+    $chr_rgt = $clr_new . (defined $opt_u ? "+" : "> ") . $reset;
+    $chr_ctx =             defined $opt_u ? " " : "  ";
+    $chr_eli = $opt_v >= 2 ? $rc{chr_eli_v} : $rc{chr_eli};
+    $opt_m && $opt_v > 1 && length ($chr_eli) > 1 and $opt_m = 0;
+
+    $cmp_sub = $opt_i || $opt_b || $opt_Z ? { keyGen => sub {
+	my $line = shift;
+	$opt_i and $line = lc $line;
+	$opt_Z and $line =~ s/[ \t]+$//g;
+	$opt_b and $line =~ s/[ \t]+/ /g;
+	return $line;
+	}} : undef;
+    } # set_options
 
 my $diff_class = eval { require Algorithm::Diff::XS; "Algorithm::Diff::XS"; }
 	      || eval { require Algorithm::Diff;     "Algorithm::Diff";     }
@@ -290,6 +300,7 @@ sub ccdiff {
 	    }
 	}
 
+    set_options ();
     $emacs and @_ == 0 && -f $f1 && -f "$f1~" and ($f1, $f2) = ("$f1~", $f1);
 
     $f1 eq "-" && $f2 eq "-" and usage (1);
