@@ -93,7 +93,7 @@ sub postamble {
         '	-@cpants_lint.pl $(DISTVNAME).tgz',
         '	-@rm -f Debian_CPANTS.txt',
         '',
-	'doc:			doc/ccdiff.md doc/ccdiff.html doc/ccdiff.man doc/README.md',
+	'doc docs:		doc/ccdiff.md doc/ccdiff.html doc/ccdiff.man doc/README.md',
 	'doc/ccdiff.md:		ccdiff',
 	'	pod2markdown  < $? > $@',
 	'doc/ccdiff.html:	ccdiff',

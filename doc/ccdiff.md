@@ -170,6 +170,10 @@ ccdiff - Colored Character diff
     If the foreground color has `bold`, it will be stripped from the new background
     color.
 
+- --swap -s
+
+    Swap the colors for new and old.
+
 - --list-colors
 
     List available colors and exit.
@@ -339,6 +343,12 @@ Between parens is the corresponding command-line option.
     or background-color over foreground-color. The default is `false`, so it will
     color the changes with the appropriate color (`new` or `old`) over the
     default background color.
+
+- swap (-s)
+
+        reverse : false
+
+    Swap the colors for new and old.
 
 - new (--new)
 
