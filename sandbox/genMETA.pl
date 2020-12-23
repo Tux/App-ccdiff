@@ -1,14 +1,27 @@
 #!/pro/bin/perl
 
-use strict;
+use 5.12.2;
 use warnings;
 
+our $VERSION = "2.00 - 2020-12-23";
+our $CMD = $0 =~ s{.*/}{}r;
+
+sub usage {
+    my $err = shift and select STDERR;
+    say "usage: $CMD [--check || --yaml || --json]";
+    exit $err;
+    } # usage
+
 use Getopt::Long qw(:config bundling nopermute);
-my $check = 0;
-my $opt_v = 0;
 GetOptions (
-    "c|check"		=> \$check,
-    "v|verbose:1"	=> \$opt_v,
+    "help|?"		=> sub { usage (0) },
+    "V|version"		=> sub { say "$CMD [$VERSION]"; exit 0; },
+
+    "c|check!"		=> \ my $check,
+    "y|yaml!"		=> \ my $opt_y,
+    "j|json!"		=> \ my $opt_j,
+
+    "v|verbose:1"	=> \(my $opt_v = 0),
     ) or die "usage: $0 [--check]\n";
 
 use lib "sandbox";
@@ -27,8 +40,11 @@ if ($check) {
     $meta->check_minimum ();
     $meta->done_testing ();
     }
-elsif ($opt_v) {
+elsif ($opt_y) {
     $meta->print_yaml ();
+    }
+elsif ($opt_j) {
+    $meta->print_json ();
     }
 else {
     $meta->fix_meta ();
@@ -54,9 +70,10 @@ requires:
     Algorithm::Diff:     1.1901
     Term::ANSIColor:     0
     Getopt::Long:        0
+    List::Util:          0
 recommends:
     Algorithm::Diff::XS: 0.04
-    Algorithm::Diff:     1.1903
+    Algorithm::Diff:     1.201
 configure_requires:
     ExtUtils::MakeMaker: 0
 build_requires:
