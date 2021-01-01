@@ -625,7 +625,7 @@ H.Merijn Brand
 
 # COPYRIGHT AND LICENSE
 
-    Copyright (C) 2018-2020 H.Merijn Brand.  All rights reserved.
+    Copyright (C) 2018-2021 H.Merijn Brand.  All rights reserved.
 
 This library is free software;  you can redistribute and/or modify it under
 the same terms as The Artistic License 2.0.

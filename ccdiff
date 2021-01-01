@@ -9,7 +9,7 @@ use List::Util      qw( first  max     );
 use Term::ANSIColor qw(:constants color);
 use Getopt::Long    qw(:config bundling);
 
-our $VERSION = "0.30";
+our $VERSION = "0.31";
 our $CMD     = $0 =~ s{.*/}{}r;
 
 sub usage {
@@ -1222,7 +1222,7 @@ H.Merijn Brand
 
 =head1 COPYRIGHT AND LICENSE
 
- Copyright (C) 2018-2020 H.Merijn Brand.  All rights reserved.
+ Copyright (C) 2018-2021 H.Merijn Brand.  All rights reserved.
 
 This library is free software;  you can redistribute and/or modify it under
 the same terms as The Artistic License 2.0.

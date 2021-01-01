@@ -154,4 +154,4 @@ comman-line options.
 
 The Artistic License 2.0
 
-Copyright (c) 2018-2020 H.Merijn Brand
+Copyright (c) 2018-2021 H.Merijn Brand
