@@ -9,7 +9,7 @@ use List::Util      qw( first  max     );
 use Term::ANSIColor qw(:constants color);
 use Getopt::Long    qw(:config bundling);
 
-our $VERSION = "0.31";
+our $VERSION = "0.32";
 our $CMD     = $0 =~ s{.*/}{}r;
 
 sub usage {

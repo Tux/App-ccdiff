@@ -42,9 +42,11 @@ $ cpan App::ccdiff
 
  * `diff --color`
 
- * `colordiff`
+ * [`colordiff`](https://www.colordiff.org/)
 
- * `klondiff`
+ * [`klondiff`](https://github.com/pierstitus/klondiff)
+
+ * [`diff-so-fancy`](https://github.com/so-fancy/diff-so-fancy)
 
  * `git`
 
