@@ -545,7 +545,7 @@ sub read_rc {
     } # read_rc
 
 # Return the known colors from Term::ANSIColor
-# Stolen striaght from the pm
+# Stolen straight from the pm
 sub tac_colors {
     my %c256;
     foreach my $r (0 .. 5) {
@@ -609,7 +609,7 @@ ccdiff - Colored Character diff
 
 =item --help -?
 
-Show a summary op the available command-line options and exit.
+Show a summary of the available command-line options and exit.
 
 =item --version -V
 
@@ -728,7 +728,7 @@ as C<chr_old> (the character used as marker under removed characters) and
 C<chr_new> (the character used as marker under added characters).
 
 If C<--ellipsis> is also in effect and either the C<chr_eli> is longer than
-one character or C<--verbose> level is over 2, this options is automatically
+one character or C<--verbose> level is over 2, this option is automatically
 disabled.
 
 =item --ascii -a
@@ -809,7 +809,7 @@ Defines the number of lines a change block may differ before the fall-back of
 horizontal diff to vertical diff.
 
 If a chunk describes a change, and the number of lines in the original block
-has less or more lines than the new block and that difference exceeds this
+has fewer or more lines than the new block and that difference exceeds this
 threshold, C<ccdiff> will fall-back to vertical diff.
 
 =item --heuristics=n -h n
@@ -860,12 +860,12 @@ and C<-B>.
 
 =item --ignore-trailing-space -Z
 
-Ignore changes in trailing white-space (TAB's and spaces).
+Ignore changes in trailing white-space (tabs and spaces).
 
 =item --ignore-ws|ignore-space-change -b
 
-Ignore changes in horizontal white-space (TAB's and spaces). This does not
-include white-space changes that splits non-white-space or removes white-space
+Ignore changes in horizontal white-space (tabs and spaces). This does not
+include white-space changes that split non-white-space or remove white-space
 between two non-white-space elements.
 
 =item --ignore-tab-expansion -E
@@ -891,10 +891,10 @@ in this order:
 and evaluated in that order. Any options specified in a file later in that
 chain will overwrite previously set options.
 
-Option files are only read and evaluated if it is not empty and not writable
+Option files are only read and evaluated if they are not empty and not writable
 by others than the owner.
 
-The syntax of the file is one option per line. where leading and trailing
+The syntax of the file is one option per line, where leading and trailing
 white-space is ignored. If that line then starts with one of the options
 listed below, followed by optional white-space followed by either an C<=> or
 a C<:>, followed by optional white-space and the values, the value is assigned
@@ -941,7 +941,7 @@ default background color.
 
 =item swap (-s)
 
- reverse : false
+ swap    : false
 
 Swap the colors for new and old.
 
@@ -968,7 +968,7 @@ This option may also be specified as
 
  old     : red
 
-Defines the color to be used for delete text. The default is C<red>.
+Defines the color to be used for deleted text. The default is C<red>.
 
 The color C<none> is also accepted and disables this color.
 
@@ -1015,7 +1015,7 @@ This option may also be specified as
 Defines if a header is displayed above the diff (default is 1), supported
 colors are allowed.
 
-If the values is a valid supported color, it will show the header in that
+If the value is a valid supported color, it will show the header in that
 color scheme.  To disable the header set it to C<0> in the RC file or use
 C<--no-header> as a command line argument.
 
@@ -1069,8 +1069,8 @@ with this option, it would be
  [002] 19,19d18
  [005] 42a42,42
 
-When this option contains a positive integer, C<ccdiff> will only show diff
-the diff chunk with that index.
+When this option contains a positive integer, C<ccdiff> will only show the
+diff chunk with that index.
 
 =item emacs
 
@@ -1141,7 +1141,7 @@ Defines the character used to indicate omitted text in large unchanged text
 when C<--ellipsis>/C<-e> is in effect.
 
 This character is not equally well visible on all terminals or in all fonts,
-so you might want to chane it to something that stands out better in you
+so you might want to change it to something that stands out better in your
 environment. Possible suggestions:
 
  … U+2026 HORIZONTAL ELLIPSIS
@@ -1170,7 +1170,7 @@ environment. Possible suggestions:
 
  chr_eli_v : U+21A4U+21A6
 
-When ussing C<--ellipsis> with C<--verbose> level 2 or up, the single character
+When using C<--ellipsis> with C<--verbose> level 2 or up, the single character
 indicator will be replaced with this character. If it is 2 characters wide, the
 length of the compressed part is put between the characters.
 
@@ -1207,7 +1207,7 @@ kept in memory, this tool might not be able to deal with (very) large datasets.
 
 =head2 Speed
 
-There are situations where L<Algorithm::Diff> takes considerable more time
+There are situations where L<Algorithm::Diff> takes considerably more time
 compared to e.g. GNU diff. Installing L<Algorithm::Diff::XS> will make
 C<ccdiff> a lot faster. C<ccdiff> will choose L<Algorithm::Diff::XS> if
 available.

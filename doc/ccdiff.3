@@ -157,7 +157,7 @@ ccdiff \- Colored Character diff
 .IX Subsection "Command line options"
 .IP "\-\-help \-?" 2
 .IX Item "--help -?"
-Show a summary op the available command-line options and exit.
+Show a summary of the available command-line options and exit.
 .IP "\-\-version \-V" 2
 .IX Item "--version -V"
 Show the version and exit.
@@ -285,7 +285,7 @@ as \f(CW\*(C`chr_old\*(C'\fR (the character used as marker under removed charact
 \&\f(CW\*(C`chr_new\*(C'\fR (the character used as marker under added characters).
 .Sp
 If \f(CW\*(C`\-\-ellipsis\*(C'\fR is also in effect and either the \f(CW\*(C`chr_eli\*(C'\fR is longer than
-one character or \f(CW\*(C`\-\-verbose\*(C'\fR level is over 2, this options is automatically
+one character or \f(CW\*(C`\-\-verbose\*(C'\fR level is over 2, this option is automatically
 disabled.
 .IP "\-\-ascii \-a" 2
 .IX Item "--ascii -a"
@@ -359,7 +359,7 @@ Defines the number of lines a change block may differ before the fall-back of
 horizontal diff to vertical diff.
 .Sp
 If a chunk describes a change, and the number of lines in the original block
-has less or more lines than the new block and that difference exceeds this
+has fewer or more lines than the new block and that difference exceeds this
 threshold, \f(CW\*(C`ccdiff\*(C'\fR will fall-back to vertical diff.
 .IP "\-\-heuristics=n \-h n" 2
 .IX Item "--heuristics=n -h n"
@@ -409,11 +409,11 @@ Ignore all white-space changes. This will set all options \f(CW\*(C`\-b\*(C'\fR,
 and \f(CW\*(C`\-B\*(C'\fR.
 .IP "\-\-ignore\-trailing\-space \-Z" 2
 .IX Item "--ignore-trailing-space -Z"
-Ignore changes in trailing white-space (\s-1TAB\s0's and spaces).
+Ignore changes in trailing white-space (tabs and spaces).
 .IP "\-\-ignore\-ws|ignore\-space\-change \-b" 2
 .IX Item "--ignore-ws|ignore-space-change -b"
-Ignore changes in horizontal white-space (\s-1TAB\s0's and spaces). This does not
-include white-space changes that splits non-white-space or removes white-space
+Ignore changes in horizontal white-space (tabs and spaces). This does not
+include white-space changes that split non-white-space or remove white-space
 between two non-white-space elements.
 .IP "\-\-ignore\-tab\-expansion \-E" 2
 .IX Item "--ignore-tab-expansion -E"
@@ -436,10 +436,10 @@ in this order:
 and evaluated in that order. Any options specified in a file later in that
 chain will overwrite previously set options.
 .PP
-Option files are only read and evaluated if it is not empty and not writable
+Option files are only read and evaluated if they are not empty and not writable
 by others than the owner.
 .PP
-The syntax of the file is one option per line. where leading and trailing
+The syntax of the file is one option per line, where leading and trailing
 white-space is ignored. If that line then starts with one of the options
 listed below, followed by optional white-space followed by either an \f(CW\*(C`=\*(C'\fR or
 a \f(CW\*(C`:\*(C'\fR, followed by optional white-space and the values, the value is assigned
@@ -488,7 +488,7 @@ default background color.
 .IP "swap (\-s)" 2
 .IX Item "swap (-s)"
 .Vb 1
-\& reverse : false
+\& swap    : false
 .Ve
 .Sp
 Swap the colors for new and old.
@@ -520,7 +520,7 @@ This option may also be specified as
 \& old     : red
 .Ve
 .Sp
-Defines the color to be used for delete text. The default is \f(CW\*(C`red\*(C'\fR.
+Defines the color to be used for deleted text. The default is \f(CW\*(C`red\*(C'\fR.
 .Sp
 The color \f(CW\*(C`none\*(C'\fR is also accepted and disables this color.
 .Sp
@@ -573,7 +573,7 @@ This option may also be specified as
 Defines if a header is displayed above the diff (default is 1), supported
 colors are allowed.
 .Sp
-If the values is a valid supported color, it will show the header in that
+If the value is a valid supported color, it will show the header in that
 color scheme.  To disable the header set it to \f(CW0\fR in the \s-1RC\s0 file or use
 \&\f(CW\*(C`\-\-no\-header\*(C'\fR as a command line argument.
 .IP "verbose" 2
@@ -638,8 +638,8 @@ with this option, it would be
 \& [005] 42a42,42
 .Ve
 .Sp
-When this option contains a positive integer, \f(CW\*(C`ccdiff\*(C'\fR will only show diff
-the diff chunk with that index.
+When this option contains a positive integer, \f(CW\*(C`ccdiff\*(C'\fR will only show the
+diff chunk with that index.
 .IP "emacs" 2
 .IX Item "emacs"
 .Vb 1
@@ -721,7 +721,7 @@ Defines the character used to indicate omitted text in large unchanged text
 when \f(CW\*(C`\-\-ellipsis\*(C'\fR/\f(CW\*(C`\-e\*(C'\fR is in effect.
 .Sp
 This character is not equally well visible on all terminals or in all fonts,
-so you might want to chane it to something that stands out better in you
+so you might want to change it to something that stands out better in your
 environment. Possible suggestions:
 .Sp
 .Vb 10
@@ -753,7 +753,7 @@ environment. Possible suggestions:
 \& chr_eli_v : U+21A4U+21A6
 .Ve
 .Sp
-When ussing \f(CW\*(C`\-\-ellipsis\*(C'\fR with \f(CW\*(C`\-\-verbose\*(C'\fR level 2 or up, the single character
+When using \f(CW\*(C`\-\-ellipsis\*(C'\fR with \f(CW\*(C`\-\-verbose\*(C'\fR level 2 or up, the single character
 indicator will be replaced with this character. If it is 2 characters wide, the
 length of the compressed part is put between the characters.
 .Sp
@@ -789,7 +789,7 @@ Due to the implementation, where both sides of the comparison are completely
 kept in memory, this tool might not be able to deal with (very) large datasets.
 .SS "Speed"
 .IX Subsection "Speed"
-There are situations where Algorithm::Diff takes considerable more time
+There are situations where Algorithm::Diff takes considerably more time
 compared to e.g. \s-1GNU\s0 diff. Installing Algorithm::Diff::XS will make
 \&\f(CW\*(C`ccdiff\*(C'\fR a lot faster. \f(CW\*(C`ccdiff\*(C'\fR will choose Algorithm::Diff::XS if
 available.
