@@ -16,7 +16,7 @@ STDIN(1)              User Contributed Perl Documentation             STDIN(1)
 [1mOPTIONS[0m
    [1mCommand line options[0m
        --help -?
-         Show a summary op the available command-line options and exit.
+         Show a summary of the available command-line options and exit.
 
        --version -V
          Show the version and exit.
@@ -135,7 +135,7 @@ STDIN(1)              User Contributed Perl Documentation             STDIN(1)
          added characters).
 
          If "--ellipsis" is also in effect and either the "chr_eli" is longer
-         than one character or "--verbose" level is over 2, this options is
+         than one character or "--verbose" level is over 2, this option is
          automatically disabled.
 
        --ascii -a
@@ -207,7 +207,7 @@ STDIN(1)              User Contributed Perl Documentation             STDIN(1)
          fall-back of horizontal diff to vertical diff.
 
          If a chunk describes a change, and the number of lines in the
-         original block has less or more lines than the new block and that
+         original block has fewer or more lines than the new block and that
          difference exceeds this threshold, "ccdiff" will fall-back to
          vertical diff.
 
@@ -255,12 +255,12 @@ STDIN(1)              User Contributed Perl Documentation             STDIN(1)
          "-E", and "-B".
 
        --ignore-trailing-space -Z
-         Ignore changes in trailing white-space (TAB's and spaces).
+         Ignore changes in trailing white-space (tabs and spaces).
 
        --ignore-ws|ignore-space-change -b
-         Ignore changes in horizontal white-space (TAB's and spaces). This
-         does not include white-space changes that splits non-white-space or
-         removes white-space between two non-white-space elements.
+         Ignore changes in horizontal white-space (tabs and spaces). This
+         does not include white-space changes that split non-white-space or
+         remove white-space between two non-white-space elements.
 
        --ignore-tab-expansion -E
          NYI
@@ -280,10 +280,10 @@ STDIN(1)              User Contributed Perl Documentation             STDIN(1)
        and evaluated in that order. Any options specified in a file later in
        that chain will overwrite previously set options.
 
-       Option files are only read and evaluated if it is not empty and not
+       Option files are only read and evaluated if they are not empty and not
        writable by others than the owner.
 
-       The syntax of the file is one option per line. where leading and
+       The syntax of the file is one option per line, where leading and
        trailing white-space is ignored. If that line then starts with one of
        the options listed below, followed by optional white-space followed by
        either an "=" or a ":", followed by optional white-space and the
@@ -323,7 +323,7 @@ STDIN(1)              User Contributed Perl Documentation             STDIN(1)
          ("new" or "old") over the default background color.
 
        swap (-s)
-          reverse : false
+          swap    : false
 
          Swap the colors for new and old.
 
@@ -348,7 +348,7 @@ STDIN(1)              User Contributed Perl Documentation             STDIN(1)
        old (--old)
           old     : red
 
-         Defines the color to be used for delete text. The default is "red".
+         Defines the color to be used for deleted text. The default is "red".
 
          The color "none" is also accepted and disables this color.
 
@@ -393,7 +393,7 @@ STDIN(1)              User Contributed Perl Documentation             STDIN(1)
          Defines if a header is displayed above the diff (default is 1),
          supported colors are allowed.
 
-         If the values is a valid supported color, it will show the header in
+         If the value is a valid supported color, it will show the header in
          that color scheme.  To disable the header set it to 0 in the RC file
          or use "--no-header" as a command line argument.
 
@@ -446,7 +446,7 @@ STDIN(1)              User Contributed Perl Documentation             STDIN(1)
           [005] 42a42,42
 
          When this option contains a positive integer, "ccdiff" will only show
-         diff the diff chunk with that index.
+         the diff chunk with that index.
 
        emacs
           emacs   : no
@@ -510,8 +510,8 @@ STDIN(1)              User Contributed Perl Documentation             STDIN(1)
          unchanged text when "--ellipsis"/"-e" is in effect.
 
          This character is not equally well visible on all terminals or in all
-         fonts, so you might want to chane it to something that stands out
-         better in you environment. Possible suggestions:
+         fonts, so you might want to change it to something that stands out
+         better in your environment. Possible suggestions:
 
           X U+2026 HORIZONTAL ELLIPSIS
           X U+2034 TRIPLE PRIME
@@ -538,7 +538,7 @@ STDIN(1)              User Contributed Perl Documentation             STDIN(1)
        chr_eli_v
           chr_eli_v : U+21A4U+21A6
 
-         When ussing "--ellipsis" with "--verbose" level 2 or up, the single
+         When using "--ellipsis" with "--verbose" level 2 or up, the single
          character indicator will be replaced with this character. If it is 2
          characters wide, the length of the compressed part is put between the
          characters.
@@ -572,7 +572,7 @@ STDIN(1)              User Contributed Perl Documentation             STDIN(1)
        (very) large datasets.
 
    [1mSpeed[0m
-       There are situations where Algorithm::Diff takes considerable more time
+       There are situations where Algorithm::Diff takes considerably more time
        compared to e.g. GNU diff. Installing Algorithm::Diff::XS will make
        "ccdiff" a lot faster. "ccdiff" will choose Algorithm::Diff::XS if
        available.
