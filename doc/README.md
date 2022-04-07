@@ -131,7 +131,7 @@ $ git config --global diff.tool ccdiff
 $ git config --global difftool.prompt false
 $ git config --global difftool.ccdiff.cmd 'ccdiff --utf-8 -u -r $LOCAL $REMOTE'
 $ git difftool SHA~..SHA
-$ wget https://github.com/Tux/App-ccdiff/blob/master/Files/git-ccdiff \
+$ wget https://github.com/Tux/App-ccdiff/raw/master/Files/git-ccdiff \
     -O ~/bin/git-ccdiff
 $ perl -pi -e 's{/pro/bin/perl}{/usr/bin/env perl}' ~/bin/git-ccdiff
 $ chmod 755 ~/bin/git-ccdiff
