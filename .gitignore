@@ -23,4 +23,5 @@ tmp/*
 sandbox/cover_db*
 Talk/*.mp4
 Talk/*.jpg
+Talk/diff-so-fancy*
 *-git
