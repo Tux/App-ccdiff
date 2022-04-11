@@ -1,5 +1,6 @@
-0.32	- 2022-04-05
+0.32	- 2022-04-11
     * Add ref to diff-so-fancy
+    * README & Documentation fixes (pr#21 .. pr#23, Ryan Schmidt)
 
 0.31	- 2022-01-01
     * It is 2021 - no changes in 2021
