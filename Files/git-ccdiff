@@ -17,14 +17,17 @@ my @opt;
 my @git = qw( git difftool );
 for (@ARGV) {
     if (m/^-/) {	# an option
-	push @opt, $_;
+	push @opt => $_;
 	}
     elsif (-f) {	# a file
-	push @git, $_;
+	push @git => $_;
 	}
-    else {		# a commit
-	push @git, "$_~1..$_";
+    elsif (m/^[0-9a-fA-F]{4,32}$/) {		# a commit
+	push @git => "$_~1..$_";
         }
+    else {
+	push @git => $_;
+	}
     }
 
 #use Data::Peek;
