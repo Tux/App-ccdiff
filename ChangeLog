@@ -1,4 +1,4 @@
-0.32	- 2023-01-04
+0.32	- 2023-01-05
     * Add ref to diff-so-fancy
     * README & Documentation fixes (pr#21 .. pr#23, Ryan Schmidt)
     * git-ccdiff: not all arguments are sha's (`git ccdiff .`, issue#25)

@@ -1,6 +1,6 @@
 #!/pro/bin/perl
 
-use 5.16.3;
+use 5.016003;
 use warnings;
 
 my $n = 0;

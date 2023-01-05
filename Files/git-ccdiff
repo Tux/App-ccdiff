@@ -9,7 +9,7 @@
 # ->
 # git ccdiff   5c5a
 
-use 5.14.2;
+use 5.014002;
 use warnings;
 
 my @opt;

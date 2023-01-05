@@ -1,6 +1,6 @@
 #!/pro/bin/perl
 
-use 5.12.1;
+use 5.012001;
 use warnings;
 
 open my $fh, "<", "ccdiff";
