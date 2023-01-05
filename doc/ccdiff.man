@@ -73,30 +73,30 @@ STDIN(1)              User Contributed Perl Documentation             STDIN(1)
 
           1,1c1,1
           - A  BCDE Fg
-          + A BcdEXFg
+          + A BcdEFg
 
          With -Uu0v1:
 
           1,1c1,1
           - A  BCDE Fg
           - -- verbose : SPACE, LATIN CAPITAL LETTER C, LATIN CAPITAL LETTER D, SPACE
-          + A BcdEXFg
+          + A BcdEFg
           + -- verbose : LATIN SMALL LETTER C, LATIN SMALL LETTER D, ZERO WIDTH SPACE
 
          With -Uu0v2:
 
           1,1c1,1
-          - A X XBXCDXEX XFg
+          - A â± â°Bâ±CDâ°Eâ± â°Fg
           - -- verbose : SPACE, LATIN CAPITAL LETTER C, LATIN CAPITAL LETTER D, SPACE
-          + A BXcdXEXXXFg
+          + A Bâ±cdâ°Eâ±â°Fg
           + -- verbose : LATIN SMALL LETTER C, LATIN SMALL LETTER D, ZERO WIDTH SPACE
 
          With -Uu0v3:
 
           1,1c1,1
-          - A X XBXCDXEX XFg
+          - A â± â°Bâ±CDâ°Eâ± â°Fg
           - -- verbose : SPACE (U+000020), LATIN CAPITAL LETTER C (U+000043), LATIN CAPITAL LETTER D (U+000044), SPACE (U+000020)
-          + A BXcdXEXXXFg
+          + A Bâ±cdâ°Eâ±â°Fg
           + -- verbose : LATIN SMALL LETTER C (U+000063), LATIN SMALL LETTER D (U+000064), ZERO WIDTH SPACE (U+00200B)
 
          With -Uu0v2 --ascii:
@@ -104,7 +104,7 @@ STDIN(1)              User Contributed Perl Documentation             STDIN(1)
           1,1c1,1
           - A > <B>CD<E> <Fg
           - -- verbose : SPACE, LATIN CAPITAL LETTER C, LATIN CAPITAL LETTER D, SPACE
-          + A B>cd<E>X<Fg
+          + A B>cd<E><Fg
           + -- verbose : LATIN SMALL LETTER C, LATIN SMALL LETTER D, ZERO WIDTH SPACE
 
          the word "verbose" and the character markers will be displayed using
@@ -125,9 +125,9 @@ STDIN(1)              User Contributed Perl Documentation             STDIN(1)
 
           5,5c5,5
           -Sat Dec 18 07:08:33 1998,I.O.D.U.,,756194433,1442539
-          -               X       X
+          -               â¼       â¼
           +Sat Dec 18 07:00:33 1993,I.O.D.U.,,756194433,1442539
-          +               X       X
+          +               â²       â²
 
          The characters used for the markers can be defined in your
          configuration file as "chr_old" (the character used as marker under
@@ -224,24 +224,24 @@ STDIN(1)              User Contributed Perl Documentation             STDIN(1)
 
          If set to a positive number, and the length of a segment of equal
          characters inside a horizontal diff is longer than twice this value,
-         the middle part is replaced with "X U02508 \N{BOX DRAWINGS LIGHT
-         QUADRUPLE DASH HORIZONTAL}" (instead of X U02026, as HORIZONTAL
+         the middle part is replaced with "â U02508 \N{BOX DRAWINGS LIGHT
+         QUADRUPLE DASH HORIZONTAL}" (instead of â¦ U02026, as HORIZONTAL
          ELLIPSIS does not stand out enough).
 
          With "-u0me3" that would be like
 
           5,5c5,5
-          -SatX07:08:33X 1998,I.X539
-          -        X        X
-          +SatX07:00:33X 1993,I.X539
-          +        X        X
+          -Satâ07:08:33â 1998,I.â539
+          -        â¼        â¼
+          +Satâ07:00:33â 1993,I.â539
+          +        â²        â²
 
          With "-u0e3 -v2" like
 
           5,5c5,5
-          -SatX9X07:0X0X:33 199X3X,I.X23X539
+          -Satâ¤9â¦07:0â±0â°:33 199â±3â°,I.â¤23â¦539
           - -- verbose : DIGIT ZERO, DIGIT THREE
-          +SatX9X07:0X8X:33 199X8X,I.X23X539
+          +Satâ¤9â¦07:0â±8â°:33 199â±8â°,I.â¤23â¦539
           + -- verbose : DIGIT EIGHT, DIGIT EIGHT
 
          The text used for the replaced text can be defined in your
@@ -258,9 +258,9 @@ STDIN(1)              User Contributed Perl Documentation             STDIN(1)
          Ignore changes in trailing white-space (tabs and spaces).
 
        --ignore-ws|ignore-space-change -b
-         Ignore changes in horizontal white-space (tabs and spaces). This
-         does not include white-space changes that split non-white-space or
-         remove white-space between two non-white-space elements.
+         Ignore changes in horizontal white-space (tabs and spaces). This does
+         not include white-space changes that split non-white-space or remove
+         white-space between two non-white-space elements.
 
        --ignore-tab-expansion -E
          NYI
@@ -289,7 +289,7 @@ STDIN(1)              User Contributed Perl Documentation             STDIN(1)
        either an "=" or a ":", followed by optional white-space and the
        values, the value is assigned to the option. The values "no" and
        "false" (case insensitive) are aliases for 0. The values "yes" and
-       "true" are aliases to "-1" ("-1" being a true value).
+       "true" are aliases to -1 (-1 being a true value).
 
        Between parens is the corresponding command-line option.
 
@@ -513,27 +513,27 @@ STDIN(1)              User Contributed Perl Documentation             STDIN(1)
          fonts, so you might want to change it to something that stands out
          better in your environment. Possible suggestions:
 
-          X U+2026 HORIZONTAL ELLIPSIS
-          X U+2034 TRIPLE PRIME
-          X U+2037 REVERSED TRIPLE PRIME
-          X U+2194 LEFT RIGHT ARROW
-          X U+21ad LEFT RIGHT WAVE ARROW
-          X U+21ae LEFT RIGHT ARROW WITH STROKE
-          X U+21b9 LEFTWARDS ARROW TO BAR OVER RIGHTWARDS ARROW TO BAR
-          X U+21c4 RIGHTWARDS ARROW OVER LEFTWARDS ARROW
-          X U+21c6 LEFTWARDS ARROW OVER RIGHTWARDS ARROW
-          X U+21ce LEFT RIGHT DOUBLE ARROW WITH STROKE
-          X U+21d4 LEFT RIGHT DOUBLE ARROW
-          X U+21f9 LEFT RIGHT ARROW WITH VERTICAL STROKE
-          X U+21fc LEFT RIGHT ARROW WITH DOUBLE VERTICAL STROKE
-          X U+21ff LEFT RIGHT OPEN-HEADED ARROW
-          X U+224b TRIPLE TILDE
-          X U+2504 BOX DRAWINGS LIGHT TRIPLE DASH HORIZONTAL
-          X U+2505 BOX DRAWINGS HEAVY TRIPLE DASH HORIZONTAL
-          X U+2508 BOX DRAWINGS LIGHT QUADRUPLE DASH HORIZONTAL
-          X U+2509 BOX DRAWINGS HEAVY QUADRUPLE DASH HORIZONTAL
-          X U+29fb TRIPLE PLUS
-          X U+2b0c LEFT RIGHT BLACK ARROW
+          â¦ U+2026 HORIZONTAL ELLIPSIS
+          â´ U+2034 TRIPLE PRIME
+          â· U+2037 REVERSED TRIPLE PRIME
+          â U+2194 LEFT RIGHT ARROW
+          â U+21ad LEFT RIGHT WAVE ARROW
+          â® U+21ae LEFT RIGHT ARROW WITH STROKE
+          â¹ U+21b9 LEFTWARDS ARROW TO BAR OVER RIGHTWARDS ARROW TO BAR
+          â U+21c4 RIGHTWARDS ARROW OVER LEFTWARDS ARROW
+          â U+21c6 LEFTWARDS ARROW OVER RIGHTWARDS ARROW
+          â U+21ce LEFT RIGHT DOUBLE ARROW WITH STROKE
+          â U+21d4 LEFT RIGHT DOUBLE ARROW
+          â¹ U+21f9 LEFT RIGHT ARROW WITH VERTICAL STROKE
+          â¼ U+21fc LEFT RIGHT ARROW WITH DOUBLE VERTICAL STROKE
+          â¿ U+21ff LEFT RIGHT OPEN-HEADED ARROW
+          â U+224b TRIPLE TILDE
+          â U+2504 BOX DRAWINGS LIGHT TRIPLE DASH HORIZONTAL
+          â U+2505 BOX DRAWINGS HEAVY TRIPLE DASH HORIZONTAL
+          â U+2508 BOX DRAWINGS LIGHT QUADRUPLE DASH HORIZONTAL
+          â U+2509 BOX DRAWINGS HEAVY QUADRUPLE DASH HORIZONTAL
+          â§» U+29fb TRIPLE PLUS
+          â¬ U+2b0c LEFT RIGHT BLACK ARROW
 
        chr_eli_v
           chr_eli_v : U+21A4U+21A6
@@ -584,11 +584,11 @@ STDIN(1)              User Contributed Perl Documentation             STDIN(1)
        H.Merijn Brand
 
 [1mCOPYRIGHT AND LICENSE[0m
-        Copyright (C) 2018-2022 H.Merijn Brand.  All rights reserved.
+        Copyright (C) 2018-2023 H.Merijn Brand.  All rights reserved.
 
        This library is free software;  you can redistribute and/or modify it
        under the same terms as The Artistic License 2.0.
 
 
 
-perl v5.34.0                      2022-04-07                          STDIN(1)
+perl v5.36.0                      2023-01-05                          STDIN(1)

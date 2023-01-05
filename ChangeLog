@@ -1,7 +1,8 @@
-0.32	- 2022-04-11
+0.32	- 2023-01-04
     * Add ref to diff-so-fancy
     * README & Documentation fixes (pr#21 .. pr#23, Ryan Schmidt)
     * git-ccdiff: not all arguments are sha's (`git ccdiff .`, issue#25)
+    * It is 2023
 
 0.31	- 2022-01-01
     * It is 2021 - no changes in 2021
