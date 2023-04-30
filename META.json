@@ -1,5 +1,5 @@
 {  "name" : "App-ccdiff",
-   "version" : "0.30",
+   "version" : "0.33",
    "abstract" : "Colored Character Diff",
    "license" : [
       "artistic_2"
@@ -13,19 +13,19 @@
    "provides" : {
       "App::ccdiff" : {
          "file" : "lib/App/ccdiff.pm",
-         "version" : "0.30"
+         "version" : "0.33"
          }
       },
    "prereqs" : {
-      "test" : {
-         "requires" : {
-            "Capture::Tiny" : "0",
-            "Test::More" : "0"
-            }
-         },
       "configure" : {
          "requires" : {
             "ExtUtils::MakeMaker" : "0"
+            },
+         "recommends" : {
+            "ExtUtils::MakeMaker" : "7.22"
+            },
+         "suggests" : {
+            "ExtUtils::MakeMaker" : "7.70"
             }
          },
       "build" : {
@@ -33,18 +33,30 @@
             "Config" : "0"
             }
          },
+      "test" : {
+         "requires" : {
+            "Test::More" : "0",
+            "Capture::Tiny" : "0"
+            },
+         "recommends" : {
+            "Capture::Tiny" : "0.24"
+            },
+         "suggests" : {
+            "Capture::Tiny" : "0.48"
+            }
+         },
       "runtime" : {
+         "requires" : {
+            "perl" : "5.014000",
+            "charnames" : "0",
+            "Getopt::Long" : "0",
+            "Algorithm::Diff" : "1.1901",
+            "Term::ANSIColor" : "0",
+            "List::Util" : "0"
+            },
          "recommends" : {
             "Algorithm::Diff::XS" : "0.04",
             "Algorithm::Diff" : "1.201"
-            },
-         "requires" : {
-            "perl" : "5.014000",
-            "Term::ANSIColor" : "0",
-            "charnames" : "0",
-            "Algorithm::Diff" : "1.1901",
-            "Getopt::Long" : "0",
-            "List::Util" : "0"
             }
          }
       },

@@ -1,39 +1,39 @@
---- #YAML:1.0
-name:                    App-ccdiff
-version:                 0.30
-abstract:                Colored Character Diff
-license:                 artistic_2
-author:
-    - H.Merijn Brand <perl5@tux.freedom.nl>
-generated_by:            Author
-distribution_type:       module
-provides:
-    App::ccdiff:
-        file:            lib/App/ccdiff.pm
-        version:         0.30
-requires:
-    perl:                5.014000
-    charnames:           0
-    Algorithm::Diff:     1.1901
-    Term::ANSIColor:     0
-    Getopt::Long:        0
-    List::Util:          0
-recommends:
-    Algorithm::Diff::XS: 0.04
-    Algorithm::Diff:     1.201
-configure_requires:
-    ExtUtils::MakeMaker: 0
-build_requires:
-    Config:              0
-test_requires:
-    Test::More:          0
-    Capture::Tiny:       0
-resources:
-    license:             http://dev.perl.org/licenses/
-    homepage:            https://metacpan.org/pod/App::ccdiff
-    repository:          https://github.com/Tux/App-ccdiff
-    bugtracker:          https://github.com/Tux/App-ccdiff/issues
-    IRC:                 irc://irc.perl.org/#csv
-meta-spec:
-    version:             1.4
-    url:                 http://module-build.sourceforge.net/META-spec-v1.4.html
+--- 
+name: App-ccdiff
+version: '0.33'
+abstract: Colored Character Diff
+license: artistic_2
+author: 
+  - H.Merijn Brand <perl5@tux.freedom.nl>
+generated_by: Author, CPAN::Meta::Converter version 2.150010
+dynamic_config: 1
+provides: 
+  App::ccdiff: 
+    file: lib/App/ccdiff.pm
+    version: '0.33'
+configure_requires: 
+  ExtUtils::MakeMaker: 0
+build_requires: 
+  Config: 0
+requires: 
+  Algorithm::Diff: '1.1901'
+  Capture::Tiny: 0
+  Getopt::Long: 0
+  List::Util: 0
+  Term::ANSIColor: 0
+  Test::More: 0
+  charnames: 0
+  perl: '5.014000'
+recommends: 
+  Algorithm::Diff: '1.201'
+  Algorithm::Diff::XS: '0.04'
+  Capture::Tiny: '0.24'
+resources: 
+  license: http://dev.perl.org/licenses/
+  homepage: https://metacpan.org/pod/App::ccdiff
+  repository: https://github.com/Tux/App-ccdiff
+  bugtracker: https://github.com/Tux/App-ccdiff/issues
+  IRC: irc://irc.perl.org/#csv
+meta-spec: 
+  version: '1.4'
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html

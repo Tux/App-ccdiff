@@ -9,6 +9,10 @@ recommends "Algorithm::Diff::XS"      => "0.04";
 
 on "configure" => sub {
     requires   "ExtUtils::MakeMaker";
+
+    recommends "ExtUtils::MakeMaker"      => "7.22";
+
+    suggests   "ExtUtils::MakeMaker"      => "7.70";
     };
 
 on "build" => sub {
@@ -18,4 +22,8 @@ on "build" => sub {
 on "test" => sub {
     requires   "Capture::Tiny";
     requires   "Test::More";
+
+    recommends "Capture::Tiny"            => "0.24";
+
+    suggests   "Capture::Tiny"            => "0.48";
     };

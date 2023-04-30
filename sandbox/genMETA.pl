@@ -76,11 +76,19 @@ recommends:
     Algorithm::Diff:     1.201
 configure_requires:
     ExtUtils::MakeMaker: 0
+configure_recommends:
+    ExtUtils::MakeMaker: 7.22
+configure_suggests:
+    ExtUtils::MakeMaker: 7.70
 build_requires:
     Config:              0
 test_requires:
     Test::More:          0
     Capture::Tiny:       0
+test_recommends:
+    Capture::Tiny:       0.24
+test_suggests:
+    Capture::Tiny:       0.48
 resources:
     license:             http://dev.perl.org/licenses/
     homepage:            https://metacpan.org/pod/App::ccdiff
