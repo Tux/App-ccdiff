@@ -1,5 +1,6 @@
-0.33	- 2023-04-30
+0.33	- 2023-05-02
     * New version declarations based on CVE warnings
+    * Allow selecting PP diff when XS fails
 
 0.32	- 2023-01-05
     * Add ref to diff-so-fancy
