@@ -2,7 +2,7 @@
 
 package genMETA;
 
-our $VERSION = "1.13-20230430";
+our $VERSION = "1.14-20230522";
 
 use 5.014001;
 use warnings;
@@ -34,9 +34,10 @@ sub extract_version {
 	m{^(?:our\s+)?							# declaration
 	   \$VERSION \s*=\s*						# variable
 	   ["']? ([0-9._]+)						# version
-		 (?:\s* - \s* [0-9]{4}-?[0-9]{2}-?[0-9]{2} \s*)?	# date
+		 (?:\s* - \s* [0-9]{4}-?[0-9]{2}-?[0-9]{2} \s*)?	# date "0.01 - 20230412"
 	   ['"]?
 	   \s*;\s*
+		 (?:\x23 \s* [0-9]{4}-?[0-9]{2}-?[0-9]{2} \s*)?		# date "0.01"; # 20230502
 	   $}x or next;
 	return $1;
 	}

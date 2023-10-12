@@ -1,6 +1,7 @@
-0.33	- 2023-05-02
+0.33	- 2023-10-12
     * New version declarations based on CVE warnings
     * Allow selecting PP diff when XS fails
+    * Doc fixes for groff-1.24
 
 0.32	- 2023-01-05
     * Add ref to diff-so-fancy

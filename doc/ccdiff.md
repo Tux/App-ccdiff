@@ -36,6 +36,28 @@ ccdiff - Colored Character diff
 
     All I/O (streams to compare and standard out) are in UTF-8.
 
+- --diff-class=C --dc=C
+
+    Select the class used to execute the diff. By default `ccdiff` will select
+    the first available out of `Algorithm::Diff::XS` or `Algorithm::Diff`.
+
+    Sometime the `XS` version fails on encoding and the pure-perl version will
+    work just fine. You can force `ccdiff` to use either
+
+    Select the pure-perl version with any of `PP`, `AD`, `Algorthm::Diff`,
+    `Algorithm-Diff`, or `Algorithm::Diff::PP` (case insensitive)
+
+        --dc=pp
+        --dc=algorithm-diff
+        --diff-class=Algorithm::Diff::PP
+
+    Select the XS version with any of `XS`, `ADX`, `Algorthm::Diff::XS`, or
+    `Algorithm-Diff-XS` (case insensitive)
+
+        --dc=xs
+        --dc=algorithm-diff-xs
+        --diff-class=Algorithm::Diff::XS
+
 - --unified\[=3\] -u \[3\]
 
     Generate a unified diff. The number of context lines is optional. When omitted

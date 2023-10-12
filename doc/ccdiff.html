@@ -82,6 +82,26 @@ ccdiff --info</code></pre>
 <p>All I/O (streams to compare and standard out) are in UTF-8.</p>
 
 </dd>
+<dt id="diff-class-C---dc-C">--diff-class=C --dc=C</dt>
+<dd>
+
+<p>Select the class used to execute the diff. By default <code>ccdiff</code> will select the first available out of <code>Algorithm::Diff::XS</code> or <code>Algorithm::Diff</code>.</p>
+
+<p>Sometime the <code>XS</code> version fails on encoding and the pure-perl version will work just fine. You can force <code>ccdiff</code> to use either</p>
+
+<p>Select the pure-perl version with any of <code>PP</code>, <code>AD</code>, <code>Algorthm::Diff</code>, <code>Algorithm-Diff</code>, or <code>Algorithm::Diff::PP</code> (case insensitive)</p>
+
+<pre><code>--dc=pp
+--dc=algorithm-diff
+--diff-class=Algorithm::Diff::PP</code></pre>
+
+<p>Select the XS version with any of <code>XS</code>, <code>ADX</code>, <code>Algorthm::Diff::XS</code>, or <code>Algorithm-Diff-XS</code> (case insensitive)</p>
+
+<pre><code>--dc=xs
+--dc=algorithm-diff-xs
+--diff-class=Algorithm::Diff::XS</code></pre>
+
+</dd>
 <dt id="unified-3--u-3">--unified[=3] -u [3]</dt>
 <dd>
 

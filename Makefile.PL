@@ -101,7 +101,7 @@ sub postamble {
 	'doc/ccdiff.3:		ccdiff',
 	'	pod2man	      < $? > $@',
 	'doc/ccdiff.man:	doc/ccdiff.3',
-	'	nroff -mandoc < $? > $@',
+	'	nroff2man     < $? > $@',
 	'doc/README.md:		README.md',
 	'	cp -p $? $@',
         @mpm;
