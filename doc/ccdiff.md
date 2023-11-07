@@ -5,12 +5,21 @@ ccdiff - Colored Character diff
 # SYNOPSIS
 
     ccdiff [options] file1|- file2|-
+    ccdiff [options] dir1    dir2
 
     ccdiff --help
     ccdiff --man
     ccdiff --info
 
 # DESCRIPTION
+
+Show the diff between two files on a character by character base. In contrast to
+the standard diff tools, this tool uses the diff algorithm horizontally for each
+line in the vertical diff, highlighting the changes. This is very handy in hard
+to spot changes like `O` to `0`, `I` to `l` or `1` and whitespace.
+
+If there are two argument, and both are a folder/directory, a recursive diff is
+executed. This is not available whan used as a (sub)class.
 
 # OPTIONS
 

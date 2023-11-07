@@ -5,6 +5,7 @@ package App::ccdiff;
 use 5.014000;
 use warnings;
 use charnames ();
+use File::Find;
 use List::Util      qw( first  max     );
 use Term::ANSIColor qw(:constants color);
 use Getopt::Long    qw(:config bundling);
@@ -15,6 +16,7 @@ our $CMD     = $0 =~ s{.*/}{}r;
 sub usage {
     my $err = shift and select STDERR;
     say "usage: $CMD [options] file1 [file2]";
+    say "       $CMD [options] dir1   dir2";
     say "       $CMD --man | --info";
     say "	file1 or file2 can be - (but not both)";
     say "   -V     --version      Show version and exit";
@@ -277,7 +279,38 @@ else {
     }
 $diff_class or die "Cannot load Algorithm::Diff:\n";
 
-caller or ccdiff (@ARGV);
+unless (caller) {
+    if (@ARGV == 2 && -d $ARGV[0] && -d $ARGV[1]) {
+	my ($d_from, $d_to) = @ARGV;
+	my %fn;
+	my @f;
+	foreach my $idx (0, 1) {
+	    my $dir = $ARGV[$idx];
+	    find (sub {
+		-f && -s or return;
+		my $fn = $File::Find::name =~ s{^$dir/*}{}r;
+		$fn{$fn}++;
+		$f[$idx]{$fn}++;
+		}, $dir);
+	    }
+	foreach my $fn (sort keys %fn) {
+	    if ($f[0]{$fn} && $f[1]{$fn}) {
+		ccdiff ("$d_from/$fn", "$d_to/$fn");
+		}
+	    elsif ($f[0]{$fn}) {
+		say "Only in $d_from: $fn";
+		}
+	    else {
+		say "Only in $d_to: $fn";
+		}
+	    delete $f[0]{$fn};
+	    }
+	}
+    else {
+	ccdiff (@ARGV);
+	}
+    exit 0;
+    }
 
 sub ccdiff {
     my $f1 = shift or usage (1);
@@ -286,7 +319,7 @@ sub ccdiff {
     -b $f1 || -c $f1 || -b $f2 || -c $f2 and
 	die "Character and block devices are not supported\n";
     -d $f1 || -d $f2 and
-	die "$CMD does not yet support recursive diff and/or directory diff\n";
+	die "$CMD does not support directory diff\n";
 
     my $fh;
 
@@ -615,12 +648,21 @@ ccdiff - Colored Character diff
 =head1 SYNOPSIS
 
  ccdiff [options] file1|- file2|-
+ ccdiff [options] dir1    dir2
 
  ccdiff --help
  ccdiff --man
  ccdiff --info
 
 =head1 DESCRIPTION
+
+Show the diff between two files on a character by character base. In contrast to
+the standard diff tools, this tool uses the diff algorithm horizontally for each
+line in the vertical diff, highlighting the changes. This is very handy in hard
+to spot changes like C<O> to C<0>, C<I> to C<l> or C<1> and whitespace.
+
+If there are two argument, and both are a folder/directory, a recursive diff is
+executed. This is not available whan used as a (sub)class.
 
 =head1 OPTIONS
 

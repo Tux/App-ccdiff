@@ -39,12 +39,17 @@
 <h1 id="SYNOPSIS">SYNOPSIS</h1>
 
 <pre><code>ccdiff [options] file1|- file2|-
+ccdiff [options] dir1    dir2
 
 ccdiff --help
 ccdiff --man
 ccdiff --info</code></pre>
 
 <h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>Show the diff between two files on a character by character base. In contrast to the standard diff tools, this tool uses the diff algorithm horizontally for each line in the vertical diff, highlighting the changes. This is very handy in hard to spot changes like <code>O</code> to <code>0</code>, <code>I</code> to <code>l</code> or <code>1</code> and whitespace.</p>
+
+<p>If there are two argument, and both are a folder/directory, a recursive diff is executed. This is not available whan used as a (sub)class.</p>
 
 <h1 id="OPTIONS">OPTIONS</h1>
 
