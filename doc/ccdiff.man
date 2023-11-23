@@ -1,5 +1,7 @@
 STDIN(1)              User Contributed Perl Documentation             STDIN(1)
 
+
+
 NAME
        ccdiff - Colored Character diff
 
@@ -38,34 +40,36 @@ OPTIONS
        --utf-8 -U
          All I/O (streams to compare and standard out) are in UTF-8.
 
-       --diff-class=C --dc=C
-         Select  the  class used to execute the diff. By default "ccdiff" will
-         select  the  first  available   out   of   "Algorithm::Diff::XS"   or
+       --diff-class=C --dc=C --pp
+         Select the class used to execute the diff. By default "ccdiff" will
+         select the first available out of "Algorithm::Diff::XS" or
          "Algorithm::Diff".
 
          Sometime the "XS" version fails on encoding and the pure-perl version
          will work just fine. You can force "ccdiff" to use either
 
-         Select    the   pure-perl   version   with   any   of   "PP",   "AD",
-         "Algorthm::Diff", "Algorithm-Diff",  or  "Algorithm::Diff::PP"  (case
-         insensitive)
+         Select the pure-perl version with any of "PP", "AD",
+         "Algorthm::Diff", "Algorithm-Diff", or "Algorithm::Diff::PP" (case
+         insensitive).  For convenience, "--dc=pp" can be abbreviated to
+         "--pp".
 
+          --pp
           --dc=pp
           --dc=algorithm-diff
           --diff-class=Algorithm::Diff::PP
 
-         Select  the XS version with any of "XS", "ADX", "Algorthm::Diff::XS",
-         or "Algorithm-Diff-XS" (case insensitive)
+         Select the XS version with any of "XS", "ADX", "Algorthm::Diff::XS",
+         or "Algorithm-Diff-XS" (case insensitive).
 
           --dc=xs
           --dc=algorithm-diff-xs
           --diff-class=Algorithm::Diff::XS
 
        --unified[=3] -u [3]
-         Generate a unified diff. The number of  context  lines  is  optional.
-         When  omitted  it  defaults  to 3. Currently there is no provision of
-         dealing with overlapping diff chunks. If the common part between  two
-         diff  chunks  is shorter than twice the number of context lines, some
+         Generate a unified diff. The number of context lines is optional.
+         When omitted it defaults to 3. Currently there is no provision of
+         dealing with overlapping diff chunks. If the common part between two
+         diff chunks is shorter than twice the number of context lines, some
          lines may show twice.
 
          The default is to use traditional diff:
@@ -85,17 +89,17 @@ OPTIONS
 
        --verbose[=1] -v[1]
          Show an additional line for each old or new section in a change chunk
-         (not for added or deleted lines) that shows the hexadecimal value  of
-         each  character.  If "--utf-8" is in effect, it will show the Unicode
+         (not for added or deleted lines) that shows the hexadecimal value of
+         each character. If "--utf-8" is in effect, it will show the Unicode
          character name(s).
 
-         This is a debugging option, so  invisible  characters  can  still  be
+         This is a debugging option, so invisible characters can still be
          "seen".
 
-         "--verbose"  accepts  an optional verbosity-level. On level 2 and up,
-         all horizontal changes get left-and-right markers inserted to  enable
-         seeing  the  location of the ZERO WIDTH or invisible characters. With
-         level 3 and up and Unicode enabled, the changed characters will  also
+         "--verbose" accepts an optional verbosity-level. On level 2 and up,
+         all horizontal changes get left-and-right markers inserted to enable
+         seeing the location of the ZERO WIDTH or invisible characters. With
+         level 3 and up and Unicode enabled, the changed characters will also
          show the codepoint in hex.
 
          An example of this:
@@ -138,18 +142,18 @@ OPTIONS
           + A B>cd<E><Fg
           + -- verbose : LATIN SMALL LETTER C, LATIN SMALL LETTER D, ZERO WIDTH SPACE
 
-         the  word "verbose" and the character markers will be displayed using
-         the "verbose" color. The characters  used  for  the  markers  can  be
-         defined  in  your configuration file as "chr_cml" (the character used
+         the word "verbose" and the character markers will be displayed using
+         the "verbose" color. The characters used for the markers can be
+         defined in your configuration file as "chr_cml" (the character used
          as marker on the left) and "chr_cmr" (the character used as marker on
          the right).
 
        --markers -m
          Use markers under each changed character in change-chunks.
 
-         "--markers" is especially useful if the  terminal  does  not  support
-         colors,  or if you want to copy/paste the output to (ASCII) mail. See
-         also "--ascii". The markers will have the  same  color  as  added  or
+         "--markers" is especially useful if the terminal does not support
+         colors, or if you want to copy/paste the output to (ASCII) mail. See
+         also "--ascii". The markers will have the same color as added or
          deleted text.
 
          This will look like (with unified diff):
@@ -160,18 +164,18 @@ OPTIONS
           +Sat Dec 18 07:00:33 1993,I.O.D.U.,,756194433,1442539
           +               â²       â²
 
-         The   characters  used  for  the  markers  can  be  defined  in  your
-         configuration file as "chr_old" (the character used as  marker  under
+         The characters used for the markers can be defined in your
+         configuration file as "chr_old" (the character used as marker under
          removed characters) and "chr_new" (the character used as marker under
          added characters).
 
-         If  "--ellipsis" is also in effect and either the "chr_eli" is longer
-         than one character or "--verbose" level is over  2,  this  option  is
+         If "--ellipsis" is also in effect and either the "chr_eli" is longer
+         than one character or "--verbose" level is over 2, this option is
          automatically disabled.
 
        --ascii -a
-         Use  (colored)  ASCII  indicators  instead  of  Unicode.  The default
-         indicators are Unicode characters that stand out better. The  markers
+         Use (colored) ASCII indicators instead of Unicode. The default
+         indicators are Unicode characters that stand out better. The markers
          will have the same color as added or deleted text.
 
          For the vertical markers ("-m") that would look like:
@@ -183,18 +187,18 @@ OPTIONS
           +               ^       ^
 
          For the positional indicators, I did consider using U+034e (COMBINING
-         UPWARDS  ARROW  BELOW),  but as most terminals are probably unable to
+         UPWARDS ARROW BELOW), but as most terminals are probably unable to
          show it due to line height changes, I did not pursue the idea.
 
        --pink -p
-         Change the default "red" for deleted text to  the  color  closest  to
+         Change the default "red" for deleted text to the color closest to
          pink that is supported by Term::ANSIColor: "magenta".
 
        --reverse -r
-         Reverse/invert   the   foreground  and  background  for  the  colored
+         Reverse/invert the foreground and background for the colored
          indicators.
 
-         If the foreground color has "bold", it will be stripped from the  new
+         If the foreground color has "bold", it will be stripped from the new
          background color.
 
        --swap -s
@@ -204,12 +208,12 @@ OPTIONS
          List available colors and exit.
 
        --no-colors
-         Disable  all colors. Useful for redirecting the diff output to a file
+         Disable all colors. Useful for redirecting the diff output to a file
          that is to be included in documentation.
 
-         This is the default if the environment variable $NO_COLOR has a  true
-         value  or  if  the  environment  variable $CLICOLOR is set to a false
-         value.   If  set,  $CLICOLOR_FORCE  will  overrule  the  default   of
+         This is the default if the environment variable $NO_COLOR has a true
+         value or if the environment variable $CLICOLOR is set to a false
+         value.  If set, $CLICOLOR_FORCE will overrule the default of
          $NO_COLOR.
 
        --old=color
@@ -228,35 +232,35 @@ OPTIONS
           -Sat Dec 18 07:08:33 1998,I.O.D.U.,,756194433,1442539
           +Sat Dec 18 07:00:33 1993,I.O.D.U.,,756194433,1442539
 
-         If  a positive number is passed ("--index=4" or "-I 4"), display just
+         If a positive number is passed ("--index=4" or "-I 4"), display just
          the chunk with that index, using the "verbose" color:
 
          This is useful in combination with "--verbose".
 
        --threshold=2 -t 2
-         Defines the number of lines a change  block  may  differ  before  the
+         Defines the number of lines a change block may differ before the
          fall-back of horizontal diff to vertical diff.
 
-         If  a  chunk  describes  a  change,  and  the  number of lines in the
-         original block has fewer or more lines than the new  block  and  that
-         difference   exceeds  this  threshold,  "ccdiff"  will  fall-back  to
+         If a chunk describes a change, and the number of lines in the
+         original block has fewer or more lines than the new block and that
+         difference exceeds this threshold, "ccdiff" will fall-back to
          vertical diff.
 
        --heuristics=n -h n
          Defines the percentage of character-changes a change block may differ
          before the fall-back of horizontal diff to vertical diff.
 
-         This percentage is calculated as "(characters  removed  +  characters
+         This percentage is calculated as "(characters removed + characters
          added) / (2 * characters unchanged))".
 
        --ellipsis=n -e n
-         Defines  the  number  of  characters  to  keep  on  each  side  of  a
+         Defines the number of characters to keep on each side of a
          horizontal-equal segment. The default is 0, meaning do not compress.
 
-         If set to a positive number, and the length of  a  segment  of  equal
-         characters  inside a horizontal diff is longer than twice this value,
-         the middle part is replaced with  "â  U02508  \N{BOX  DRAWINGS  LIGHT
-         QUADRUPLE  DASH  HORIZONTAL}"  (instead  of  â¦ U02026, as HORIZONTAL
+         If set to a positive number, and the length of a segment of equal
+         characters inside a horizontal diff is longer than twice this value,
+         the middle part is replaced with "â U02508 \N{BOX DRAWINGS LIGHT
+         QUADRUPLE DASH HORIZONTAL}" (instead of â¦ U02026, as HORIZONTAL
          ELLIPSIS does not stand out enough).
 
          With "-u0me3" that would be like
@@ -275,7 +279,7 @@ OPTIONS
           +Satâ¤9â¦07:0â±8â°:33 199â±8â°,I.â¤23â¦539
           + -- verbose : DIGIT EIGHT, DIGIT EIGHT
 
-         The  text  used  for  the  replaced  text  can  be  defined  in  your
+         The text used for the replaced text can be defined in your
          configuration file as "chr_eli" and/or "chr_eli_v".
 
        --ignore-case -i
@@ -290,7 +294,7 @@ OPTIONS
 
        --ignore-ws|ignore-space-change -b
          Ignore changes in horizontal white-space (tabs and spaces). This does
-         not  include white-space changes that split non-white-space or remove
+         not include white-space changes that split non-white-space or remove
          white-space between two non-white-space elements.
 
        --ignore-tab-expansion -E
@@ -300,32 +304,32 @@ OPTIONS
          Just Partly Implemented (WIP)
 
    Configuration files
-       In order to be able to overrule the defaults set in "ccdiff",  one  can
-       set  options  specific  for  this login. The following option files are
+       In order to be able to overrule the defaults set in "ccdiff", one can
+       set options specific for this login. The following option files are
        looked for in this order:
 
         - $HOME/ccdiff.rc
         - $HOME/.ccdiffrc
         - $HOME/.config/ccdiff
 
-       and evaluated in that order. Any options specified in a file  later  in
+       and evaluated in that order. Any options specified in a file later in
        that chain will overwrite previously set options.
 
-       Option  files are only read and evaluated if they are not empty and not
+       Option files are only read and evaluated if they are not empty and not
        writable by others than the owner.
 
-       The syntax of the file is  one  option  per  line,  where  leading  and
-       trailing  white-space  is ignored. If that line then starts with one of
-       the options listed below, followed by optional white-space followed  by
-       either  an  "="  or  a  ":",  followed  by optional white-space and the
-       values, the value is assigned  to  the  option.  The  values  "no"  and
-       "false"  (case  insensitive)  are  aliases  for 0. The values "yes" and
+       The syntax of the file is one option per line, where leading and
+       trailing white-space is ignored. If that line then starts with one of
+       the options listed below, followed by optional white-space followed by
+       either an "=" or a ":", followed by optional white-space and the
+       values, the value is assigned to the option. The values "no" and
+       "false" (case insensitive) are aliases for 0. The values "yes" and
        "true" are aliases to -1 (-1 being a true value).
 
        Between parens is the corresponding command-line option.
 
        unified (-u)
-         If you prefer unified-diff over old-style diff by default,  set  this
+         If you prefer unified-diff over old-style diff by default, set this
          to the desired number of context lines:
 
           unified : 3
@@ -335,22 +339,22 @@ OPTIONS
        markers (-m)
           markers : false
 
-         Defines  if  markers  should  be  used  under changed characters. The
-         default is to use colors only. The  "-m"  command  line  option  will
+         Defines if markers should be used under changed characters. The
+         default is to use colors only. The "-m" command line option will
          toggle the option when set from a configuration file.
 
        ascii (-a)
           ascii   : false
 
-         Defines  to use ASCII markers instead of Unicode markers. The default
+         Defines to use ASCII markers instead of Unicode markers. The default
          is to use Unicode markers.
 
        reverse (-r)
           reverse : false
 
          Defines if changes are displayed as foreground-color over background-
-         color or  background-color  over  foreground-color.  The  default  is
-         "false",  so  it  will  color  the changes with the appropriate color
+         color or background-color over foreground-color. The default is
+         "false", so it will color the changes with the appropriate color
          ("new" or "old") over the default background color.
 
        swap (-s)
@@ -365,8 +369,8 @@ OPTIONS
 
          The color "none" is also accepted and disables this color.
 
-         Any color accepted by Term::ANSIColor is  allowed.  Any  other  color
-         will  result  in  a warning. This option can include "bold" either as
+         Any color accepted by Term::ANSIColor is allowed. Any other color
+         will result in a warning. This option can include "bold" either as
          prefix or as suffix.
 
          This option may also be specified as
@@ -383,8 +387,8 @@ OPTIONS
 
          The color "none" is also accepted and disables this color.
 
-         Any color accepted by Term::ANSIColor is  allowed.  Any  other  color
-         will  result  in  a warning. This option can include "bold" either as
+         Any color accepted by Term::ANSIColor is allowed. Any other color
+         will result in a warning. This option can include "bold" either as
          prefix or as suffix.
 
          This option may also be specified as
@@ -397,12 +401,12 @@ OPTIONS
        bg (--bg)
           bg      : white
 
-         Defines the color to be used as  background  for  changed  text.  The
+         Defines the color to be used as background for changed text. The
          default is "white".
 
          The color "none" is also accepted and disables this color.
 
-         Any  color  accepted  by  Term::ANSIColor is allowed. Any other color
+         Any color accepted by Term::ANSIColor is allowed. Any other color
          will result in a warning. The "bold" attribute is not allowed.
 
          This option may also be specified as
@@ -421,22 +425,22 @@ OPTIONS
           header  : 1
           header  : blue_on_white
 
-         Defines if a header is displayed  above  the  diff  (default  is  1),
+         Defines if a header is displayed above the diff (default is 1),
          supported colors are allowed.
 
-         If  the  value is a valid supported color, it will show the header in
-         that color scheme.  To disable the header set it to 0 in the RC  file
+         If the value is a valid supported color, it will show the header in
+         that color scheme.  To disable the header set it to 0 in the RC file
          or use "--no-header" as a command line argument.
 
        verbose
           verbose : cyan
 
-         Defines  the  color  to  be  used  as  color for the verbose tag. The
+         Defines the color to be used as color for the verbose tag. The
          default is "cyan". This color will only be used under "--verbose".
 
          The color "none" is also accepted and disables this color.
 
-         Any color accepted by Term::ANSIColor is  allowed.  Any  other  color
+         Any color accepted by Term::ANSIColor is allowed. Any other color
          will result in a warning.
 
          This option may also be specified as
@@ -461,7 +465,7 @@ OPTIONS
        index (-I)
           index   : no
 
-         Defines  if  the  position  indication for a change chunk is prefixed
+         Defines if the position indication for a change chunk is prefixed
          with an index number. The default is "no". The index is 1-based.
 
          Without this option, the position indication would be like
@@ -482,8 +486,8 @@ OPTIONS
        emacs
           emacs   : no
 
-         If this option is yes/true, calling "ccdiff"  with  just  one  single
-         argument,  and  that  argument  being an existing file, the arguments
+         If this option is yes/true, calling "ccdiff" with just one single
+         argument, and that argument being an existing file, the arguments
          will act as
 
           $ ccdiff file~ file
@@ -493,7 +497,7 @@ OPTIONS
        threshold (-t)
           threshold : 2
 
-         Defines the number of lines a change  block  may  differ  before  the
+         Defines the number of lines a change block may differ before the
          fall-back of horizontal diff to vertical diff.
 
        heuristics (-h)
@@ -506,26 +510,26 @@ OPTIONS
        ellipsis (-e)
           ellipsis : 0
 
-         Defines  the  number  of  characters  to  keep  on  each  side  of  a
-         horizontal-equal segment. The default is 0, meaning to not  compress.
+         Defines the number of characters to keep on each side of a
+         horizontal-equal segment. The default is 0, meaning to not compress.
          See also "chr_eli".
 
        chr_old
           chr_old : U+25BC
 
-         Defines  the  character used to indicate the position of removed text
+         Defines the character used to indicate the position of removed text
          on the line below the text when option "-m" is in effect.
 
        chr_new
           chr_new : U+25B2
 
-         Defines the character used to indicate the position of added text  on
+         Defines the character used to indicate the position of added text on
          the line below the text when option "-m" is in effect.
 
        chr_cml
           chr_cml : U+21B1
 
-         Defines  the  character  used  to  indicate  the starting position of
+         Defines the character used to indicate the starting position of
          changed text in a line when verbose level is 3 and up.
 
        chr_cmr
@@ -535,13 +539,13 @@ OPTIONS
          text in a line when verbose level is 3 and up.
 
        chr_eli
-          chr_eli : U+21B0
+          chr_eli : U+2508
 
-         Defines  the  character  used  to  indicate  omitted  text  in  large
+         Defines the character used to indicate omitted text in large
          unchanged text when "--ellipsis"/"-e" is in effect.
 
          This character is not equally well visible on all terminals or in all
-         fonts,  so  you  might want to change it to something that stands out
+         fonts, so you might want to change it to something that stands out
          better in your environment. Possible suggestions:
 
           â¦ U+2026 HORIZONTAL ELLIPSIS
@@ -569,12 +573,18 @@ OPTIONS
        chr_eli_v
           chr_eli_v : U+21A4U+21A6
 
-         When using "--ellipsis" with "--verbose" level 2 or  up,  the  single
-         character  indicator will be replaced with this character. If it is 2
+         When using "--ellipsis" with "--verbose" level 2 or up, the single
+         character indicator will be replaced with this character. If it is 2
          characters wide, the length of the compressed part is put between the
          characters.
 
          A suggested alternative might be U+21E4U+21E5
+
+       iwbZusePP
+         As Algorithm::Diff::XS is fast but is not 100% drop-in compliant with
+         Algorithm::Diff and options "-i", "-w", "-b", and "-Z" are likely to
+         not work in the "XS" version, this option allows automatic switching
+         to the slower version if any of these options is selected.
 
 Git integration
        You can use ccdiff to show diffs in git. It may work like this:
@@ -589,7 +599,7 @@ Git integration
         $ chmod 755 ~/bin/git-ccdiff
         $ git ccdiff SHA
 
-       Of course you can use "curl" instead of "wget" and you can choose  your
+       Of course you can use "curl" instead of "wget" and you can choose your
        own (fixed) path to "perl" instead of using "/usr/bin/env".
 
        From then on you can do
@@ -598,15 +608,21 @@ Git integration
         $ git ccdiff 5c5a39f2
 
 CAVEATS
-       Due  to  the  implementation,  where  both  sides of the comparison are
-       completely kept in memory, this tool might not be  able  to  deal  with
+       Due to the implementation, where both sides of the comparison are
+       completely kept in memory, this tool might not be able to deal with
        (very) large datasets.
 
    Speed
        There are situations where Algorithm::Diff takes considerably more time
-       compared  to  e.g.  GNU  diff. Installing Algorithm::Diff::XS will make
-       "ccdiff" a lot faster.  "ccdiff"  will  choose  Algorithm::Diff::XS  if
+       compared to e.g. GNU diff. Installing Algorithm::Diff::XS will make
+       "ccdiff" a lot faster. "ccdiff" will choose Algorithm::Diff::XS if
        available.
+
+       Note however that options like "-i", "-w", "-b", and "-Z" are likely to
+       be a no-op in Algorithm::Diff::XS, as that has not been implemented and
+       it is rather unlikely it will be. Choose "--dc=pp" then. If you want
+       this switch always, set "iwbZusePP = 1" in one of your "Configuration
+       files".
 
 SEE ALSO
        Algorithm::Diff::XS, Algorithm::Diff, Text::Diff
@@ -617,7 +633,9 @@ AUTHOR
 COPYRIGHT AND LICENSE
         Copyright (C) 2018-2023 H.Merijn Brand.  All rights reserved.
 
-       This  library  is free software;  you can redistribute and/or modify it
+       This library is free software;  you can redistribute and/or modify it
        under the same terms as The Artistic License 2.0.
 
-perl v5.38.0                      2023-11-07                          STDIN(1)
+
+
+perl v5.38.0                      2023-11-23                          STDIN(1)

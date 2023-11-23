@@ -1,3 +1,6 @@
+0.34	- 2023-11-23
+    * Add iwbZusePP config for failing -i/-w/-b/-Z on Algorithm::Diff::XS
+
 0.33	- 2023-11-07
     * New version declarations based on CVE warnings
     * Allow selecting PP diff when XS fails

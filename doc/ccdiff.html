@@ -4,7 +4,7 @@
 <head>
 <title>ccdiff - Colored Character diff</title>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<link rev="made" href="mailto:hmbrand@cpan.org" />
+<link rev="made" href="mailto:h.m.brand@xs4all.nl" />
 </head>
 
 <body>
@@ -87,20 +87,21 @@ ccdiff --info</code></pre>
 <p>All I/O (streams to compare and standard out) are in UTF-8.</p>
 
 </dd>
-<dt id="diff-class-C---dc-C">--diff-class=C --dc=C</dt>
+<dt id="diff-class-C---dc-C---pp">--diff-class=C --dc=C --pp</dt>
 <dd>
 
 <p>Select the class used to execute the diff. By default <code>ccdiff</code> will select the first available out of <code>Algorithm::Diff::XS</code> or <code>Algorithm::Diff</code>.</p>
 
 <p>Sometime the <code>XS</code> version fails on encoding and the pure-perl version will work just fine. You can force <code>ccdiff</code> to use either</p>
 
-<p>Select the pure-perl version with any of <code>PP</code>, <code>AD</code>, <code>Algorthm::Diff</code>, <code>Algorithm-Diff</code>, or <code>Algorithm::Diff::PP</code> (case insensitive)</p>
+<p>Select the pure-perl version with any of <code>PP</code>, <code>AD</code>, <code>Algorthm::Diff</code>, <code>Algorithm-Diff</code>, or <code>Algorithm::Diff::PP</code> (case insensitive). For convenience, <code>--dc=pp</code> can be abbreviated to <code>--pp</code>.</p>
 
-<pre><code>--dc=pp
+<pre><code>--pp
+--dc=pp
 --dc=algorithm-diff
 --diff-class=Algorithm::Diff::PP</code></pre>
 
-<p>Select the XS version with any of <code>XS</code>, <code>ADX</code>, <code>Algorthm::Diff::XS</code>, or <code>Algorithm-Diff-XS</code> (case insensitive)</p>
+<p>Select the XS version with any of <code>XS</code>, <code>ADX</code>, <code>Algorthm::Diff::XS</code>, or <code>Algorithm-Diff-XS</code> (case insensitive).</p>
 
 <pre><code>--dc=xs
 --dc=algorithm-diff-xs
@@ -621,7 +622,7 @@ utf-8</code></pre>
 <dt id="chr_eli">chr_eli</dt>
 <dd>
 
-<pre><code>chr_eli : U+21B0</code></pre>
+<pre><code>chr_eli : U+2508</code></pre>
 
 <p>Defines the character used to indicate omitted text in large unchanged text when <code>--ellipsis</code>/<code>-e</code> is in effect.</p>
 
@@ -660,6 +661,12 @@ utf-8</code></pre>
 <p>A suggested alternative might be U+21E4U+21E5</p>
 
 </dd>
+<dt id="iwbZusePP">iwbZusePP</dt>
+<dd>
+
+<p>As <a>Algorithm::Diff::XS</a> is fast but is not 100% drop-in compliant with <a>Algorithm::Diff</a> and options <code>-i</code>, <code>-w</code>, <code>-b</code>, and <code>-Z</code> are likely to not work in the <code>XS</code> version, this option allows automatic switching to the slower version if any of these options is selected.</p>
+
+</dd>
 </dl>
 
 <h1 id="Git-integration">Git integration</h1>
@@ -690,6 +697,8 @@ $ git ccdiff 5c5a39f2</code></pre>
 <h2 id="Speed">Speed</h2>
 
 <p>There are situations where <a>Algorithm::Diff</a> takes considerably more time compared to e.g. GNU diff. Installing <a>Algorithm::Diff::XS</a> will make <code>ccdiff</code> a lot faster. <code>ccdiff</code> will choose <a>Algorithm::Diff::XS</a> if available.</p>
+
+<p>Note however that options like <code>-i</code>, <code>-w</code>, <code>-b</code>, and <code>-Z</code> are likely to be a no-op in <a>Algorithm::Diff::XS</a>, as that has not been implemented and it is rather unlikely it will be. Choose <code>--dc=pp</code> then. If you want this switch always, set <code>iwbZusePP = 1</code> in one of your <a href="#Configuration-files">&quot;Configuration files&quot;</a>.</p>
 
 <h1 id="SEE-ALSO">SEE ALSO</h1>
 

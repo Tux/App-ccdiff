@@ -45,7 +45,7 @@ executed. This is not available whan used as a (sub)class.
 
     All I/O (streams to compare and standard out) are in UTF-8.
 
-- --diff-class=C --dc=C
+- --diff-class=C --dc=C --pp
 
     Select the class used to execute the diff. By default `ccdiff` will select
     the first available out of `Algorithm::Diff::XS` or `Algorithm::Diff`.
@@ -54,14 +54,16 @@ executed. This is not available whan used as a (sub)class.
     work just fine. You can force `ccdiff` to use either
 
     Select the pure-perl version with any of `PP`, `AD`, `Algorthm::Diff`,
-    `Algorithm-Diff`, or `Algorithm::Diff::PP` (case insensitive)
+    `Algorithm-Diff`, or `Algorithm::Diff::PP` (case insensitive).
+    For convenience, `--dc=pp` can be abbreviated to `--pp`.
 
+        --pp
         --dc=pp
         --dc=algorithm-diff
         --diff-class=Algorithm::Diff::PP
 
     Select the XS version with any of `XS`, `ADX`, `Algorthm::Diff::XS`, or
-    `Algorithm-Diff-XS` (case insensitive)
+    `Algorithm-Diff-XS` (case insensitive).
 
         --dc=xs
         --dc=algorithm-diff-xs
@@ -571,7 +573,7 @@ Between parens is the corresponding command-line option.
 
 - chr\_eli
 
-        chr_eli : U+21B0
+        chr_eli : U+2508
 
     Defines the character used to indicate omitted text in large unchanged text
     when `--ellipsis`/`-e` is in effect.
@@ -612,6 +614,13 @@ Between parens is the corresponding command-line option.
 
     A suggested alternative might be U+21E4U+21E5
 
+- iwbZusePP
+
+    As [Algorithm::Diff::XS](https://metacpan.org/pod/Algorithm%3A%3ADiff%3A%3AXS) is fast but is not 100% drop-in compliant with
+    [Algorithm::Diff](https://metacpan.org/pod/Algorithm%3A%3ADiff) and options `-i`, `-w`, `-b`, and `-Z` are likely to
+    not work in the `XS` version, this option allows automatic switching to
+    the slower version if any of these options is selected.
+
 # Git integration
 
 You can use ccdiff to show diffs in git. It may work like this:
@@ -645,6 +654,11 @@ There are situations where [Algorithm::Diff](https://metacpan.org/pod/Algorithm%
 compared to e.g. GNU diff. Installing [Algorithm::Diff::XS](https://metacpan.org/pod/Algorithm%3A%3ADiff%3A%3AXS) will make
 `ccdiff` a lot faster. `ccdiff` will choose [Algorithm::Diff::XS](https://metacpan.org/pod/Algorithm%3A%3ADiff%3A%3AXS) if
 available.
+
+Note however that options like `-i`, `-w`, `-b`, and `-Z` are likely to
+be a no-op in [Algorithm::Diff::XS](https://metacpan.org/pod/Algorithm%3A%3ADiff%3A%3AXS), as that has not been implemented and
+it is rather unlikely it will be. Choose `--dc=pp` then. If you want this
+switch always, set `iwbZusePP = 1` in one of your ["Configuration files"](#configuration-files).
 
 # SEE ALSO
 

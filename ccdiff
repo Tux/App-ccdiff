@@ -6,11 +6,12 @@ use 5.014000;
 use warnings;
 use charnames ();
 use File::Find;
-use List::Util      qw( first  max     );
-use Term::ANSIColor qw(:constants color);
-use Getopt::Long    qw(:config bundling);
+use Encode          qw( encode                      );
+use List::Util      qw( first  max                  );
+use Term::ANSIColor qw(:constants color             );
+use Getopt::Long    qw(:config bundling noignorecase);
 
-our $VERSION = "0.33";
+our $VERSION = "0.34";
 our $CMD     = $0 =~ s{.*/}{}r;
 
 sub usage {
@@ -67,6 +68,7 @@ my %rc = (
     header	=> 1,	# A color name is allowed
     heuristics	=> 0,
     index	=> 0,
+    iwbzusepp	=> 0,
     markers	=> 0,
     new		=> "green",
     old		=> "red",
@@ -124,6 +126,7 @@ unless (caller) {
 
 	"U|utf-8!"		=> \$opt_U,
 	  "dc|diff-class=s"	=> \$diff_class,
+	  "pp!"			=> sub { $diff_class = "PP" },
 
     #   "c|context:3"		=> \$opt_c,	# implement context-diff?
 	"u|unified:3"		=> \$opt_u,
@@ -236,8 +239,12 @@ sub set_options {
     $clr_new = $opt_r ? $clr_rev . $bg_new : $clr_grn . $bg_new;
     $opt_s and ($clr_new, $clr_old) = ($clr_old, $clr_new);
     # Indicators
-    $opt_a and
+    if ($opt_a) {
 	@rc{qw( chr_old chr_new chr_cml chr_cmr chr_eli chr_eli_v )} = qw( ^ ^ > < - <> );
+	}
+    elsif (!$opt_U) {
+	$rc{$_} = encode ("utf-8", $rc{$_}) for qw( chr_old chr_new chr_cml chr_cmr chr_eli chr_eli_v );
+	}
     $chr_old = $clr_old . $rc{chr_old} . $reset;
     $chr_new = $clr_new . $rc{chr_new} . $reset;
     $chr_cml = $clr_dbg . $rc{chr_cml} . $reset;
@@ -249,13 +256,18 @@ sub set_options {
     $chr_eli = $opt_v >= 2 ? $rc{chr_eli_v} : $rc{chr_eli};
     $opt_m && $opt_v > 1 && length ($chr_eli) > 1 and $opt_m = 0;
 
-    $cmp_sub = $opt_i || $opt_b || $opt_Z ? { keyGen => sub {
-	my $line = shift;
-	$opt_i and $line = lc $line;
-	$opt_Z and $line =~ s/[ \t]+$//g;
-	$opt_b and $line =~ s/[ \t]+/ /g;
-	return $line;
-	}} : undef;
+    if ($opt_i || $opt_b || $opt_Z) {
+	$rc{iwbzusepp} and $diff_class = "Algorithm::Diff";
+	$cmp_sub = {
+	    keyGen => sub {
+		my $line = shift;
+		$opt_i and $line = lc $line;
+		$opt_Z and $line =~ s/[ \t\r]+$//g;
+		$opt_b and $line =~ s/[ \t]+/ /g;
+		return $line;
+		}
+	    };
+	}
     } # set_options
 
 if ($diff_class) {
@@ -365,10 +377,12 @@ sub ccdiff {
 
     $f1 eq "-" && $f2 eq "-" and usage (1);
 
-               binmode STDERR, ":encoding(utf-8)";
+        binmode STDERR, ":encoding(utf-8)";
 
-    $opt_U and binmode STDIN,  ":encoding(utf-8)";
-    $opt_U and binmode STDOUT, ":encoding(utf-8)";
+    if ($opt_U) {
+	binmode STDIN,  ":encoding(utf-8)";
+	binmode STDOUT, ":encoding(utf-8)";
+	}
 
     my @d1 = ref $f1 eq "ARRAY" ? @$f1 : $f1 eq "-" ? <STDIN> : do {
 	open my $fh, "<", $f1 or die "$f1: $!\n";
@@ -690,7 +704,7 @@ Show this manual using pod2text.
 
 All I/O (streams to compare and standard out) are in UTF-8.
 
-=item --diff-class=C --dc=C
+=item --diff-class=C --dc=C --pp
 
 Select the class used to execute the diff. By default C<ccdiff> will select
 the first available out of C<Algorithm::Diff::XS> or C<Algorithm::Diff>.
@@ -699,14 +713,16 @@ Sometime the C<XS> version fails on encoding and the pure-perl version will
 work just fine. You can force C<ccdiff> to use either
 
 Select the pure-perl version with any of C<PP>, C<AD>, C<Algorthm::Diff>,
-C<Algorithm-Diff>, or C<Algorithm::Diff::PP> (case insensitive)
+C<Algorithm-Diff>, or C<Algorithm::Diff::PP> (case insensitive).
+For convenience, C<--dc=pp> can be abbreviated to C<--pp>.
 
+ --pp
  --dc=pp
  --dc=algorithm-diff
  --diff-class=Algorithm::Diff::PP
 
 Select the XS version with any of C<XS>, C<ADX>, C<Algorthm::Diff::XS>, or
-C<Algorithm-Diff-XS> (case insensitive)
+C<Algorithm-Diff-XS> (case insensitive).
 
  --dc=xs
  --dc=algorithm-diff-xs
@@ -1220,7 +1236,7 @@ in a line when verbose level is 3 and up.
 
 =item chr_eli
 
- chr_eli : U+21B0
+ chr_eli : U+2508
 
 Defines the character used to indicate omitted text in large unchanged text
 when C<--ellipsis>/C<-e> is in effect.
@@ -1261,6 +1277,13 @@ length of the compressed part is put between the characters.
 
 A suggested alternative might be U+21E4U+21E5
 
+=item iwbZusePP
+
+As L<Algorithm::Diff::XS> is fast but is not 100% drop-in compliant with
+L<Algorithm::Diff> and options C<-i>, C<-w>, C<-b>, and C<-Z> are likely to
+not work in the C<XS> version, this option allows automatic switching to
+the slower version if any of these options is selected.
+
 =back
 
 =head1 Git integration
@@ -1296,6 +1319,11 @@ There are situations where L<Algorithm::Diff> takes considerably more time
 compared to e.g. GNU diff. Installing L<Algorithm::Diff::XS> will make
 C<ccdiff> a lot faster. C<ccdiff> will choose L<Algorithm::Diff::XS> if
 available.
+
+Note however that options like C<-i>, C<-w>, C<-b>, and C<-Z> are likely to
+be a no-op in L<Algorithm::Diff::XS>, as that has not been implemented and
+it is rather unlikely it will be. Choose C<--dc=pp> then. If you want this
+switch always, set C<iwbZusePP = 1> in one of your L</Configuration files>.
 
 =head1 SEE ALSO
 
