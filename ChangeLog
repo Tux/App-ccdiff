@@ -1,5 +1,6 @@
-0.34	- 2023-11-23
+0.34	- 2024-01-04
     * Add iwbZusePP config for failing -i/-w/-b/-Z on Algorithm::Diff::XS
+    * It is 2024
 
 0.33	- 2023-11-07
     * New version declarations based on CVE warnings
