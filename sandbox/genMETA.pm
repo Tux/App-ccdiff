@@ -2,7 +2,7 @@
 
 package genMETA;
 
-our $VERSION = "1.14-20230522";
+our $VERSION = "1.16-20240903";
 
 use 5.014001;
 use warnings;
@@ -30,7 +30,9 @@ sub new {
 
 sub extract_version {
     my $fh = shift;
+    my @vsn;
     while (<$fh>) {
+	m/\$VERSION\b/ and push @vsn => $_;
 	m{^(?:our\s+)?							# declaration
 	   \$VERSION \s*=\s*						# variable
 	   ["']? ([0-9._]+)						# version
@@ -40,6 +42,15 @@ sub extract_version {
 		 (?:\x23 \s* [0-9]{4}-?[0-9]{2}-?[0-9]{2} \s*)?		# date "0.01"; # 20230502
 	   $}x or next;
 	return $1;
+	}
+    # No match on first scan, try without date
+    for (@vsn) {
+	m{^(?:our\s+)?							# declaration
+	   \$VERSION \s*=\s*						# variable
+	   ([""'']) ([0-9._]+) \1					# version
+	   \s*;
+	   }x or next;
+	return $2;
 	}
     } # extract_version
 
@@ -66,7 +77,7 @@ sub version_from {
 		croak RED, "Makefile wants version from nonexisten $from", RESET, "\n";
 	    $self->{from} //= $from;
 	    $from eq $self->{from} or
-		croak RED, "VERSION_FROM mismatch Makefile.PL / YAML", RESET, "\n";
+		croak RED, "VERSION_FROM mismatch Makefile.PL ($from) / YAML ($self->{from})", RESET, "\n";
 	    }
 
 	if ($mf =~ m[\b PREREQ_PM    \s*=>\s* \{ ( [^}]+ ) \}]x) {
@@ -182,7 +193,7 @@ sub check_required {
 	$v eq $vsn{$_} and next;
 	printf STDERR "%s%-35s %-6s => %s%s%s\n", BLUE, $_, $vsn{$_}, GREEN, $v, RESET;
 	}
-    if (my @mfpr = sort keys %{$self->{mfpr}}) {
+    if (my @mfpr = grep { $_ ne "version" } sort keys %{$self->{mfpr}}) {
 	croak RED, "Makefile.PL requires @mfpr, YAML does not", RESET, "\n";
 	}
 
@@ -543,6 +554,7 @@ sub _cpfd {
 sub gen_cpanfile {
     my $self = shift;
 
+    warn "Generating cpanfile ...\n";
     open my $fh, ">", "cpanfile";
 
     my $jsn = $self->{h};

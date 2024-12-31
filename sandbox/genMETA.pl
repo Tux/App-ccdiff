@@ -88,7 +88,7 @@ test_requires:
 test_recommends:
     Capture::Tiny:       0.24
 test_suggests:
-    Capture::Tiny:       0.48
+    Capture::Tiny:       0.50
 resources:
     license:             http://dev.perl.org/licenses/
     homepage:            https://metacpan.org/pod/App::ccdiff

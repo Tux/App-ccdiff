@@ -25,5 +25,5 @@ on "test" => sub {
 
     recommends "Capture::Tiny"            => "0.24";
 
-    suggests   "Capture::Tiny"            => "0.48";
+    suggests   "Capture::Tiny"            => "0.50";
     };

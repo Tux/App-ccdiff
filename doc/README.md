@@ -156,4 +156,4 @@ command-line options.
 
 The Artistic License 2.0
 
-Copyright (c) 2018-2023 H.Merijn Brand
+Copyright (c) 2018-2024 H.Merijn Brand
