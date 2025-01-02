@@ -8,6 +8,7 @@
 ^Talk
 [gbx]z$
 MANIFEST.SKIP
+make-doc.pl
 ^Makefile$
 ^pm_to
 ^MYMETA
