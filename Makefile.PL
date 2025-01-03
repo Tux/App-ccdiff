@@ -94,7 +94,7 @@ sub postamble {
         '	-@rm -f Debian_CPANTS.txt',
         '',
 	'doc docs:		doc/ccdiff.md doc/ccdiff.html doc/ccdiff.man doc/README.md',
-	'	perl make-doc.pl',
+	'	perl doc/make-doc.pl',
 	'doc/ccdiff.man:	doc/ccdiff.3',
 	'	nroff2man     < $? > $@',
 	'doc/README.md:		README.md',

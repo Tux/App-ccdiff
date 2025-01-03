@@ -1,3 +1,6 @@
+0.35	- 2025-01-02
+    * 
+
 0.34	- 2025-01-02
     * Add iwbZusePP config for failing -i/-w/-b/-Z on Algorithm::Diff::XS
     * It is 2024 and 2025

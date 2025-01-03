@@ -1,4 +1,4 @@
-STDIN(1)              User Contributed Perl Documentation             STDIN(1)
+App::ccdiff(3)        User Contributed Perl Documentation       App::ccdiff(3)
 
 NAME
        ccdiff - Colored Character diff
@@ -634,4 +634,4 @@ COPYRIGHT AND LICENSE
        This library is free software;  you can redistribute and/or modify it
        under the same terms as The Artistic License 2.0.
 
-perl v5.40.0                      2025-01-02                          STDIN(1)
+perl v5.40.0                      2025-01-02                    App::ccdiff(3)

@@ -57,8 +57,8 @@
 .if n .ds AD l
 .\" ========================================================================
 .\"
-.IX Title "ccdiff 3"
-.TH ccdiff 3 2025-01-02 "perl v5.40.0" "User Contributed Perl Documentation"
+.IX Title "App::ccdiff 3"
+.TH App::ccdiff 3 2025-01-02 "perl v5.40.0" "User Contributed Perl Documentation"
 .\" For nroff, turn off justification.  Always turn off hyphenation; it makes
 .\" way too many mistakes in technical documents.
 .if n .ad l
@@ -192,9 +192,9 @@ With \-Uu0v2:
 .Sp
 .Vb 5
 \& 1,1c1,1
-\& \- A â± â°Bâ±CDâ°Eâ± â°Fg
+\& \- A ↱ ↰B↱CD↰E↱ ↰Fg
 \& \- \-\- verbose : SPACE, LATIN CAPITAL LETTER C, LATIN CAPITAL LETTER D, SPACE
-\& + A Bâ±cdâ°Eâ±\:â°Fg
+\& + A B↱cd↰E↱\:↰Fg
 \& + \-\- verbose : LATIN SMALL LETTER C, LATIN SMALL LETTER D, ZERO WIDTH SPACE
 .Ve
 .Sp
@@ -202,9 +202,9 @@ With \-Uu0v3:
 .Sp
 .Vb 5
 \& 1,1c1,1
-\& \- A â± â°Bâ±CDâ°Eâ± â°Fg
+\& \- A ↱ ↰B↱CD↰E↱ ↰Fg
 \& \- \-\- verbose : SPACE (U+000020), LATIN CAPITAL LETTER C (U+000043), LATIN CAPITAL LETTER D (U+000044), SPACE (U+000020)
-\& + A Bâ±cdâ°Eâ±\:â°Fg
+\& + A B↱cd↰E↱\:↰Fg
 \& + \-\- verbose : LATIN SMALL LETTER C (U+000063), LATIN SMALL LETTER D (U+000064), ZERO WIDTH SPACE (U+00200B)
 .Ve
 .Sp
@@ -235,9 +235,9 @@ This will look like (with unified diff):
 .Vb 5
 \& 5,5c5,5
 \& \-Sat Dec 18 07:08:33 1998,I.O.D.U.,,756194433,1442539
-\& \-               â¼       â¼
+\& \-               ▼       ▼
 \& +Sat Dec 18 07:00:33 1993,I.O.D.U.,,756194433,1442539
-\& +               â²       â²
+\& +               ▲       ▲
 .Ve
 .Sp
 The characters used for the markers can be defined in your configuration file
@@ -335,26 +335,26 @@ segment. The default is \f(CW0\fR, meaning do not compress.
 .Sp
 If set to a positive number, and the length of a segment of equal characters
 inside a horizontal diff is longer than twice this value, the middle part is
-replaced with \f(CW\*(C`â U02508 \eN{BOX DRAWINGS LIGHT QUADRUPLE DASH HORIZONTAL}\*(C'\fR
-(instead of â¦ U02026, as HORIZONTAL ELLIPSIS does not stand out enough).
+replaced with \f(CW\*(C`┈ U02508 \eN{BOX DRAWINGS LIGHT QUADRUPLE DASH HORIZONTAL}\*(C'\fR
+(instead of … U02026, as HORIZONTAL ELLIPSIS does not stand out enough).
 .Sp
 With \f(CW\*(C`\-u0me3\*(C'\fR that would be like
 .Sp
 .Vb 5
 \& 5,5c5,5
-\& \-Satâ07:08:33â 1998,I.â539
-\& \-        â¼        â¼
-\& +Satâ07:00:33â 1993,I.â539
-\& +        â²        â²
+\& \-Sat┈07:08:33┈ 1998,I.┈539
+\& \-        ▼        ▼
+\& +Sat┈07:00:33┈ 1993,I.┈539
+\& +        ▲        ▲
 .Ve
 .Sp
 With \f(CW\*(C`\-u0e3 \-v2\*(C'\fR like
 .Sp
 .Vb 5
 \& 5,5c5,5
-\& \-Satâ¤9â¦07:0â±0â°:33 199â±3â°,I.â¤23â¦539
+\& \-Sat↤9↦07:0↱0↰:33 199↱3↰,I.↤23↦539
 \& \- \-\- verbose : DIGIT ZERO, DIGIT THREE
-\& +Satâ¤9â¦07:0â±8â°:33 199â±8â°,I.â¤23â¦539
+\& +Sat↤9↦07:0↱8↰:33 199↱8↰,I.↤23↦539
 \& + \-\- verbose : DIGIT EIGHT, DIGIT EIGHT
 .Ve
 .Sp
@@ -685,27 +685,27 @@ so you might want to change it to something that stands out better in your
 environment. Possible suggestions:
 .Sp
 .Vb 10
-\& â¦ U+2026 HORIZONTAL ELLIPSIS
-\& â´ U+2034 TRIPLE PRIME
-\& â· U+2037 REVERSED TRIPLE PRIME
-\& â U+2194 LEFT RIGHT ARROW
-\& â­ U+21ad LEFT RIGHT WAVE ARROW
-\& â® U+21ae LEFT RIGHT ARROW WITH STROKE
-\& â¹ U+21b9 LEFTWARDS ARROW TO BAR OVER RIGHTWARDS ARROW TO BAR
-\& â U+21c4 RIGHTWARDS ARROW OVER LEFTWARDS ARROW
-\& â U+21c6 LEFTWARDS ARROW OVER RIGHTWARDS ARROW
-\& â U+21ce LEFT RIGHT DOUBLE ARROW WITH STROKE
-\& â U+21d4 LEFT RIGHT DOUBLE ARROW
-\& â¹ U+21f9 LEFT RIGHT ARROW WITH VERTICAL STROKE
-\& â¼ U+21fc LEFT RIGHT ARROW WITH DOUBLE VERTICAL STROKE
-\& â¿ U+21ff LEFT RIGHT OPEN\-HEADED ARROW
-\& â U+224b TRIPLE TILDE
-\& â U+2504 BOX DRAWINGS LIGHT TRIPLE DASH HORIZONTAL
-\& â U+2505 BOX DRAWINGS HEAVY TRIPLE DASH HORIZONTAL
-\& â U+2508 BOX DRAWINGS LIGHT QUADRUPLE DASH HORIZONTAL
-\& â U+2509 BOX DRAWINGS HEAVY QUADRUPLE DASH HORIZONTAL
-\& â§» U+29fb TRIPLE PLUS
-\& â¬ U+2b0c LEFT RIGHT BLACK ARROW
+\& … U+2026 HORIZONTAL ELLIPSIS
+\& ‴ U+2034 TRIPLE PRIME
+\& ‷ U+2037 REVERSED TRIPLE PRIME
+\& ↔ U+2194 LEFT RIGHT ARROW
+\& ↭ U+21ad LEFT RIGHT WAVE ARROW
+\& ↮ U+21ae LEFT RIGHT ARROW WITH STROKE
+\& ↹ U+21b9 LEFTWARDS ARROW TO BAR OVER RIGHTWARDS ARROW TO BAR
+\& ⇄ U+21c4 RIGHTWARDS ARROW OVER LEFTWARDS ARROW
+\& ⇆ U+21c6 LEFTWARDS ARROW OVER RIGHTWARDS ARROW
+\& ⇎ U+21ce LEFT RIGHT DOUBLE ARROW WITH STROKE
+\& ⇔ U+21d4 LEFT RIGHT DOUBLE ARROW
+\& ⇹ U+21f9 LEFT RIGHT ARROW WITH VERTICAL STROKE
+\& ⇼ U+21fc LEFT RIGHT ARROW WITH DOUBLE VERTICAL STROKE
+\& ⇿ U+21ff LEFT RIGHT OPEN\-HEADED ARROW
+\& ≋ U+224b TRIPLE TILDE
+\& ┄ U+2504 BOX DRAWINGS LIGHT TRIPLE DASH HORIZONTAL
+\& ┅ U+2505 BOX DRAWINGS HEAVY TRIPLE DASH HORIZONTAL
+\& ┈ U+2508 BOX DRAWINGS LIGHT QUADRUPLE DASH HORIZONTAL
+\& ┉ U+2509 BOX DRAWINGS HEAVY QUADRUPLE DASH HORIZONTAL
+\& ⧻ U+29fb TRIPLE PLUS
+\& ⬌ U+2b0c LEFT RIGHT BLACK ARROW
 .Ve
 .IP chr_eli_v 2
 .IX Item "chr_eli_v"
