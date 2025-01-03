@@ -119,17 +119,17 @@ OPTIONS
          With -Uu0v2:
 
           1,1c1,1
-          - A â± â°Bâ±CDâ°Eâ± â°Fg
+          - A ? ?B?CD?E? ?Fg
           - -- verbose : SPACE, LATIN CAPITAL LETTER C, LATIN CAPITAL LETTER D, SPACE
-          + A Bâ±cdâ°Eâ±â°Fg
+          + A B?cd?E??Fg
           + -- verbose : LATIN SMALL LETTER C, LATIN SMALL LETTER D, ZERO WIDTH SPACE
 
          With -Uu0v3:
 
           1,1c1,1
-          - A â± â°Bâ±CDâ°Eâ± â°Fg
+          - A ? ?B?CD?E? ?Fg
           - -- verbose : SPACE (U+000020), LATIN CAPITAL LETTER C (U+000043), LATIN CAPITAL LETTER D (U+000044), SPACE (U+000020)
-          + A Bâ±cdâ°Eâ±â°Fg
+          + A B?cd?E??Fg
           + -- verbose : LATIN SMALL LETTER C (U+000063), LATIN SMALL LETTER D (U+000064), ZERO WIDTH SPACE (U+00200B)
 
          With -Uu0v2 --ascii:
@@ -158,9 +158,9 @@ OPTIONS
 
           5,5c5,5
           -Sat Dec 18 07:08:33 1998,I.O.D.U.,,756194433,1442539
-          -               â¼       â¼
+          -               ?       ?
           +Sat Dec 18 07:00:33 1993,I.O.D.U.,,756194433,1442539
-          +               â²       â²
+          +               ?       ?
 
          The characters used for the markers can be defined in your
          configuration file as "chr_old" (the character used as marker under
@@ -257,24 +257,24 @@ OPTIONS
 
          If set to a positive number, and the length of a segment of equal
          characters inside a horizontal diff is longer than twice this value,
-         the middle part is replaced with "â U02508 \N{BOX DRAWINGS LIGHT
-         QUADRUPLE DASH HORIZONTAL}" (instead of â¦ U02026, as HORIZONTAL
+         the middle part is replaced with "? U02508 \N{BOX DRAWINGS LIGHT
+         QUADRUPLE DASH HORIZONTAL}" (instead of ? U02026, as HORIZONTAL
          ELLIPSIS does not stand out enough).
 
          With "-u0me3" that would be like
 
           5,5c5,5
-          -Satâ07:08:33â 1998,I.â539
-          -        â¼        â¼
-          +Satâ07:00:33â 1993,I.â539
-          +        â²        â²
+          -Sat?07:08:33? 1998,I.?539
+          -        ?        ?
+          +Sat?07:00:33? 1993,I.?539
+          +        ?        ?
 
          With "-u0e3 -v2" like
 
           5,5c5,5
-          -Satâ¤9â¦07:0â±0â°:33 199â±3â°,I.â¤23â¦539
+          -Sat?9?07:0?0?:33 199?3?,I.?23?539
           - -- verbose : DIGIT ZERO, DIGIT THREE
-          +Satâ¤9â¦07:0â±8â°:33 199â±8â°,I.â¤23â¦539
+          +Sat?9?07:0?8?:33 199?8?,I.?23?539
           + -- verbose : DIGIT EIGHT, DIGIT EIGHT
 
          The text used for the replaced text can be defined in your
@@ -546,27 +546,27 @@ OPTIONS
          fonts, so you might want to change it to something that stands out
          better in your environment. Possible suggestions:
 
-          â¦ U+2026 HORIZONTAL ELLIPSIS
-          â´ U+2034 TRIPLE PRIME
-          â· U+2037 REVERSED TRIPLE PRIME
-          â U+2194 LEFT RIGHT ARROW
-          â U+21ad LEFT RIGHT WAVE ARROW
-          â® U+21ae LEFT RIGHT ARROW WITH STROKE
-          â¹ U+21b9 LEFTWARDS ARROW TO BAR OVER RIGHTWARDS ARROW TO BAR
-          â U+21c4 RIGHTWARDS ARROW OVER LEFTWARDS ARROW
-          â U+21c6 LEFTWARDS ARROW OVER RIGHTWARDS ARROW
-          â U+21ce LEFT RIGHT DOUBLE ARROW WITH STROKE
-          â U+21d4 LEFT RIGHT DOUBLE ARROW
-          â¹ U+21f9 LEFT RIGHT ARROW WITH VERTICAL STROKE
-          â¼ U+21fc LEFT RIGHT ARROW WITH DOUBLE VERTICAL STROKE
-          â¿ U+21ff LEFT RIGHT OPEN-HEADED ARROW
-          â U+224b TRIPLE TILDE
-          â U+2504 BOX DRAWINGS LIGHT TRIPLE DASH HORIZONTAL
-          â U+2505 BOX DRAWINGS HEAVY TRIPLE DASH HORIZONTAL
-          â U+2508 BOX DRAWINGS LIGHT QUADRUPLE DASH HORIZONTAL
-          â U+2509 BOX DRAWINGS HEAVY QUADRUPLE DASH HORIZONTAL
-          â§» U+29fb TRIPLE PLUS
-          â¬ U+2b0c LEFT RIGHT BLACK ARROW
+          ? U+2026 HORIZONTAL ELLIPSIS
+          ? U+2034 TRIPLE PRIME
+          ? U+2037 REVERSED TRIPLE PRIME
+          ? U+2194 LEFT RIGHT ARROW
+          ? U+21ad LEFT RIGHT WAVE ARROW
+          ? U+21ae LEFT RIGHT ARROW WITH STROKE
+          ? U+21b9 LEFTWARDS ARROW TO BAR OVER RIGHTWARDS ARROW TO BAR
+          ? U+21c4 RIGHTWARDS ARROW OVER LEFTWARDS ARROW
+          ? U+21c6 LEFTWARDS ARROW OVER RIGHTWARDS ARROW
+          ? U+21ce LEFT RIGHT DOUBLE ARROW WITH STROKE
+          ? U+21d4 LEFT RIGHT DOUBLE ARROW
+          ? U+21f9 LEFT RIGHT ARROW WITH VERTICAL STROKE
+          ? U+21fc LEFT RIGHT ARROW WITH DOUBLE VERTICAL STROKE
+          ? U+21ff LEFT RIGHT OPEN-HEADED ARROW
+          ? U+224b TRIPLE TILDE
+          ? U+2504 BOX DRAWINGS LIGHT TRIPLE DASH HORIZONTAL
+          ? U+2505 BOX DRAWINGS HEAVY TRIPLE DASH HORIZONTAL
+          ? U+2508 BOX DRAWINGS LIGHT QUADRUPLE DASH HORIZONTAL
+          ? U+2509 BOX DRAWINGS HEAVY QUADRUPLE DASH HORIZONTAL
+          ? U+29fb TRIPLE PLUS
+          ? U+2b0c LEFT RIGHT BLACK ARROW
 
        chr_eli_v
           chr_eli_v : U+21A4U+21A6
@@ -634,4 +634,4 @@ COPYRIGHT AND LICENSE
        This library is free software;  you can redistribute and/or modify it
        under the same terms as The Artistic License 2.0.
 
-perl v5.40.0                      2025-01-02                    App::ccdiff(3)
+perl v5.40.0                      2025-01-03                    App::ccdiff(3)

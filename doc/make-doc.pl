@@ -3,7 +3,7 @@
 use 5.038002;
 use warnings;
 
-our $VERSION = "0.01 - 20250102";
+our $VERSION = "0.02 - 20250103";
 our $CMD = $0 =~ s{.*/}{}r;
 
 sub usage {
@@ -12,7 +12,9 @@ sub usage {
     exit $err;
     } # usage
 
-use List::Util   qw( first );
+use File::Find;
+use List::Util   qw( first          );
+use Encode       qw( encode decode  );
 use Getopt::Long qw(:config bundling);
 GetOptions (
     "help|?"		=> sub { usage (0); },
@@ -23,7 +25,29 @@ GetOptions (
 
 -d "doc" or mkdir "doc", 0775;
 
-my @pm = ("ccdiff"); # Do NOT scan t/ !
+my @pm;	# Do *NOT* scan t/
+find (sub { m/\.pm$/ and push @pm => $File::Find::name }, "lib");
+@pm or @pm = sort glob "*.pm";
+if (@pm == 0 and open my $fh, "<", "Makefile.PL") {
+    my @mpl = <$fh>;
+    close $fh;
+    if (my @vf = grep m/\bVERSION_FROM\s*=>\s*(.*)/) {
+	push @pm => $vf[0] =~ s/["']//gr;
+	last;
+	}
+    if (my @ef = grep m/\bEXE_FILES\s*=>\s*\[(.*)\]/) {
+	push @pm => eval qq{($1)};
+	last;
+	}
+    }
+
+@pm = sort grep { ! -l $_ } @pm;
+@pm or die "No documentation source files found\n";
+
+if ($opt_v) {
+    say "Using these sources for static documentation:";
+    say " $_" for @pm;
+    }
 
 my %enc;
 eval { require Pod::Checker; };
@@ -52,7 +76,7 @@ if ($@) {
     }
 else {
     foreach my $pm (@pm) {
-	my $md = $pm =~ s{^lib/}{}r =~ s{/}{-}gr =~ s{(\.pm)?$}{.md}r =~ s{^}{doc/}r;
+	my $md = $pm =~ s{^lib/(?:App/)?}{}r =~ s{/}{-}gr =~ s{\.pm$}{.md}r =~ s{^}{doc/}r;
 	printf STDERR "%-43s <- %s\n", $md, $pm if $opt_v;
 	my $enc = $enc{$pm} ? "encoding($enc{$pm})" : "bytes";
 	say "$pm ($enc)" if $opt_v > 1;
@@ -80,7 +104,7 @@ if ($@) {
     }
 else {
     foreach my $pm (@pm) {
-	my $html = $pm =~ s{^lib/}{}r =~ s{/}{-}gr =~ s{(\.pm)?$}{.html}r =~ s{^}{doc/}r;
+	my $html = $pm =~ s{^lib/(?:App/)?}{}r =~ s{/}{-}gr =~ s{\.pm$}{.html}r =~ s{^}{doc/}r;
 	printf STDERR "%-43s <- %s\n", $html, $pm if $opt_v;
 	my $tf = "x_$$.html";
 	unlink $tf if -e $tf;
@@ -105,13 +129,19 @@ if ($@) {
     warn "Cannot convert pod to man: $@\n";
     }
 else {
+    my $nrf = first { -x }
+	      map   { "$_/nroff" }
+	      grep { length and -d }
+	      split m/:+/ => $ENV{PATH};
+    $opt_v and say $nrf;
     foreach my $pm (@pm) {
-	my $man = $pm =~ s{^lib/}{}r =~ s{/}{-}gr =~ s{(\.pm)?$}{.3}r =~ s{^}{doc/}r;
+	my $man = $pm =~ s{^lib/(?:App/)?}{}r =~ s{/}{-}gr =~ s{\.pm$}{.3}r =~ s{^}{doc/}r;
 	printf STDERR "%-43s <- %s\n", $man, $pm if $opt_v;
 	open my $fh, ">", \my $p;
 	Pod::Man->new (section => 3)->parse_from_file ($pm, $fh);
 	close $fh;
 	$p && $p =~ m/\S/ or next;
+	$p = decode ("utf-8", $p);
 	if (open my $old, "<:encoding(utf-8)", $man) {
 	    local $/;
 	    $p eq scalar <$old> and next;
@@ -119,6 +149,33 @@ else {
 	$opt_v and say "Writing $man (", length $p, ")";
 	open my $oh, ">:encoding(utf-8)", $man or die "$man: $!\n";
 	print $oh $p;
+	close $oh;
+	$nrf or next;
+	if (open my $fh, "-|", $nrf, "-mandoc", "-T", "utf8", $man) {
+	    local $/;
+	    $p = <$fh>;
+	    close $fh;
+	    $p = decode ("utf-8", $p
+		=~ s{(?:\x{02dc}|\xcb\x9c	)}{~}grx	# ~
+		=~ s{(?:\x{02c6}|\xcb\x86	)}{^}grx	# ^
+		=~ s{(?:\x{2018}|\xe2\x80\x98
+		       |\x{2019}|\xe2\x80\x99	)}{'}grx	# '
+		=~ s{(?:\x{201c}|\xe2\x80\x9c
+		       |\x{201d}|\xe2\x80\x9d	)}{"}grx	# "
+		=~ s{(?:\x{2212}|\xe2\x88\x92
+		       |\x{2010}|\xe2\x80\x90	)}{-}grx	# -
+		=~ s{(?:\e\[|\x9b)[0-9;]*m}	  {}grx);	# colors
+	    }
+
+	my $mfn = $man =~ s/3$/man/r;
+	if (open my $mh, "<:encoding(utf-8)", $mfn) {
+	    local $/;
+	    $p eq <$mh> and next;
+	    }
+	$opt_v and say "Writing $mfn (", length $p, ")";
+	open  $oh, ">:encoding(utf-8)", $mfn or die "$mfn: $!\n";
+	# nroff / troff / grotty cause double-encoding
+	print $oh encode ("iso-8859-1", decode ("utf-8", $p));
 	close $oh;
 	}
     }
