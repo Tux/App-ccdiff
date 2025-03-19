@@ -79,7 +79,7 @@ configure_requires:
 configure_recommends:
     ExtUtils::MakeMaker: 7.22
 configure_suggests:
-    ExtUtils::MakeMaker: 7.70
+    ExtUtils::MakeMaker: 7.72
 build_requires:
     Config:              0
 test_requires:
