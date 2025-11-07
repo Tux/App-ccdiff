@@ -15,6 +15,7 @@ MANIFEST.SKIP
 ^\.travis.yml
 ^xt/
 \.tmp$
+^\.test_info\.
 
 # These are TODO
 ^foo.$

@@ -1,5 +1,5 @@
-0.35	- 2025-03-19
-    * 
+0.35	- 2025-11-07
+    * Add old-label and new-label
 
 0.34	- 2025-01-02
     * Add iwbZusePP config for failing -i/-w/-b/-Z on Algorithm::Diff::XS
